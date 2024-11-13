@@ -1,10 +1,12 @@
-import React from 'react';
-import styled from 'styled-components';
+import React from "react";
+import styled from "styled-components";
 
 const StudyplanContainer = styled.div`
   width: 100%;
-  height: 100%;
-  background-color: white;
+  min-height: 100vh;
+  background-color: #f5f5f5;
+  padding-top: 80px;
+  left: 0px;
 `;
 
 const Studyplan = () => {
