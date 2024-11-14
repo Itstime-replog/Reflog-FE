@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css";
 import styled, { createGlobalStyle } from "styled-components";
+import CalendarModal from "../CalendarModal";
 
 const GlobalStyle = createGlobalStyle`
   .react-calendar {
@@ -122,7 +123,7 @@ const StyledCalendar = styled(Calendar)`
 
   /* 오늘 날짜 동그라미 */
   .react-calendar__tile--now abbr {
-    background-color: #1087ff; /* 노란색 */
+    background-color: #1087ff;
     color: white;
     width: 28px;
     height: 28px;
@@ -138,7 +139,7 @@ const StyledCalendar = styled(Calendar)`
 
   /* 오늘이 아닌 선택된 날짜 동그라미 */
   .react-calendar__tile--active:not(.react-calendar__tile--now) abbr {
-    background-color: #ffc300; /* 파란색 */
+    background-color: #ffc300;
     color: white;
     width: 28px;
     height: 28px;
@@ -162,8 +163,18 @@ const SelectedDate = styled.p`
 
 const CalendarComponent = () => {
   const [date, setDate] = useState(new Date());
+  const [showModal, setShowModal] = useState(false); // 모달 표시 상태
+  const [selectedDate, setSelectedDate] = useState(null); // 선택된 날짜 상태
 
-  const onChange = (date) => setDate(date);
+  const onChange = (date) => {
+    setDate(date);
+    setSelectedDate(date); // 선택한 날짜 설정
+    setShowModal(true); // 모달 표시
+  };
+
+  const handleCloseModal = () => {
+    setShowModal(false);
+  };
 
   return (
     <>
@@ -178,6 +189,12 @@ const CalendarComponent = () => {
             `${date.getFullYear()}년 ${date.getMonth() + 1}월`
           }
         />
+        {showModal && (
+          <CalendarModal
+            onClose={handleCloseModal}
+            selectedDate={selectedDate}
+          />
+        )}
       </CalendarContainer>
     </>
   );
