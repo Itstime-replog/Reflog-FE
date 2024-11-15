@@ -17,7 +17,7 @@ const Nav = styled.nav`
   top: 0;
   left: 240px;
   right: 0;
-  height: 80px;
+  height: 50px;
   z-index: 999;
 `;
 
