@@ -41,7 +41,7 @@ const StyledCalendar = styled(Calendar)`
   border-radius: 15px;
   overflow: hidden;
   box-shadow: 0px 0px 5px 1px rgba(139, 139, 139, 0.2);
-  width: 818px;
+  width: 852px;
   height: 752px;
 
   .react-calendar__navigation {
@@ -161,19 +161,78 @@ const SelectedDate = styled.p`
   color: #555;
 `;
 
+const EventText = styled.div`
+  font-size: 10px;
+  color: #494a4f;
+  text-align: left;
+  padding: 5px;
+  word-wrap: break-word;
+`;
+
+const EventContainer = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 4px;
+`;
+
+const EventDot = styled.div`
+  width: 8px;
+  height: 8px;
+  background-color: #1087ff;
+  border-radius: 50%;
+`;
+
+const EventTextWithTime = styled.div`
+  font-size: 10px;
+  color: #494a4f;
+  text-align: left;
+  flex-grow: 1;
+  padding: 5px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+`;
+
+const EventTime = styled.div`
+  font-size: 10px;
+  color: #888;
+  margin-left: 5px;
+`;
+
 const CalendarComponent = () => {
   const [date, setDate] = useState(new Date());
   const [showModal, setShowModal] = useState(false); // 모달 표시 상태
   const [selectedDate, setSelectedDate] = useState(null); // 선택된 날짜 상태
+  const [events, setEvents] = useState({}); // 날짜별 일정 상태
 
+  // 날짜 선택 핸들러
   const onChange = (date) => {
     setDate(date);
     setSelectedDate(date); // 선택한 날짜 설정
     setShowModal(true); // 모달 표시
   };
 
-  const handleCloseModal = () => {
-    setShowModal(false);
+  // 일정 추가 핸들러
+  const handleAddEvent = (text, time) => {
+    const formattedDate = selectedDate.toDateString(); // 날짜를 문자열로 변환
+    setEvents((prev) => ({
+      ...prev,
+      [formattedDate]: { text, time }, // 기존 일정 유지하며 텍스트와 시간 추가
+    }));
+    setShowModal(false); // 모달 닫기
+  };
+
+  // 일정 삭제 핸들러
+  const handleRemoveEvent = () => {
+    const formattedDate = selectedDate.toDateString();
+    setEvents((prev) => {
+      const updatedEvents = { ...prev };
+      delete updatedEvents[formattedDate]; // 일정 삭제
+      return updatedEvents;
+    });
+    setShowModal(false); // 모달 닫기
   };
 
   return (
@@ -185,14 +244,28 @@ const CalendarComponent = () => {
           value={date}
           locale="en-US"
           formatDay={(locale, date) => date.getDate().toString()}
-          formatMonthYear={(locale, date) =>
-            `${date.getFullYear()}년 ${date.getMonth() + 1}월`
-          }
+          tileContent={({ date }) => {
+            const eventDate = date.toDateString();
+            if (events[eventDate]) {
+              const { text, time } = events[eventDate];
+              return (
+                <EventContainer>
+                  <EventDot />
+                  <EventTextWithTime>{text}</EventTextWithTime>
+                  <EventTime>{time}</EventTime>
+                </EventContainer>
+              );
+            }
+            return null;
+          }}
         />
         {showModal && (
           <CalendarModal
-            onClose={handleCloseModal}
+            onClose={() => setShowModal(false)}
             selectedDate={selectedDate}
+            onAddEvent={handleAddEvent} // 일정 추가 핸들러
+            onRemoveEvent={handleRemoveEvent} // 일정 삭제 핸들러
+            existingEvent={events[selectedDate?.toDateString()]} // 이미 있는 일정 전달
           />
         )}
       </CalendarContainer>
