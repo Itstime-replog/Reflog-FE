@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 import infoIcon from "../../assets/images/info-icon.png";
+import InnerCalendar from "../InnerCalendar/InnerCalendar";
+import TimeSelect from "../TimeSelect/TimeSelect";
 
 const ModalOverlay = styled.div`
   position: fixed;
@@ -133,21 +135,6 @@ const ToggleSwitch = styled.label`
   }
 `;
 
-const TimeToggle = styled.button`
-  border: none;
-  background-color: #f1f1f1;
-  color: #494a4f;
-  padding: 5px 10px;
-  border-radius: 5px;
-  font-size: 13px;
-  cursor: pointer;
-  margin-left: 10px;
-
-  &:hover {
-    background-color: #e1e1e1;
-  }
-`;
-
 const AlarmModalHeader = styled.div`
   display: flex;
   justify-content: space-between;
@@ -228,6 +215,24 @@ const Input = styled.textarea`
   }
 `;
 
+const DeleteButton = styled.button`
+  width: 75px;
+  height: 30px;
+  background-color: red;
+  color: white;
+  padding: 5px;
+  border: none;
+  border-radius: 7px;
+  cursor: pointer;
+  margin-top: 20px;
+  font-family: "Pretendard";
+  font-style: normal;
+  font-weight: 400;
+  font-size: 13.5px;
+  text-align: center;
+  margin-left: 4px;
+`;
+
 const RegisterButton = styled.button`
   width: 75px;
   height: 30px;
@@ -252,18 +257,31 @@ const ButtonContainer = styled.div`
   margin-right: 15px;
 `;
 
-const CalendarModal = ({ onClose, selectedDate }) => {
+const CalendarModal = ({
+  onClose,
+  selectedDate,
+  onAddEvent,
+  onRemoveEvent,
+  existingEvent,
+}) => {
+  const [scheduleText, setScheduleText] = useState(existingEvent || ""); // 기존 일정 로드
   const [alarmOption, setAlarmOption] = useState("없음"); // 알림 옵션 상태 관리
   const [tooltipPosition, setTooltipPosition] = useState(null);
-  const [startTimePeriod, setStartTimePeriod] = useState("오전"); // 시작일 오전/오후 상태
-  const [endTimePeriod, setEndTimePeriod] = useState("오전"); // 종료일 오전/오후 상태
+  const [showEndCalendar, setShowEndCalendar] = useState(false); // 종료일 캘린더 표시 상태
+  const [endDate, setEndDate] = useState(selectedDate); // 종료일 상태
+  const [startTime, setStartTime] = useState("00:00 AM"); // 시작 시간 상태
 
-  const toggleStartTimePeriod = () => {
-    setStartTimePeriod((prev) => (prev === "오전" ? "오후" : "오전"));
+  // 일정 등록
+  const handleRegister = () => {
+    if (scheduleText.trim()) {
+      onAddEvent(scheduleText, startTime); // 일정과 시간을 함께 추가
+    }
   };
 
-  const toggleEndTimePeriod = () => {
-    setEndTimePeriod((prev) => (prev === "오전" ? "오후" : "오전"));
+  // 일정 삭제
+  const handleRemove = () => {
+    onRemoveEvent(); // 일정 삭제 핸들러 호출
+    onClose(); // 모달 닫기
   };
 
   const toggleTooltip = (event) => {
@@ -286,7 +304,11 @@ const CalendarModal = ({ onClose, selectedDate }) => {
             <Title>일정 등록</Title>
             <CloseButton onClick={onClose}>×</CloseButton>
           </Header>
-          <ScheduleInput placeholder="새로운 일정을 입력해주세요." />
+          <ScheduleInput
+            value={scheduleText}
+            onChange={(e) => setScheduleText(e.target.value)}
+            placeholder="새로운 일정을 입력해주세요."
+          />
 
           <Section>
             <Label>
@@ -298,16 +320,13 @@ const CalendarModal = ({ onClose, selectedDate }) => {
             </Label>
             <Label>
               시작일 : {selectedDate.toLocaleDateString()}{" "}
-              <TimeToggle onClick={toggleStartTimePeriod}>
-                {startTimePeriod}
-              </TimeToggle>
+              <TimeSelect value={startTime} onChange={setStartTime} />
             </Label>
-            <Label>
-              종료일 : {selectedDate.toLocaleDateString()}{" "}
-              <TimeToggle onClick={toggleEndTimePeriod}>
-                {endTimePeriod}
-              </TimeToggle>
+            <Label onClick={() => setShowEndCalendar(true)}>
+              종료일 : {endDate.toLocaleDateString()}{" "}
+              <TimeSelect value={startTime} onChange={setStartTime} />
             </Label>
+
             <Label>
               <InfoIcon src={infoIcon} alt="Info" onClick={toggleTooltip} />
               알림 기능:
@@ -327,10 +346,22 @@ const CalendarModal = ({ onClose, selectedDate }) => {
           <Input placeholder="메모, URL" />
 
           <ButtonContainer>
-            <RegisterButton>등록</RegisterButton>
+            <RegisterButton onClick={handleRegister}>등록</RegisterButton>
+            {existingEvent && (
+              <DeleteButton onClick={handleRemove}>삭제</DeleteButton>
+            )}
           </ButtonContainer>
         </ModalContent>
       </ModalOverlay>
+
+      {showEndCalendar && (
+        <InnerCalendar
+          selectedDate={endDate}
+          onDateChange={(date) => setEndDate(date)}
+          onClose={() => setShowEndCalendar(false)}
+          startDate={selectedDate} // 시작일 기준으로 종료일 설정
+        />
+      )}
 
       {tooltipPosition && (
         <InfoTooltip top={tooltipPosition.top} left={tooltipPosition.left}>
