@@ -1,5 +1,4 @@
-// src/components/CalendarModal/index.jsx
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import infoIcon from "../../assets/images/info-icon.png";
 
@@ -18,128 +17,333 @@ const ModalOverlay = styled.div`
 
 const ModalContent = styled.div`
   background: white;
-  width: 320px;
-  padding: 20px;
+  padding-top: 10px;
+  padding-bottom: 15px;
+  width: 340px;
   border-radius: 10px;
   box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.2);
   position: relative;
   font-family: "Pretendard", sans-serif;
-  overflow: hidden; /* 모달 내부에서 요소가 튀어나가지 않도록 설정 */
+  overflow: hidden;
+`;
+
+const Header = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 5px;
+  padding-left: 20px;
+  padding-right: 20px;
 `;
 
 const CloseButton = styled.button`
   background: none;
   border: none;
-  font-size: 18px;
+  font-size: 25px;
   color: #888;
-  position: absolute;
-  top: 15px;
-  right: 15px;
   cursor: pointer;
 `;
 
 const Title = styled.h2`
-  font-size: 18px;
-  font-weight: bold;
-  color: #333;
-  margin-bottom: 10px;
+  font-family: "Pretendard";
+  font-style: normal;
+  font-weight: 700;
+  font-size: 19px;
+  line-height: 21px;
+  color: #494a4f;
 `;
 
-const TitleInput = styled.input`
-  font-size: 14px;
-  color: #888;
+const ScheduleInput = styled.input`
+  font-size: 15px;
+  color: black;
   border: none;
   outline: none;
   background-color: transparent;
   width: 100%;
   margin-bottom: 20px;
-  padding: 5px 0;
+  padding-left: 20px;
+  padding-right: 20px;
   font-family: "Pretendard", sans-serif;
   &::placeholder {
-    color: #888;
+    color: #d6d6d6;
   }
 `;
 
 const Section = styled.div`
-  background-color: #f1f5ff;
-  padding: 10px;
-  border-radius: 8px;
+  background-color: rgba(229, 238, 255, 0.5);
+  padding: 16px 20px;
   margin-bottom: 20px;
 `;
 
-const Label = styled.p`
-  font-size: 14px;
-  color: #555;
-  margin: 5px 0;
+const Label = styled.div`
   display: flex;
   align-items: center;
+  padding-left: 20px;
+  padding-bottom: 9px;
+  font-family: "Pretendard";
+  font-weight: bold;
+  font-size: 13px;
+  line-height: 23px;
+  color: #494a4f;
+`;
+
+const ToggleSwitch = styled.label`
+  position: relative;
+  display: inline-block;
+  width: 34px;
+  height: 20px;
+  margin-left: 10px;
+
+  input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+  }
+
+  span {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    border-radius: 20px;
+    transition: 0.4s;
+  }
+
+  span:before {
+    position: absolute;
+    content: "";
+    height: 14px;
+    width: 14px;
+    left: 3px;
+    bottom: 3px;
+    background-color: white;
+    border-radius: 50%;
+    transition: 0.4s;
+  }
+
+  input:checked + span {
+    background-color: #4a86f7;
+  }
+
+  input:checked + span:before {
+    transform: translateX(14px);
+  }
+`;
+
+const TimeToggle = styled.button`
+  border: none;
+  background-color: #f1f1f1;
+  color: #494a4f;
+  padding: 5px 10px;
+  border-radius: 5px;
+  font-size: 13px;
+  cursor: pointer;
+  margin-left: 10px;
+
+  &:hover {
+    background-color: #e1e1e1;
+  }
+`;
+
+const AlarmModalHeader = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+`;
+
+const AlarmModalTitle = styled.h2`
+  font-family: "Pretendard";
+  font-style: normal;
+  font-weight: 700;
+  font-size: 19px;
+  line-height: 21px;
+  color: #494a4f;
 `;
 
 const InfoIcon = styled.img`
   width: 13px;
   height: 13px;
   margin-right: 5px;
+  cursor: pointer;
+  margin-left: -18px;
 `;
 
-const Toggle = styled.input.attrs({ type: "checkbox" })`
-  accent-color: #4a86f7;
+const InfoTooltip = styled.div`
+  position: fixed;
+  top: 56%;
+  left: 41%;
+  transform: translate(-100%, -50%);
+  width: 250px;
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.2);
+  padding: 10px 20px 20px 20px;
+  font-size: 13px;
+  color: #494a4f;
+  z-index: 1001;
+`;
+
+const Dropdown = styled.select`
   margin-left: 10px;
+  padding: 5px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  background: white;
+  font-family: "Pretendard";
+  font-style: normal;
+  font-weight: 600;
+  font-size: 12px;
+  line-height: 21px;
+  color: #494a4f;
+
+  &:focus {
+    outline: none;
+    border-color: #4a86f7;
+  }
 `;
 
-const Input = styled.input`
+const Input = styled.textarea`
+  font-family: "Pretendard";
+  font-style: normal;
+  font-weight: 400;
   font-size: 14px;
-  color: #555;
+  line-height: 21px;
+  color: #000;
   border: none;
   outline: none;
   background: transparent;
-  margin-left: 10px;
+  margin-left: 20px;
+  resize: none;
+  width: 87%;
+  height: auto;
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  word-break: break-word;
+  white-space: pre-wrap;
+  &::placeholder {
+    color: #d6d6d6;
+  }
 `;
 
 const RegisterButton = styled.button`
-  width: 100%;
-  background-color: #4a86f7;
+  width: 75px;
+  height: 30px;
+  background-color: #0059ff;
   color: white;
-  font-size: 14px;
-  padding: 10px;
+  padding: 5px;
   border: none;
-  border-radius: 8px;
+  border-radius: 7px;
   cursor: pointer;
   margin-top: 20px;
+  font-family: "Pretendard";
+  font-style: normal;
+  font-weight: 400;
+  font-size: 13.5px;
+  text-align: center;
+`;
+
+const ButtonContainer = styled.div`
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 20px;
+  margin-right: 15px;
 `;
 
 const CalendarModal = ({ onClose, selectedDate }) => {
+  const [alarmOption, setAlarmOption] = useState("없음"); // 알림 옵션 상태 관리
+  const [tooltipPosition, setTooltipPosition] = useState(null);
+  const [startTimePeriod, setStartTimePeriod] = useState("오전"); // 시작일 오전/오후 상태
+  const [endTimePeriod, setEndTimePeriod] = useState("오전"); // 종료일 오전/오후 상태
+
+  const toggleStartTimePeriod = () => {
+    setStartTimePeriod((prev) => (prev === "오전" ? "오후" : "오전"));
+  };
+
+  const toggleEndTimePeriod = () => {
+    setEndTimePeriod((prev) => (prev === "오전" ? "오후" : "오전"));
+  };
+
+  const toggleTooltip = (event) => {
+    if (tooltipPosition) {
+      setTooltipPosition(null);
+    } else {
+      const rect = event.target.closest("div").getBoundingClientRect();
+      setTooltipPosition({
+        top: rect.top + window.scrollY + 40, // 모달 아래로 약간 이동
+        left: rect.left + window.scrollX - 270, // 모달 왼쪽으로 위치
+      });
+    }
+  };
+
   return (
-    <ModalOverlay>
-      <ModalContent>
-        <CloseButton onClick={onClose}>×</CloseButton>
-        <Title>일정 등록</Title>
-        <TitleInput placeholder="새로운 일정을 입력해주세요." />
+    <>
+      <ModalOverlay>
+        <ModalContent>
+          <Header>
+            <Title>일정 등록</Title>
+            <CloseButton onClick={onClose}>×</CloseButton>
+          </Header>
+          <ScheduleInput placeholder="새로운 일정을 입력해주세요." />
 
-        <Section>
-          <Label>
-            종일 : <Toggle />
-          </Label>
-          <Label>시작일 : {selectedDate.toLocaleDateString()}</Label>
-          <Label>종료일 : {selectedDate.toLocaleDateString()}</Label>
-          <Label>
-            <InfoIcon src={infoIcon} alt="Info" />
-            알림 기능 : <Input placeholder="없음" />
-          </Label>
-        </Section>
+          <Section>
+            <Label>
+              종일 :
+              <ToggleSwitch>
+                <input type="checkbox" />
+                <span></span>
+              </ToggleSwitch>
+            </Label>
+            <Label>
+              시작일 : {selectedDate.toLocaleDateString()}{" "}
+              <TimeToggle onClick={toggleStartTimePeriod}>
+                {startTimePeriod}
+              </TimeToggle>
+            </Label>
+            <Label>
+              종료일 : {selectedDate.toLocaleDateString()}{" "}
+              <TimeToggle onClick={toggleEndTimePeriod}>
+                {endTimePeriod}
+              </TimeToggle>
+            </Label>
+            <Label>
+              <InfoIcon src={infoIcon} alt="Info" onClick={toggleTooltip} />
+              알림 기능:
+              <Dropdown
+                value={alarmOption}
+                onChange={(e) => setAlarmOption(e.target.value)}
+              >
+                <option value="없음">없음</option>
+                <option value="10분 후">10분 후</option>
+                <option value="30분 후">30분 후</option>
+                <option value="1시간 후">1시간 후</option>
+                <option value="2시간 후">2시간 후</option>
+              </Dropdown>
+            </Label>
+          </Section>
 
-        <Input
-          style={{
-            width: "90%",
-            padding: "10px",
-            borderRadius: "8px",
-            marginBottom: "20px",
-          }}
-          placeholder="메모, URL"
-        />
+          <Input placeholder="메모, URL" />
 
-        <RegisterButton>등록</RegisterButton>
-      </ModalContent>
-    </ModalOverlay>
+          <ButtonContainer>
+            <RegisterButton>등록</RegisterButton>
+          </ButtonContainer>
+        </ModalContent>
+      </ModalOverlay>
+
+      {tooltipPosition && (
+        <InfoTooltip top={tooltipPosition.top} left={tooltipPosition.left}>
+          <AlarmModalHeader>
+            <AlarmModalTitle>알림 기능</AlarmModalTitle>
+            <CloseButton onClick={() => setTooltipPosition(null)}>
+              ×
+            </CloseButton>
+          </AlarmModalHeader>
+          등록한 일정 완료 후, 알림을 통해 회고일지 작성을 잊지 않도록 도와줘요!
+        </InfoTooltip>
+      )}
+    </>
   );
 };
 
