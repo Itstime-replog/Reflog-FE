@@ -6,12 +6,14 @@ import BookImage from '../../assets/images/Book.svg';
 import ChevronDown from '../../assets/images/Chevron-Down.svg';
 import LockIcon from '../../assets/images/Lock.svg';
 import UnlockIcon from '../../assets/images/Unlock.svg';
-import CheckIcon from '@mui/icons-material/Check';
+import CheckIcon from '@mui/icons-material/Check'; // Material-UI Icons
 import Button from '@mui/material/Button';
 import Stack from '@mui/material/Stack';
 import TextField from '@mui/material/TextField';
 import Box from '@mui/material/Box';
 import Slider from '@mui/material/Slider';
+
+// Styled Components
 
 const SlideOutDetailView = styled.div`
   position: fixed;
@@ -33,10 +35,10 @@ const SlideOutDetailView = styled.div`
   }
 
   & > div {
-    scrollbar-width: none;
-    -ms-overflow-style: none;
+    scrollbar-width: none; /* Firefox */
+    -ms-overflow-style: none; /* IE and Edge */
     &::-webkit-scrollbar {
-      display: none;
+      display: none; /* Chrome, Safari, Opera */
     }
   }
 `;
@@ -57,8 +59,8 @@ const CloseButton = styled.button`
 
 const EditButton = styled(Button)`
   && {
-    margin-top: auto;
-    align-self: flex-end;
+    margin-top: auto; /* 상단 여백을 자동으로 설정하여 하단에 위치 */
+    align-self: flex-end; /* 오른쪽 정렬 */
     color: #494a4f;
     border: 1px solid #494a4f;
     background-color: white;
@@ -177,13 +179,13 @@ const RetrospectContainer = styled.div`
   align-items: center;
   position: relative;
   margin: 0;
-  padding: 90px 0 0 0;
+  padding: 90px 0 0 0; /* 기존 90px 유지 */
   box-sizing: border-box;
 `;
 
 const CalendarContainer = styled.div`
   position: absolute;
-  top: 180px;
+  top: 180px; /* 기존 위치 유지 */
   left: 40px;
   z-index: 10;
   background: white;
@@ -295,7 +297,7 @@ const CalendarContainer = styled.div`
 
 const TopButtonContainer = styled.div`
   position: absolute;
-  top: 190px;
+  top: 190px; /* 변경 전: 190px */
   right: 40px;
   display: flex;
   align-items: center;
@@ -309,7 +311,7 @@ const TagButtonsContainer = styled.div`
   margin-top: 175px;
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 20px; /* 전체적인 20px 간격 추가 */
 `;
 
 const TagButtons = styled(Stack)`
@@ -373,8 +375,8 @@ const RegisterButton = styled(Button)`
       background-color: #0046cc;
     }
 
-    padding: 8px 16px;
-    font-size: 14px;
+    padding: 8px 16px; /* 크기 축소 */
+    font-size: 14px; /* 폰트 크기 축소 */
   }
 `;
 
@@ -388,8 +390,8 @@ const SaveButton = styled(Button)`
       background-color: transparent;
     }
 
-    padding: 8px 16px;
-    font-size: 14px;
+    padding: 8px 16px; /* 크기 축소 */
+    font-size: 14px; /* 폰트 크기 축소 */
   }
 `;
 
@@ -400,7 +402,7 @@ const DateButton = styled(Button)`
     padding: 8px 16px;
     border-radius: 8px;
     position: absolute;
-    top: 64px;
+    top: 64px; /* 기존 134px에서 64px으로 변경 (70px 위로 이동) */
     left: 40px;
     text-transform: none;
     font-family: Pretendard;
@@ -464,7 +466,7 @@ const ContentContainer = styled.div`
   width: 100%;
   flex: 1;
   min-height: calc(100vh - 250px);
-  margin-top: -80px;
+  margin-top: -10px;
 `;
 
 const TagButton = styled(Button)`
@@ -482,7 +484,7 @@ const BackgroundOverlay = styled.div`
   display: flex;
   justify-content: center;
   align-items: flex-start;
-  padding-top: 160px;
+  padding-top: 160px; /* 기존 230px에서 160px으로 변경 (70px 감소) */
   overflow-y: auto;
 `;
 
@@ -495,7 +497,7 @@ const WriteCardContainer = styled.div`
   position: relative;
   z-index: 1;
   box-shadow: 0px 0px 3.72px 0.744px rgba(139, 139, 139, 0.05);
-  margin-bottom: 110px;
+  margin-bottom: 110px; /* 기존 180px에서 110px으로 변경 (70px 감소) */
 
   @media (max-width: 768px) {
     width: calc(100% - 40px);
@@ -510,7 +512,7 @@ const CardTitle = styled.h1`
   font-weight: 700;
   line-height: normal;
   letter-spacing: 0.15px;
-  margin-top: 120px;
+  margin-top: 120px; /* 기존 190px에서 120px으로 변경 (70px 감소) */
   margin-bottom: 24px;
   padding: 0 80px;
 `;
@@ -667,6 +669,8 @@ const TooltipContent = styled.div`
   line-height: 11px;
 `;
 
+// Success Screen Styled Components
+
 const SuccessContainer = styled.div`
   display: flex;
   flex-direction: column;
@@ -684,7 +688,7 @@ const SuccessIconWrapper = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-bottom: 16px;
+  margin-bottom: 16px; /* 24px에서 16px로 감소 */
 `;
 
 const SuccessMessage = styled.h2`
@@ -698,7 +702,7 @@ const SuccessSubtitle = styled.p`
   font-size: 16px;
   font-weight: 500;
   color: #6b7280;
-  margin-bottom: 16px;
+  margin-bottom: 16px; /* 32px에서 16px로 감소 */
   text-align: center;
 `;
 
@@ -715,7 +719,7 @@ const SuccessButton = styled(Button)`
     display: flex;
     align-items: center;
     justify-content: center;
-    margin-top: 8px;
+    margin-top: 8px; /* 20px에서 8px로 감소 */
 
     &:hover {
       background-color: rgba(107, 114, 128, 0.1);
@@ -725,6 +729,7 @@ const SuccessButton = styled(Button)`
   }
 `;
 
+// DetailContentComponent 정의
 const DetailContentComponent = ({ selectedJournal }) => {
   return (
     <div style={{ marginBottom: '32px' }}>
@@ -755,10 +760,12 @@ const DetailContentComponent = ({ selectedJournal }) => {
   );
 };
 
+// Main Component
+
 const Retrospect = () => {
   const [journals, setJournals] = useState([]);
-  const [selectedFilterTag, setSelectedFilterTag] = useState(null);
-  const [selectedLearningTag, setSelectedLearningTag] = useState(null);
+  const [selectedFilterTag, setSelectedFilterTag] = useState(null); // 필터링 태그 상태
+  const [selectedLearningTag, setSelectedLearningTag] = useState(null); // 단일 선택 상태로 변경
   const [selectedGoodTags, setSelectedGoodTags] = useState([]);
   const [selectedBadTags, setSelectedBadTags] = useState([]);
   const [showWriteCard, setShowWriteCard] = useState(false);
@@ -771,8 +778,8 @@ const Retrospect = () => {
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [selectedJournal, setSelectedJournal] = useState(null);
   const [isDetailOpen, setIsDetailOpen] = useState(false);
-  const [isUploadSuccess, setIsUploadSuccess] = useState(false);
-  const [isEditing, setIsEditing] = useState(false);
+  const [isUploadSuccess, setIsUploadSuccess] = useState(false); // 성공 화면 상태
+  const [isEditing, setIsEditing] = useState(false); // 추가된 상태
 
   useEffect(() => {
     if (showWriteCard) {
@@ -780,10 +787,10 @@ const Retrospect = () => {
       setUnderstandingValue(0);
       setTitle('');
       setImprovement('');
-      setSelectedLearningTag(null);
+      setSelectedLearningTag(null); // 단일 선택 상태 초기화
       setSelectedGoodTags([]);
       setSelectedBadTags([]);
-      setIsEditing(false);
+      setIsEditing(false); // 작성 모드로 설정 시 편집 모드 초기화
     }
   }, [showWriteCard]);
 
@@ -828,10 +835,12 @@ const Retrospect = () => {
     '기타 (직접입력)',
   ];
 
+  // 필터링 버튼 클릭 핸들러
   const handleTagClick = (tag) => {
-    setSelectedFilterTag(selectedFilterTag === tag ? null : tag);
+    setSelectedFilterTag(selectedFilterTag === tag ? null : tag); // 동일한 태그 클릭 시 필터 해제
   };
 
+  // 학습 태그 클릭 핸들러 (단일 선택)
   const handleLearningTagClick = (tag) => {
     setSelectedLearningTag(selectedLearningTag === tag ? null : tag);
   };
@@ -890,7 +899,7 @@ const Retrospect = () => {
   const handleTemporarySave = () => {
     console.log('Temporary Save:', {
       title,
-      learningTag: selectedLearningTag,
+      learningTag: selectedLearningTag, // 단일 태그 저장
       performanceValue,
       understandingValue,
       goodTags: selectedGoodTags,
@@ -904,7 +913,7 @@ const Retrospect = () => {
     const newJournal = {
       title,
       date: formatDate(selectedDate),
-      learningTags: selectedLearningTag ? [selectedLearningTag] : [],
+      learningTags: selectedLearningTag ? [selectedLearningTag] : [], // 단일 태그 배열로 저장
       performanceValue,
       understandingValue,
       goodTags: selectedGoodTags,
@@ -915,8 +924,9 @@ const Retrospect = () => {
 
     setJournals([newJournal, ...journals]);
     setShowWriteCard(false);
-    setIsUploadSuccess(true);
+    setIsUploadSuccess(true); // 성공 상태로 전환
 
+    // Reset all form fields
     setTitle('');
     setSelectedDate(new Date());
     setSelectedLearningTag(null);
@@ -928,7 +938,7 @@ const Retrospect = () => {
     setIsLocked(true);
   };
 
-  const handleEdit = () => {
+  const handleEdit = () => { // 추가된 함수
     if (selectedJournal) {
       setTitle(selectedJournal.title);
       const [year, month, dayWithWeek] = selectedJournal.date.split('.');
@@ -943,7 +953,7 @@ const Retrospect = () => {
       setIsLocked(selectedJournal.isLocked);
       setIsDetailOpen(false);
       setShowWriteCard(true);
-      setIsEditing(true);
+      setIsEditing(true); // 편집 모드 활성화
     }
   };
 
@@ -963,22 +973,28 @@ const Retrospect = () => {
 
   const valuetext = (value) => `${value}%`;
 
+  // 필터링된 JournalCards 계산
   const filteredJournals = selectedFilterTag
     ? journals.filter((journal) => journal.learningTags.includes(selectedFilterTag))
-    : journals;
+    : journals; // 필터 태그가 없으면 모든 카드를 표시
 
   return (
     <RetrospectContainer>
       {isUploadSuccess ? (
         <SuccessContainer>
+          {/* 성공 아이콘 */}
           <SuccessIconWrapper>
             <CheckIcon style={{ fontSize: '48px', color: '#0059ff' }} />
           </SuccessIconWrapper>
+
+          {/* 성공 메시지 */}
           <SuccessMessage>회고 일지가 업로드되었습니다.</SuccessMessage>
           <SuccessSubtitle>오늘 하루도 수고했어요! 내일도 화이팅:)</SuccessSubtitle>
+
+          {/* 일지 목록 버튼 */}
           <SuccessButton
             variant="outlined"
-            onClick={() => setIsUploadSuccess(false)}
+            onClick={() => setIsUploadSuccess(false)} // 성공 상태 해제
           >
             일지목록
           </SuccessButton>
@@ -1044,7 +1060,7 @@ const Retrospect = () => {
                       display: 'grid',
                       gridTemplateColumns: 'repeat(auto-fill, 290px)',
                       gap: '40px 80px',
-                      justifyContent: 'start',
+                      justifyContent: 'start', // 왼쪽 정렬 유지
                     }}
                   >
                     {filteredJournals.map((journal, index) => (
@@ -1086,6 +1102,7 @@ const Retrospect = () => {
 
                 {selectedJournal && (
                   <DetailContent>
+                    {/* 날짜 */}
                     <div
                       style={{
                         backgroundColor: '#FFC300',
@@ -1095,11 +1112,11 @@ const Retrospect = () => {
                         fontWeight: '500',
                         fontSize: '14px',
                         display: 'inline-block',
-                        textAlign: 'left',
-                        maxWidth: '100px',
-                        whiteSpace: 'nowrap',
-                        overflow: 'hidden',
-                        textOverflow: 'ellipsis',
+                        textAlign: 'left', // 좌측 정렬
+                        maxWidth: '100px', // 길이 제한
+                        whiteSpace: 'nowrap', // 한 줄 유지
+                        overflow: 'hidden', // 넘칠 경우 숨김
+                        textOverflow: 'ellipsis', // 말줄임 표시
                         lineHeight: '2px',
                         marginBottom: '24px',
                       }}
@@ -1107,6 +1124,7 @@ const Retrospect = () => {
                       {selectedJournal.date}
                     </div>
 
+                    {/* 질문 1 */}
                     <div style={{ marginBottom: '32px' }}>
                       <h3
                         style={{
@@ -1122,8 +1140,10 @@ const Retrospect = () => {
                       </p>
                     </div>
 
+                    {/* 질문 2: DetailContentComponent 사용 */}
                     <DetailContentComponent selectedJournal={selectedJournal} />
 
+                    {/* 질문 3 */}
                     <div style={{ marginBottom: '32px' }}>
                       <h3
                         style={{
@@ -1143,15 +1163,15 @@ const Retrospect = () => {
                           max={100}
                           disabled
                           sx={{
-                            color: '#0059ff',
+                            color: '#0059ff', // 슬라이더 색상
                             '& .MuiSlider-thumb': {
-                              backgroundColor: '#0059ff',
+                              backgroundColor: '#0059ff', // 슬라이더 손잡이 색상
                             },
                             '& .MuiSlider-track': {
-                              backgroundColor: '#0059ff',
+                              backgroundColor: '#0059ff', // 슬라이더 채워진 트랙 색상
                             },
                             '& .MuiSlider-rail': {
-                              backgroundColor: '#cfd8dc',
+                              backgroundColor: '#cfd8dc', // 슬라이더 비채워진 트랙 색상
                             },
                           }}
                           aria-label="학습 수행정도"
@@ -1161,6 +1181,7 @@ const Retrospect = () => {
                       </Box>
                     </div>
 
+                    {/* 질문 4 */}
                     <div style={{ marginBottom: '32px' }}>
                       <h3
                         style={{
@@ -1180,15 +1201,15 @@ const Retrospect = () => {
                           max={100}
                           disabled
                           sx={{
-                            color: '#0059ff',
+                            color: '#0059ff', // 슬라이더 색상
                             '& .MuiSlider-thumb': {
-                              backgroundColor: '#0059ff',
+                              backgroundColor: '#0059ff', // 슬라이더 손잡이 색상
                             },
                             '& .MuiSlider-track': {
-                              backgroundColor: '#0059ff',
+                              backgroundColor: '#0059ff', // 슬라이더 채워진 트랙 색상
                             },
                             '& .MuiSlider-rail': {
-                              backgroundColor: '#cfd8dc',
+                              backgroundColor: '#cfd8dc', // 슬라이더 비채워진 트랙 색상
                             },
                           }}
                           aria-label="학습 이해도"
@@ -1198,6 +1219,7 @@ const Retrospect = () => {
                       </Box>
                     </div>
 
+                    {/* 질문 5 */}
                     <div style={{ marginBottom: '32px' }}>
                       <h3
                         style={{
@@ -1226,6 +1248,7 @@ const Retrospect = () => {
                       </div>
                     </div>
 
+                    {/* 질문 6 */}
                     <div style={{ marginBottom: '32px' }}>
                       <h3
                         style={{
@@ -1254,6 +1277,7 @@ const Retrospect = () => {
                       </div>
                     </div>
 
+                    {/* 질문 7 */}
                     <div style={{ marginBottom: '32px' }}>
                       <h3
                         style={{
@@ -1269,6 +1293,7 @@ const Retrospect = () => {
                       </p>
                     </div>
 
+                    {/* 질문 8 */}
                     <div
                       style={{
                         marginBottom: '32px',
@@ -1281,7 +1306,7 @@ const Retrospect = () => {
                           fontSize: '16px',
                           fontWeight: '700',
                           marginBottom: '8px',
-                          marginRight: '10px',
+                          marginRight: '10px', // 텍스트와 아이콘 간격 조정
                         }}
                       >
                         8. 커뮤니티 공개여부
@@ -1298,6 +1323,7 @@ const Retrospect = () => {
                       />
                     </div>
 
+                    {/* 수정 버튼 */}
                     <EditButton variant="outlined" onClick={handleEdit}>수정하기</EditButton>
                   </DetailContent>
                 )}
@@ -1329,6 +1355,7 @@ const Retrospect = () => {
 
                 <CardTitle>오늘의 회고일지를 작성해보세요!</CardTitle>
                 <QuestionsContainer>
+                  {/* 질문 1 */}
                   <Question>1. 오늘의 회고일지 제목을 적어 볼까요?</Question>
                   <TextField
                     id="outlined-basic"
@@ -1349,6 +1376,7 @@ const Retrospect = () => {
                     }}
                   />
 
+                  {/* 질문 2 - 단일 선택으로 변경 */}
                   <Question>2. 오늘은 어떤 학습을 진행하셨나요?</Question>
                   <Stack
                     direction="row"
@@ -1397,6 +1425,7 @@ const Retrospect = () => {
                     ))}
                   </Stack>
 
+                  {/* 질문 3 */}
                   <Question>3. 오늘 계획한 학습의 수행정도를 평가해주세요.</Question>
                   <Box
                     sx={{
@@ -1416,20 +1445,21 @@ const Retrospect = () => {
                       min={0}
                       max={100}
                       sx={{
-                        color: '#0059ff',
+                        color: '#0059ff', // 슬라이더 색상
                         '& .MuiSlider-thumb': {
-                          backgroundColor: '#0059ff',
+                          backgroundColor: '#0059ff', // 슬라이더 손잡이 색상
                         },
                         '& .MuiSlider-track': {
-                          backgroundColor: '#0059ff',
+                          backgroundColor: '#0059ff', // 슬라이더 채워진 트랙 색상
                         },
                         '& .MuiSlider-rail': {
-                          backgroundColor: '#cfd8dc',
+                          backgroundColor: '#cfd8dc', // 슬라이더 비채워진 트랙 색상
                         },
                       }}
                     />
                   </Box>
 
+                  {/* 질문 4 */}
                   <Question>4. 오늘 학습한 내용의 이해도를 평가해주세요.</Question>
                   <Box
                     sx={{
@@ -1449,20 +1479,21 @@ const Retrospect = () => {
                       min={0}
                       max={100}
                       sx={{
-                        color: '#0059ff',
+                        color: '#0059ff', // 슬라이더 색상
                         '& .MuiSlider-thumb': {
-                          backgroundColor: '#0059ff',
+                          backgroundColor: '#0059ff', // 슬라이더 손잡이 색상
                         },
                         '& .MuiSlider-track': {
-                          backgroundColor: '#0059ff',
+                          backgroundColor: '#0059ff', // 슬라이더 채워진 트랙 색상
                         },
                         '& .MuiSlider-rail': {
-                          backgroundColor: '#cfd8dc',
+                          backgroundColor: '#cfd8dc', // 슬라이더 비채워진 트랙 색상
                         },
                       }}
                     />
                   </Box>
 
+                  {/* 질문 5 */}
                   <Question>
                     5. 학습의 전반적인 과정에서 어떤 점을 가장 잘했다고 생각하시나요?(최대3개)
                   </Question>
@@ -1513,6 +1544,7 @@ const Retrospect = () => {
                     ))}
                   </Stack>
 
+                  {/* 질문 6 */}
                   <Question>
                     6. 학습의 전반적인 과정에서 어떤 점이 부족했다고 생각하시나요?(최대3개)
                   </Question>
@@ -1563,6 +1595,7 @@ const Retrospect = () => {
                     ))}
                   </Stack>
 
+                  {/* 질문 7 */}
                   <QuestionSevenWrapper>
                     <span>
                       7. 부족한 점을 개선하기 위해 어떤 노력을 할 수 있을까요?
@@ -1578,6 +1611,7 @@ const Retrospect = () => {
                     </InfoCircle>
                   </QuestionSevenWrapper>
 
+                  {/* 질문 7 입력 */}
                   <TextField
                     id="improvement-input"
                     variant="outlined"
@@ -1597,6 +1631,7 @@ const Retrospect = () => {
                     }}
                   />
 
+                  {/* 질문 8 */}
                   <QuestionContainer>
                     <span>8. 커뮤니티 공개여부를 선택해주세요.</span>
                     <LockIconImage
@@ -1609,6 +1644,7 @@ const Retrospect = () => {
                     *공개로 설정 시, 커뮤니티 피드에 자동으로 업로드됩니다.
                   </PrivacyNote>
 
+                  {/* 버튼 */}
                   <BottomButtonContainer>
                     <SaveButton variant="outlined" onClick={handleTemporarySave}>
                       임시저장
