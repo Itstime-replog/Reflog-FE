@@ -1,8 +1,8 @@
-import React from 'react';
-import { Outlet } from 'react-router-dom';
-import styled from 'styled-components';
-import Navbar from '../components/Navbar';
-import Sidebar from '../components/SideBar';
+import React from "react";
+import { Outlet } from "react-router-dom";
+import styled from "styled-components";
+import Navbar from "../components/Navbar";
+import Sidebar from "../components/SideBar";
 
 const LayoutContainer = styled.div`
   min-height: 100vh;
@@ -11,7 +11,6 @@ const LayoutContainer = styled.div`
 
 const MainContent = styled.main`
   margin-left: 240px;
-  padding: 85px 24px 24px;
 `;
 
 const RootLayout = () => {

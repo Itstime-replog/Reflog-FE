@@ -1,11 +1,11 @@
-import React from 'react';
-import styled from 'styled-components';
-import { Link, useLocation } from 'react-router-dom';
-import CalendarMonthIcon from '@mui/icons-material/CalendarMonth';
-import HistoryEduIcon from '@mui/icons-material/HistoryEdu';
-import AssessmentIcon from '@mui/icons-material/Assessment';
-import PeopleIcon from '@mui/icons-material/People';
-import logo from '../../assets/images/logo.png';
+import React from "react";
+import styled from "styled-components";
+import { Link, useLocation } from "react-router-dom";
+import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
+import HistoryEduIcon from "@mui/icons-material/HistoryEdu";
+import AssessmentIcon from "@mui/icons-material/Assessment";
+import PeopleIcon from "@mui/icons-material/People";
+import logo from "../../assets/images/logo.png";
 
 // 사이드바의 전체를 감싸는 컨테이너
 const SidebarContainer = styled.div`
@@ -52,9 +52,9 @@ const MenuItem = styled(Link)`
   transition: all 0.2s;
 
   &:hover {
-    color: #4A86F7;
+    color: #4a86f7;
     &:before {
-      content: '';
+      content: "";
       position: absolute;
       left: 50%;
       transform: translateX(-50%);
@@ -84,10 +84,10 @@ const StyledIcon = styled.div`
 
 // 메뉴 항목 데이터 배열
 const menuItems = [
-  { path: '/studyplan', label: '학습 플랜', icon: CalendarMonthIcon },
-  { path: '/retrospect', label: '회고 일지', icon: HistoryEduIcon },
-  { path: '/analysis', label: '분석 보고서', icon: AssessmentIcon },
-  { path: '/community', label: '커뮤니티', icon: PeopleIcon },
+  { path: "/studyplan", label: "학습 플랜", icon: CalendarMonthIcon },
+  { path: "/retrospect", label: "회고 일지", icon: HistoryEduIcon },
+  { path: "/analysis", label: "분석 보고서", icon: AssessmentIcon },
+  { path: "/community", label: "커뮤니티", icon: PeopleIcon },
 ];
 
 // Sidebar 컴포넌트
@@ -104,10 +104,7 @@ const Sidebar = () => {
       {/* 메뉴 항목들을 매핑하여 렌더링 */}
       <MenuContainer>
         {menuItems.map((item) => (
-          <MenuItem 
-            key={item.path} 
-            to={item.path}
-          >
+          <MenuItem key={item.path} to={item.path}>
             <IconWrapper>
               <StyledIcon>
                 <item.icon />
