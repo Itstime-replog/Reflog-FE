@@ -8,14 +8,14 @@ const StudyplanContainer = styled.div`
   width: 100%;
   min-height: 100vh;
   background-color: #f5f5f5;
-  padding-top: 161px;
+  padding-top: 50px;
   display: flex;
   flex-direction: row;
 `;
 
 const RightContainer = styled.div`
   width: 294px;
-  height: 752px;
+  height: 730px;
   background-color: #ffffff;
   border-radius: 15px;
   margin-top: 29px;
@@ -28,9 +28,7 @@ const RightContainer = styled.div`
 const Studyplan = () => {
   return (
     <StudyplanContainer>
-      {/* 추후 학습 플랜 컨텐츠가 들어갈 자리 */}
       <CalendarComponent />{" "}
-      {/* CalendarComponent 컴포넌트를 사용하여 캘린더 표시 */}
       <RightContainer>
         <TodaysResolution />
         <TodoList />
