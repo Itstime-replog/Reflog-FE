@@ -1,22 +1,22 @@
-import React, { useState, useEffect } from 'react';
-import styled from 'styled-components';
-import Calendar from 'react-calendar';
-import 'react-calendar/dist/Calendar.css';
-import BookImage from '../../assets/images/Book.svg';
-import ChevronDown from '../../assets/images/Chevron-Down.svg';
-import LockIcon from '../../assets/images/Lock.svg';
-import UnlockIcon from '../../assets/images/Unlock.svg';
-import CheckIcon from '@mui/icons-material/Check';
-import Button from '@mui/material/Button';
-import Stack from '@mui/material/Stack';
-import TextField from '@mui/material/TextField';
-import Box from '@mui/material/Box';
-import Slider from '@mui/material/Slider';
+import React, { useState, useEffect } from "react";
+import styled from "styled-components";
+import Calendar from "react-calendar";
+import "react-calendar/dist/Calendar.css";
+import BookImage from "../../assets/images/Book.svg";
+import ChevronDown from "../../assets/images/Chevron-Down.svg";
+import LockIcon from "../../assets/images/Lock.svg";
+import UnlockIcon from "../../assets/images/Unlock.svg";
+import CheckIcon from "@mui/icons-material/Check";
+import Button from "@mui/material/Button";
+import Stack from "@mui/material/Stack";
+import TextField from "@mui/material/TextField";
+import Box from "@mui/material/Box";
+import Slider from "@mui/material/Slider";
 
 const SlideOutDetailView = styled.div`
   position: fixed;
-  right: ${(props) => (props.isOpen ? '0' : '-100%')};
-  top: 0px; 
+  right: ${(props) => (props.isOpen ? "0" : "-100%")};
+  top: 0px;
   width: 33.333%;
   height: calc(100vh - 40px);
   background: white;
@@ -105,32 +105,32 @@ const RetrospectJournalCard = ({ journal, onClick }) => {
     <JournalCard onClick={onClick}>
       <div
         style={{
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'flex-start',
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "flex-start",
         }}
       >
-        <div style={{ color: '#6B7280', fontSize: '0.875rem' }}>
+        <div style={{ color: "#6B7280", fontSize: "0.875rem" }}>
           {journal.date}
         </div>
         <div
           style={{
-            display: 'flex',
-            gap: '0.5rem',
-            flexWrap: 'wrap',
-            justifyContent: 'flex-end',
-            maxWidth: '60%',
+            display: "flex",
+            gap: "0.5rem",
+            flexWrap: "wrap",
+            justifyContent: "flex-end",
+            maxWidth: "60%",
           }}
         >
           {journal.learningTags.map((tag, idx) => (
             <span
               key={idx}
               style={{
-                padding: '4px 12px',
-                backgroundColor: '#0059ff',
-                borderRadius: '9999px',
-                fontSize: '0.75rem',
-                color: 'white',
+                padding: "4px 12px",
+                backgroundColor: "#0059ff",
+                borderRadius: "9999px",
+                fontSize: "0.75rem",
+                color: "white",
               }}
             >
               {tag}
@@ -140,28 +140,28 @@ const RetrospectJournalCard = ({ journal, onClick }) => {
       </div>
       <div
         style={{
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'flex-end',
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "flex-end",
         }}
       >
         <h3
           style={{
-            fontSize: '1.3rem',
-            fontWeight: '500',
-            maxWidth: '70%',
-            overflow: 'hidden',
-            textOverflow: 'ellipsis',
-            whiteSpace: 'nowrap',
-            marginBottom: '4px',
+            fontSize: "1.3rem",
+            fontWeight: "500",
+            maxWidth: "70%",
+            overflow: "hidden",
+            textOverflow: "ellipsis",
+            whiteSpace: "nowrap",
+            marginBottom: "4px",
           }}
         >
           {journal.title}
         </h3>
         <img
           src={journal.isLocked ? LockIcon : UnlockIcon}
-          alt={journal.isLocked ? '잠금' : '공개'}
-          style={{ width: '20px', height: '20px' }}
+          alt={journal.isLocked ? "잠금" : "공개"}
+          style={{ width: "20px", height: "20px" }}
         />
       </div>
     </JournalCard>
@@ -287,7 +287,7 @@ const CalendarContainer = styled.div`
       margin: 0px 0;
     }
 
-    .react-calendar__month-view__days > :nth-last-child(-n+7) {
+    .react-calendar__month-view__days > :nth-last-child(-n + 7) {
       margin-bottom: 1px;
     }
   }
@@ -295,7 +295,6 @@ const CalendarContainer = styled.div`
 
 const TopButtonContainer = styled.div`
   position: absolute;
-  top: 190px;
   right: 40px;
   display: flex;
   align-items: center;
@@ -306,7 +305,7 @@ const TagButtonsContainer = styled.div`
   width: 100%;
   padding-left: 40px;
   padding-right: 40px;
-  margin-top: 175px;
+  margin-top: 60px;
   display: flex;
   flex-direction: column;
   gap: 20px;
@@ -417,7 +416,8 @@ const DateButton = styled(Button)`
 
     img {
       transition: transform 0.3s ease;
-      transform: ${(props) => (props.$isOpen ? 'rotate(180deg)' : 'rotate(0deg)')};
+      transform: ${(props) =>
+        props.$isOpen ? "rotate(180deg)" : "rotate(0deg)"};
     }
   }
 `;
@@ -627,7 +627,7 @@ const Tooltip = styled.div`
 
   &::before,
   &::after {
-    content: '';
+    content: "";
     position: absolute;
     bottom: 100%;
     left: 11%;
@@ -727,24 +727,26 @@ const SuccessButton = styled(Button)`
 
 const DetailContentComponent = ({ selectedJournal }) => {
   return (
-    <div style={{ marginBottom: '32px' }}>
-      <h3 style={{
-        fontSize: '16px',
-        fontWeight: '700',
-        marginBottom: '8px',
-      }}>
+    <div style={{ marginBottom: "32px" }}>
+      <h3
+        style={{
+          fontSize: "16px",
+          fontWeight: "700",
+          marginBottom: "8px",
+        }}
+      >
         2. 오늘은 어떤 학습을 진행하셨나요?
       </h3>
-      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
+      <div style={{ display: "flex", flexWrap: "wrap", gap: "8px" }}>
         {selectedJournal.learningTags.map((tag, idx) => (
           <span
             key={idx}
             style={{
-              padding: '4px 12px',
-              backgroundColor: '#0059ff',
-              borderRadius: '9999px',
-              fontSize: '0.75rem',
-              color: 'white',
+              padding: "4px 12px",
+              backgroundColor: "#0059ff",
+              borderRadius: "9999px",
+              fontSize: "0.75rem",
+              color: "white",
             }}
           >
             {tag}
@@ -762,8 +764,8 @@ const Retrospect = () => {
   const [selectedGoodTags, setSelectedGoodTags] = useState([]);
   const [selectedBadTags, setSelectedBadTags] = useState([]);
   const [showWriteCard, setShowWriteCard] = useState(false);
-  const [title, setTitle] = useState('');
-  const [improvement, setImprovement] = useState('');
+  const [title, setTitle] = useState("");
+  const [improvement, setImprovement] = useState("");
   const [performanceValue, setPerformanceValue] = useState(0);
   const [understandingValue, setUnderstandingValue] = useState(0);
   const [isLocked, setIsLocked] = useState(true);
@@ -778,8 +780,8 @@ const Retrospect = () => {
     if (showWriteCard) {
       setPerformanceValue(0);
       setUnderstandingValue(0);
-      setTitle('');
-      setImprovement('');
+      setTitle("");
+      setImprovement("");
       setSelectedLearningTag(null);
       setSelectedGoodTags([]);
       setSelectedBadTags([]);
@@ -789,43 +791,43 @@ const Retrospect = () => {
 
   useEffect(() => {
     const handleClickOutside = (event) => {
-      if (showCalendar && !event.target.closest('.calendar-container')) {
+      if (showCalendar && !event.target.closest(".calendar-container")) {
         setShowCalendar(false);
       }
     };
 
-    document.addEventListener('mousedown', handleClickOutside);
+    document.addEventListener("mousedown", handleClickOutside);
     return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener("mousedown", handleClickOutside);
     };
   }, [showCalendar]);
 
   const tags = [
-    '전공 공부',
-    '자격증 공부',
-    '코딩 공부',
-    '외국어 공부',
-    '부트캠프',
-    '고시',
-    '팀 프로젝트',
-    '개인 프로젝트',
-    '그룹 스터디',
-    '온라인 강의 수강',
-    '기타 (직접입력)',
+    "전공 공부",
+    "자격증 공부",
+    "코딩 공부",
+    "외국어 공부",
+    "부트캠프",
+    "고시",
+    "팀 프로젝트",
+    "개인 프로젝트",
+    "그룹 스터디",
+    "온라인 강의 수강",
+    "기타 (직접입력)",
   ];
 
   const evaluationTags = [
-    '계획 수립',
-    '목표 설정',
-    '지식 응용',
-    '적절한 수준 설정',
-    '피드백 수용',
-    '시간 관리',
-    '복습 및 예습',
-    '학습 현황 점검',
-    '자원의 효과적 활용',
-    '질의응답',
-    '기타 (직접입력)',
+    "계획 수립",
+    "목표 설정",
+    "지식 응용",
+    "적절한 수준 설정",
+    "피드백 수용",
+    "시간 관리",
+    "복습 및 예습",
+    "학습 현황 점검",
+    "자원의 효과적 활용",
+    "질의응답",
+    "기타 (직접입력)",
   ];
 
   const handleTagClick = (tag) => {
@@ -888,7 +890,7 @@ const Retrospect = () => {
   };
 
   const handleTemporarySave = () => {
-    console.log('Temporary Save:', {
+    console.log("Temporary Save:", {
       title,
       learningTag: selectedLearningTag,
       performanceValue,
@@ -917,22 +919,22 @@ const Retrospect = () => {
     setShowWriteCard(false);
     setIsUploadSuccess(true);
 
-    setTitle('');
+    setTitle("");
     setSelectedDate(new Date());
     setSelectedLearningTag(null);
     setPerformanceValue(0);
     setUnderstandingValue(0);
     setSelectedGoodTags([]);
     setSelectedBadTags([]);
-    setImprovement('');
+    setImprovement("");
     setIsLocked(true);
   };
 
   const handleEdit = () => {
     if (selectedJournal) {
       setTitle(selectedJournal.title);
-      const [year, month, dayWithWeek] = selectedJournal.date.split('.');
-      const day = dayWithWeek.split(' ')[0];
+      const [year, month, dayWithWeek] = selectedJournal.date.split(".");
+      const day = dayWithWeek.split(" ")[0];
       setSelectedDate(new Date(year, month - 1, day));
       setSelectedLearningTag(selectedJournal.learningTags[0]);
       setPerformanceValue(selectedJournal.performanceValue);
@@ -948,10 +950,10 @@ const Retrospect = () => {
   };
 
   const formatDate = (date) => {
-    const days = ['일', '월', '화', '수', '목', '금', '토'];
+    const days = ["일", "월", "화", "수", "목", "금", "토"];
     const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, '0');
-    const day = String(date.getDate()).padStart(2, '0');
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
     const dayOfWeek = days[date.getDay()];
 
     return `${year}.${month}.${day} (${dayOfWeek})`;
@@ -964,7 +966,9 @@ const Retrospect = () => {
   const valuetext = (value) => `${value}%`;
 
   const filteredJournals = selectedFilterTag
-    ? journals.filter((journal) => journal.learningTags.includes(selectedFilterTag))
+    ? journals.filter((journal) =>
+        journal.learningTags.includes(selectedFilterTag)
+      )
     : journals;
 
   return (
@@ -972,10 +976,12 @@ const Retrospect = () => {
       {isUploadSuccess ? (
         <SuccessContainer>
           <SuccessIconWrapper>
-            <CheckIcon style={{ fontSize: '48px', color: '#0059ff' }} />
+            <CheckIcon style={{ fontSize: "48px", color: "#0059ff" }} />
           </SuccessIconWrapper>
           <SuccessMessage>회고 일지가 업로드되었습니다.</SuccessMessage>
-          <SuccessSubtitle>오늘 하루도 수고했어요! 내일도 화이팅:)</SuccessSubtitle>
+          <SuccessSubtitle>
+            오늘 하루도 수고했어요! 내일도 화이팅:)
+          </SuccessSubtitle>
           <SuccessButton
             variant="outlined"
             onClick={() => setIsUploadSuccess(false)}
@@ -1004,30 +1010,30 @@ const Retrospect = () => {
                       key={tag}
                       variant="outlined"
                       onClick={() => handleTagClick(tag)}
-                      className={selectedFilterTag === tag ? 'active' : ''}
+                      className={selectedFilterTag === tag ? "active" : ""}
                       sx={{
-                        height: '36px',
-                        padding: '0 16px',
-                        minWidth: 'auto',
-                        marginRight: '8px',
-                        marginBottom: '8px',
-                        borderRadius: '18px',
-                        '&.active': {
-                          borderColor: '#0059ff',
-                          color: 'white',
-                          backgroundColor: '#0059ff',
-                          '&:hover': {
-                            borderColor: '#0046cc',
-                            color: 'white',
-                            backgroundColor: '#0046cc',
+                        height: "36px",
+                        padding: "0 16px",
+                        minWidth: "auto",
+                        marginRight: "8px",
+                        marginBottom: "8px",
+                        borderRadius: "18px",
+                        "&.active": {
+                          borderColor: "#0059ff",
+                          color: "white",
+                          backgroundColor: "#0059ff",
+                          "&:hover": {
+                            borderColor: "#0046cc",
+                            color: "white",
+                            backgroundColor: "#0046cc",
                           },
                         },
-                        '&:not(.active)': {
-                          borderColor: '#a1a1a1',
-                          color: '#a1a1a1',
-                          '&:hover': {
-                            borderColor: '#a1a1a1',
-                            backgroundColor: 'transparent',
+                        "&:not(.active)": {
+                          borderColor: "#a1a1a1",
+                          color: "#a1a1a1",
+                          "&:hover": {
+                            borderColor: "#a1a1a1",
+                            backgroundColor: "transparent",
                           },
                         },
                       }}
@@ -1039,12 +1045,12 @@ const Retrospect = () => {
                 {filteredJournals.length > 0 ? (
                   <div
                     style={{
-                      marginTop: '32px',
-                      marginLeft: '30px',
-                      display: 'grid',
-                      gridTemplateColumns: 'repeat(auto-fill, 290px)',
-                      gap: '40px 80px',
-                      justifyContent: 'start',
+                      marginTop: "32px",
+                      marginLeft: "30px",
+                      display: "grid",
+                      gridTemplateColumns: "repeat(auto-fill, 290px)",
+                      gap: "40px 80px",
+                      justifyContent: "start",
                     }}
                   >
                     {filteredJournals.map((journal, index) => (
@@ -1060,7 +1066,9 @@ const Retrospect = () => {
                     <Circle>
                       <StyledBookImage src={BookImage} alt="Book" />
                     </Circle>
-                    <Message>회고일지 작성을 통해 한 걸음 더 성장해 보아요!</Message>
+                    <Message>
+                      회고일지 작성을 통해 한 걸음 더 성장해 보아요!
+                    </Message>
                   </ContentContainer>
                 )}
               </TagButtonsContainer>
@@ -1088,53 +1096,53 @@ const Retrospect = () => {
                   <DetailContent>
                     <div
                       style={{
-                        backgroundColor: '#FFC300',
-                        color: '#FFFFFF',
-                        padding: '16px 16px',
-                        borderRadius: '8px',
-                        fontWeight: '500',
-                        fontSize: '14px',
-                        display: 'inline-block',
-                        textAlign: 'left',
-                        maxWidth: '100px',
-                        whiteSpace: 'nowrap',
-                        overflow: 'hidden',
-                        textOverflow: 'ellipsis',
-                        lineHeight: '2px',
-                        marginBottom: '24px',
+                        backgroundColor: "#FFC300",
+                        color: "#FFFFFF",
+                        padding: "16px 16px",
+                        borderRadius: "8px",
+                        fontWeight: "500",
+                        fontSize: "14px",
+                        display: "inline-block",
+                        textAlign: "left",
+                        maxWidth: "100px",
+                        whiteSpace: "nowrap",
+                        overflow: "hidden",
+                        textOverflow: "ellipsis",
+                        lineHeight: "2px",
+                        marginBottom: "24px",
                       }}
                     >
                       {selectedJournal.date}
                     </div>
 
-                    <div style={{ marginBottom: '32px' }}>
+                    <div style={{ marginBottom: "32px" }}>
                       <h3
                         style={{
-                          fontSize: '16px',
-                          fontWeight: '700',
-                          marginBottom: '8px',
+                          fontSize: "16px",
+                          fontWeight: "700",
+                          marginBottom: "8px",
                         }}
                       >
                         1. 오늘의 회고일지 제목
                       </h3>
-                      <p style={{ fontSize: '14px', color: '#494A4F' }}>
+                      <p style={{ fontSize: "14px", color: "#494A4F" }}>
                         {selectedJournal.title}
                       </p>
                     </div>
 
                     <DetailContentComponent selectedJournal={selectedJournal} />
 
-                    <div style={{ marginBottom: '32px' }}>
+                    <div style={{ marginBottom: "32px" }}>
                       <h3
                         style={{
-                          fontSize: '16px',
-                          fontWeight: '700',
-                          marginBottom: '8px',
+                          fontSize: "16px",
+                          fontWeight: "700",
+                          marginBottom: "8px",
                         }}
                       >
                         3. 오늘 계획한 학습의 수행정도를 평가해주세요.
                       </h3>
-                      <Box sx={{ width: '100%' }}>
+                      <Box sx={{ width: "100%" }}>
                         <Slider
                           value={selectedJournal.performanceValue}
                           step={10}
@@ -1143,15 +1151,15 @@ const Retrospect = () => {
                           max={100}
                           disabled
                           sx={{
-                            color: '#0059ff',
-                            '& .MuiSlider-thumb': {
-                              backgroundColor: '#0059ff',
+                            color: "#0059ff",
+                            "& .MuiSlider-thumb": {
+                              backgroundColor: "#0059ff",
                             },
-                            '& .MuiSlider-track': {
-                              backgroundColor: '#0059ff',
+                            "& .MuiSlider-track": {
+                              backgroundColor: "#0059ff",
                             },
-                            '& .MuiSlider-rail': {
-                              backgroundColor: '#cfd8dc',
+                            "& .MuiSlider-rail": {
+                              backgroundColor: "#cfd8dc",
                             },
                           }}
                           aria-label="학습 수행정도"
@@ -1161,17 +1169,17 @@ const Retrospect = () => {
                       </Box>
                     </div>
 
-                    <div style={{ marginBottom: '32px' }}>
+                    <div style={{ marginBottom: "32px" }}>
                       <h3
                         style={{
-                          fontSize: '16px',
-                          fontWeight: '700',
-                          marginBottom: '8px',
+                          fontSize: "16px",
+                          fontWeight: "700",
+                          marginBottom: "8px",
                         }}
                       >
                         4. 오늘 학습한 내용의 이해도를 평가해주세요.
                       </h3>
-                      <Box sx={{ width: '100%' }}>
+                      <Box sx={{ width: "100%" }}>
                         <Slider
                           value={selectedJournal.understandingValue}
                           step={10}
@@ -1180,15 +1188,15 @@ const Retrospect = () => {
                           max={100}
                           disabled
                           sx={{
-                            color: '#0059ff',
-                            '& .MuiSlider-thumb': {
-                              backgroundColor: '#0059ff',
+                            color: "#0059ff",
+                            "& .MuiSlider-thumb": {
+                              backgroundColor: "#0059ff",
                             },
-                            '& .MuiSlider-track': {
-                              backgroundColor: '#0059ff',
+                            "& .MuiSlider-track": {
+                              backgroundColor: "#0059ff",
                             },
-                            '& .MuiSlider-rail': {
-                              backgroundColor: '#cfd8dc',
+                            "& .MuiSlider-rail": {
+                              backgroundColor: "#cfd8dc",
                             },
                           }}
                           aria-label="학습 이해도"
@@ -1198,26 +1206,33 @@ const Retrospect = () => {
                       </Box>
                     </div>
 
-                    <div style={{ marginBottom: '32px' }}>
+                    <div style={{ marginBottom: "32px" }}>
                       <h3
                         style={{
-                          fontSize: '16px',
-                          fontWeight: '700',
-                          marginBottom: '8px',
+                          fontSize: "16px",
+                          fontWeight: "700",
+                          marginBottom: "8px",
                         }}
                       >
-                        5. 학습의 전반적인 과정에서 어떤 점을 가장 잘했다고 생각하시나요?
+                        5. 학습의 전반적인 과정에서 어떤 점을 가장 잘했다고
+                        생각하시나요?
                       </h3>
-                      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
+                      <div
+                        style={{
+                          display: "flex",
+                          flexWrap: "wrap",
+                          gap: "8px",
+                        }}
+                      >
                         {selectedJournal.goodTags?.map((tag, idx) => (
                           <span
                             key={idx}
                             style={{
-                              padding: '4px 12px',
-                              backgroundColor: '#0059ff',
-                              borderRadius: '9999px',
-                              fontSize: '0.75rem',
-                              color: 'white',
+                              padding: "4px 12px",
+                              backgroundColor: "#0059ff",
+                              borderRadius: "9999px",
+                              fontSize: "0.75rem",
+                              color: "white",
                             }}
                           >
                             {tag}
@@ -1226,26 +1241,33 @@ const Retrospect = () => {
                       </div>
                     </div>
 
-                    <div style={{ marginBottom: '32px' }}>
+                    <div style={{ marginBottom: "32px" }}>
                       <h3
                         style={{
-                          fontSize: '16px',
-                          fontWeight: '700',
-                          marginBottom: '8px',
+                          fontSize: "16px",
+                          fontWeight: "700",
+                          marginBottom: "8px",
                         }}
                       >
-                        6. 학습의 전반적인 과정에서 어떤 점이 부족했다고 생각하시나요?
+                        6. 학습의 전반적인 과정에서 어떤 점이 부족했다고
+                        생각하시나요?
                       </h3>
-                      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
+                      <div
+                        style={{
+                          display: "flex",
+                          flexWrap: "wrap",
+                          gap: "8px",
+                        }}
+                      >
                         {selectedJournal.badTags?.map((tag, idx) => (
                           <span
                             key={idx}
                             style={{
-                              padding: '4px 12px',
-                              backgroundColor: '#0059ff',
-                              borderRadius: '9999px',
-                              fontSize: '0.75rem',
-                              color: 'white',
+                              padding: "4px 12px",
+                              backgroundColor: "#0059ff",
+                              borderRadius: "9999px",
+                              fontSize: "0.75rem",
+                              color: "white",
                             }}
                           >
                             {tag}
@@ -1254,51 +1276,53 @@ const Retrospect = () => {
                       </div>
                     </div>
 
-                    <div style={{ marginBottom: '32px' }}>
+                    <div style={{ marginBottom: "32px" }}>
                       <h3
                         style={{
-                          fontSize: '16px',
-                          fontWeight: '700',
-                          marginBottom: '8px',
+                          fontSize: "16px",
+                          fontWeight: "700",
+                          marginBottom: "8px",
                         }}
                       >
                         7. 부족한 점을 개선하기 위해 어떤 노력을 할 수 있을까요?
                       </h3>
-                      <p style={{ fontSize: '14px', color: '#494a4f' }}>
+                      <p style={{ fontSize: "14px", color: "#494a4f" }}>
                         {selectedJournal.improvement}
                       </p>
                     </div>
 
                     <div
                       style={{
-                        marginBottom: '32px',
-                        display: 'flex',
-                        alignItems: 'center',
+                        marginBottom: "32px",
+                        display: "flex",
+                        alignItems: "center",
                       }}
                     >
                       <h3
                         style={{
-                          fontSize: '16px',
-                          fontWeight: '700',
-                          marginBottom: '8px',
-                          marginRight: '10px',
+                          fontSize: "16px",
+                          fontWeight: "700",
+                          marginBottom: "8px",
+                          marginRight: "10px",
                         }}
                       >
                         8. 커뮤니티 공개여부
                       </h3>
                       <img
                         src={selectedJournal.isLocked ? LockIcon : UnlockIcon}
-                        alt={selectedJournal.isLocked ? '비공개' : '공개'}
+                        alt={selectedJournal.isLocked ? "비공개" : "공개"}
                         style={{
-                          width: '20px',
-                          height: '20px',
-                          cursor: 'default',
-                          marginTop: '8px',
+                          width: "20px",
+                          height: "20px",
+                          cursor: "default",
+                          marginTop: "8px",
                         }}
                       />
                     </div>
 
-                    <EditButton variant="outlined" onClick={handleEdit}>수정하기</EditButton>
+                    <EditButton variant="outlined" onClick={handleEdit}>
+                      수정하기
+                    </EditButton>
                   </DetailContent>
                 )}
               </SlideOutDetailView>
@@ -1306,7 +1330,11 @@ const Retrospect = () => {
           ) : (
             <BackgroundOverlay onClick={handleBackgroundClick}>
               <WriteCardContainer>
-                <DateButton variant="contained" onClick={toggleCalendar} $isOpen={showCalendar}>
+                <DateButton
+                  variant="contained"
+                  onClick={toggleCalendar}
+                  $isOpen={showCalendar}
+                >
                   {formatDate(selectedDate)}
                   <ChevronIcon src={ChevronDown} alt="chevron" />
                 </DateButton>
@@ -1318,7 +1346,15 @@ const Retrospect = () => {
                       value={selectedDate}
                       formatDay={(locale, date) => date.getDate()}
                       formatShortWeekday={(locale, date) => {
-                        const weekdays = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'];
+                        const weekdays = [
+                          "SUN",
+                          "MON",
+                          "TUE",
+                          "WED",
+                          "THU",
+                          "FRI",
+                          "SAT",
+                        ];
                         return weekdays[date.getDay()];
                       }}
                       formatMonthYear={formatMonthYear}
@@ -1336,15 +1372,15 @@ const Retrospect = () => {
                     value={title}
                     onChange={(e) => setTitle(e.target.value)}
                     sx={{
-                      width: 'calc(100% - 160px)',
-                      margin: '8px 80px 24px 80px',
-                      '& .MuiOutlinedInput-root': {
-                        borderRadius: '100px',
-                        height: '40px',
+                      width: "calc(100% - 160px)",
+                      margin: "8px 80px 24px 80px",
+                      "& .MuiOutlinedInput-root": {
+                        borderRadius: "100px",
+                        height: "40px",
                       },
-                      '& .MuiOutlinedInput-input': {
-                        padding: '8px 16px',
-                        height: '24px',
+                      "& .MuiOutlinedInput-input": {
+                        padding: "8px 16px",
+                        height: "24px",
                       },
                     }}
                   />
@@ -1354,9 +1390,9 @@ const Retrospect = () => {
                     direction="row"
                     spacing={1}
                     sx={{
-                      margin: '8px 80px 24px 80px',
-                      flexWrap: 'wrap',
-                      gap: '8px',
+                      margin: "8px 80px 24px 80px",
+                      flexWrap: "wrap",
+                      gap: "8px",
                     }}
                   >
                     {tags.map((tag) => (
@@ -1364,30 +1400,30 @@ const Retrospect = () => {
                         key={tag}
                         variant="outlined"
                         onClick={() => handleLearningTagClick(tag)}
-                        className={selectedLearningTag === tag ? 'active' : ''}
+                        className={selectedLearningTag === tag ? "active" : ""}
                         sx={{
-                          height: '36px',
-                          padding: '0 16px',
-                          minWidth: 'auto',
-                          marginRight: '8px',
-                          marginBottom: '8px',
-                          borderRadius: '18px',
-                          '&.active': {
-                            borderColor: '#0059ff',
-                            color: 'white',
-                            backgroundColor: '#0059ff',
-                            '&:hover': {
-                              borderColor: '#0046cc',
-                              color: 'white',
-                              backgroundColor: '#0046cc',
+                          height: "36px",
+                          padding: "0 16px",
+                          minWidth: "auto",
+                          marginRight: "8px",
+                          marginBottom: "8px",
+                          borderRadius: "18px",
+                          "&.active": {
+                            borderColor: "#0059ff",
+                            color: "white",
+                            backgroundColor: "#0059ff",
+                            "&:hover": {
+                              borderColor: "#0046cc",
+                              color: "white",
+                              backgroundColor: "#0046cc",
                             },
                           },
-                          '&:not(.active)': {
-                            borderColor: '#a1a1a1',
-                            color: '#a1a1a1',
-                            '&:hover': {
-                              borderColor: '#a1a1a1',
-                              backgroundColor: 'transparent',
+                          "&:not(.active)": {
+                            borderColor: "#a1a1a1",
+                            color: "#a1a1a1",
+                            "&:hover": {
+                              borderColor: "#a1a1a1",
+                              backgroundColor: "transparent",
                             },
                           },
                         }}
@@ -1397,18 +1433,22 @@ const Retrospect = () => {
                     ))}
                   </Stack>
 
-                  <Question>3. 오늘 계획한 학습의 수행정도를 평가해주세요.</Question>
+                  <Question>
+                    3. 오늘 계획한 학습의 수행정도를 평가해주세요.
+                  </Question>
                   <Box
                     sx={{
-                      width: 'calc(100% - 160px)',
-                      margin: '8px 80px 24px 80px',
+                      width: "calc(100% - 160px)",
+                      margin: "8px 80px 24px 80px",
                     }}
                   >
                     <Slider
                       aria-label="학습 수행정도"
                       defaultValue={0}
                       value={performanceValue}
-                      onChange={(event, newValue) => setPerformanceValue(newValue)}
+                      onChange={(event, newValue) =>
+                        setPerformanceValue(newValue)
+                      }
                       getAriaValueText={valuetext}
                       valueLabelDisplay="auto"
                       step={10}
@@ -1416,63 +1456,68 @@ const Retrospect = () => {
                       min={0}
                       max={100}
                       sx={{
-                        color: '#0059ff',
-                        '& .MuiSlider-thumb': {
-                          backgroundColor: '#0059ff',
+                        color: "#0059ff",
+                        "& .MuiSlider-thumb": {
+                          backgroundColor: "#0059ff",
                         },
-                        '& .MuiSlider-track': {
-                          backgroundColor: '#0059ff',
+                        "& .MuiSlider-track": {
+                          backgroundColor: "#0059ff",
                         },
-                        '& .MuiSlider-rail': {
-                          backgroundColor: '#cfd8dc',
-                        },
-                      }}
-                    />
-                  </Box>
-
-                  <Question>4. 오늘 학습한 내용의 이해도를 평가해주세요.</Question>
-                  <Box
-                    sx={{
-                      width: 'calc(100% - 160px)',
-                      margin: '8px 80px 24px 80px',
-                    }}
-                  >
-                    <Slider
-                      aria-label="학습 이해도"
-                      defaultValue={0}
-                      value={understandingValue}
-                      onChange={(event, newValue) => setUnderstandingValue(newValue)}
-                      getAriaValueText={valuetext}
-                      valueLabelDisplay="auto"
-                      step={10}
-                      marks
-                      min={0}
-                      max={100}
-                      sx={{
-                        color: '#0059ff',
-                        '& .MuiSlider-thumb': {
-                          backgroundColor: '#0059ff',
-                        },
-                        '& .MuiSlider-track': {
-                          backgroundColor: '#0059ff',
-                        },
-                        '& .MuiSlider-rail': {
-                          backgroundColor: '#cfd8dc',
+                        "& .MuiSlider-rail": {
+                          backgroundColor: "#cfd8dc",
                         },
                       }}
                     />
                   </Box>
 
                   <Question>
-                    5. 학습의 전반적인 과정에서 어떤 점을 가장 잘했다고 생각하시나요?(최대3개)
+                    4. 오늘 학습한 내용의 이해도를 평가해주세요.
+                  </Question>
+                  <Box
+                    sx={{
+                      width: "calc(100% - 160px)",
+                      margin: "8px 80px 24px 80px",
+                    }}
+                  >
+                    <Slider
+                      aria-label="학습 이해도"
+                      defaultValue={0}
+                      value={understandingValue}
+                      onChange={(event, newValue) =>
+                        setUnderstandingValue(newValue)
+                      }
+                      getAriaValueText={valuetext}
+                      valueLabelDisplay="auto"
+                      step={10}
+                      marks
+                      min={0}
+                      max={100}
+                      sx={{
+                        color: "#0059ff",
+                        "& .MuiSlider-thumb": {
+                          backgroundColor: "#0059ff",
+                        },
+                        "& .MuiSlider-track": {
+                          backgroundColor: "#0059ff",
+                        },
+                        "& .MuiSlider-rail": {
+                          backgroundColor: "#cfd8dc",
+                        },
+                      }}
+                    />
+                  </Box>
+
+                  <Question>
+                    5. 학습의 전반적인 과정에서 어떤 점을 가장 잘했다고
+                    생각하시나요?(최대3개)
                   </Question>
                   <Stack
                     direction="row"
                     spacing={1}
                     sx={{
-                      margin: '8px 80px 24px 80px',
-                      flexWrap: 'wrap',
-                      gap: '8px',
+                      margin: "8px 80px 24px 80px",
+                      flexWrap: "wrap",
+                      gap: "8px",
                     }}
                   >
                     {evaluationTags.map((tag) => (
@@ -1480,30 +1525,32 @@ const Retrospect = () => {
                         key={tag}
                         variant="outlined"
                         onClick={() => handleGoodTagClick(tag)}
-                        className={selectedGoodTags.includes(tag) ? 'active' : ''}
+                        className={
+                          selectedGoodTags.includes(tag) ? "active" : ""
+                        }
                         sx={{
-                          height: '36px',
-                          padding: '0 16px',
-                          minWidth: 'auto',
-                          marginRight: '8px',
-                          marginBottom: '8px',
-                          borderRadius: '18px',
-                          '&.active': {
-                            borderColor: '#0059ff',
-                            color: 'white',
-                            backgroundColor: '#0059ff',
-                            '&:hover': {
-                              borderColor: '#0046cc',
-                              color: 'white',
-                              backgroundColor: '#0046cc',
+                          height: "36px",
+                          padding: "0 16px",
+                          minWidth: "auto",
+                          marginRight: "8px",
+                          marginBottom: "8px",
+                          borderRadius: "18px",
+                          "&.active": {
+                            borderColor: "#0059ff",
+                            color: "white",
+                            backgroundColor: "#0059ff",
+                            "&:hover": {
+                              borderColor: "#0046cc",
+                              color: "white",
+                              backgroundColor: "#0046cc",
                             },
                           },
-                          '&:not(.active)': {
-                            borderColor: '#a1a1a1',
-                            color: '#a1a1a1',
-                            '&:hover': {
-                              borderColor: '#a1a1a1',
-                              backgroundColor: 'transparent',
+                          "&:not(.active)": {
+                            borderColor: "#a1a1a1",
+                            color: "#a1a1a1",
+                            "&:hover": {
+                              borderColor: "#a1a1a1",
+                              backgroundColor: "transparent",
                             },
                           },
                         }}
@@ -1514,15 +1561,16 @@ const Retrospect = () => {
                   </Stack>
 
                   <Question>
-                    6. 학습의 전반적인 과정에서 어떤 점이 부족했다고 생각하시나요?(최대3개)
+                    6. 학습의 전반적인 과정에서 어떤 점이 부족했다고
+                    생각하시나요?(최대3개)
                   </Question>
                   <Stack
                     direction="row"
                     spacing={1}
                     sx={{
-                      margin: '8px 80px 24px 80px',
-                      flexWrap: 'wrap',
-                      gap: '8px',
+                      margin: "8px 80px 24px 80px",
+                      flexWrap: "wrap",
+                      gap: "8px",
                     }}
                   >
                     {evaluationTags.map((tag) => (
@@ -1530,30 +1578,32 @@ const Retrospect = () => {
                         key={tag}
                         variant="outlined"
                         onClick={() => handleBadTagClick(tag)}
-                        className={selectedBadTags.includes(tag) ? 'active' : ''}
+                        className={
+                          selectedBadTags.includes(tag) ? "active" : ""
+                        }
                         sx={{
-                          height: '36px',
-                          padding: '0 16px',
-                          minWidth: 'auto',
-                          marginRight: '8px',
-                          marginBottom: '8px',
-                          borderRadius: '18px',
-                          '&.active': {
-                            borderColor: '#0059ff',
-                            color: 'white',
-                            backgroundColor: '#0059ff',
-                            '&:hover': {
-                              borderColor: '#0046cc',
-                              color: 'white',
-                              backgroundColor: '#0046cc',
+                          height: "36px",
+                          padding: "0 16px",
+                          minWidth: "auto",
+                          marginRight: "8px",
+                          marginBottom: "8px",
+                          borderRadius: "18px",
+                          "&.active": {
+                            borderColor: "#0059ff",
+                            color: "white",
+                            backgroundColor: "#0059ff",
+                            "&:hover": {
+                              borderColor: "#0046cc",
+                              color: "white",
+                              backgroundColor: "#0046cc",
                             },
                           },
-                          '&:not(.active)': {
-                            borderColor: '#a1a1a1',
-                            color: '#a1a1a1',
-                            '&:hover': {
-                              borderColor: '#a1a1a1',
-                              backgroundColor: 'transparent',
+                          "&:not(.active)": {
+                            borderColor: "#a1a1a1",
+                            color: "#a1a1a1",
+                            "&:hover": {
+                              borderColor: "#a1a1a1",
+                              backgroundColor: "transparent",
                             },
                           },
                         }}
@@ -1570,9 +1620,14 @@ const Retrospect = () => {
                     <InfoCircle>
                       <span>i</span>
                       <Tooltip>
-                        <TooltipTitle>어떻게 하면 잘 작성할 수 있을까요?</TooltipTitle>
+                        <TooltipTitle>
+                          어떻게 하면 잘 작성할 수 있을까요?
+                        </TooltipTitle>
                         <TooltipContent>
-                          회고는 단순히 문제점을 찾는 것이 아닌 액션 플랜을 함께 작성해야 더 효과적이에요. 개선점에는 내가 생각한 부족한 점을 바탕으로 최대한 현실적으로 구체적인 방안을 생각해 작성해보세요!
+                          회고는 단순히 문제점을 찾는 것이 아닌 액션 플랜을 함께
+                          작성해야 더 효과적이에요. 개선점에는 내가 생각한
+                          부족한 점을 바탕으로 최대한 현실적으로 구체적인 방안을
+                          생각해 작성해보세요!
                         </TooltipContent>
                       </Tooltip>
                     </InfoCircle>
@@ -1584,15 +1639,15 @@ const Retrospect = () => {
                     value={improvement}
                     onChange={(e) => setImprovement(e.target.value)}
                     sx={{
-                      width: 'calc(100% - 160px)',
-                      margin: '8px 80px 24px 80px',
-                      '& .MuiOutlinedInput-root': {
-                        borderRadius: '100px',
-                        height: '40px',
+                      width: "calc(100% - 160px)",
+                      margin: "8px 80px 24px 80px",
+                      "& .MuiOutlinedInput-root": {
+                        borderRadius: "100px",
+                        height: "40px",
                       },
-                      '& .MuiOutlinedInput-input': {
-                        padding: '8px 16px',
-                        height: '24px',
+                      "& .MuiOutlinedInput-input": {
+                        padding: "8px 16px",
+                        height: "24px",
                       },
                     }}
                   />
@@ -1610,7 +1665,10 @@ const Retrospect = () => {
                   </PrivacyNote>
 
                   <BottomButtonContainer>
-                    <SaveButton variant="outlined" onClick={handleTemporarySave}>
+                    <SaveButton
+                      variant="outlined"
+                      onClick={handleTemporarySave}
+                    >
                       임시저장
                     </SaveButton>
                     <RegisterButton variant="contained" onClick={handleSubmit}>
