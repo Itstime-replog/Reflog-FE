@@ -215,11 +215,15 @@ const CalendarComponent = () => {
   };
 
   // 일정 추가 핸들러
-  const handleAddEvent = (text, time) => {
+  const handleAddEvent = (text, times) => {
     const formattedDate = selectedDate.toDateString(); // 날짜를 문자열로 변환
     setEvents((prev) => ({
       ...prev,
-      [formattedDate]: { text, time }, // 기존 일정 유지하며 텍스트와 시간 추가
+      [formattedDate]: {
+        text: text.trim(),
+        startTime: times.startTime.trim(), // 시작 시간 저장
+        endTime: times.endTime.trim(), // 종료 시간 저장
+      },
     }));
     setShowModal(false); // 모달 닫기
   };
@@ -247,12 +251,12 @@ const CalendarComponent = () => {
           tileContent={({ date }) => {
             const eventDate = date.toDateString();
             if (events[eventDate]) {
-              const { text, time } = events[eventDate];
+              const { text, startTime } = events[eventDate];
               return (
                 <EventContainer>
                   <EventDot />
                   <EventTextWithTime>{text}</EventTextWithTime>
-                  <EventTime>{time}</EventTime>
+                  <EventTime>{startTime}</EventTime> {/* 시작 시간만 표시 */}
                 </EventContainer>
               );
             }

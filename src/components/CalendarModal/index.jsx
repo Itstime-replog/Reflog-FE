@@ -264,17 +264,20 @@ const CalendarModal = ({
   onRemoveEvent,
   existingEvent,
 }) => {
-  const [scheduleText, setScheduleText] = useState(existingEvent || ""); // 기존 일정 로드
   const [alarmOption, setAlarmOption] = useState("없음"); // 알림 옵션 상태 관리
+  const [scheduleText, setScheduleText] = useState(existingEvent?.text || ""); // 기존 일정의 텍스트 불러오기
+  const [startTime, setStartTime] = useState(
+    existingEvent?.startTime || "00:00 AM"
+  ); // 기존 시작 시간 로드
+  const [endTime, setEndTime] = useState(existingEvent?.endTime || "00:00 AM"); // 기존 종료 시간 로드
   const [tooltipPosition, setTooltipPosition] = useState(null);
   const [showEndCalendar, setShowEndCalendar] = useState(false); // 종료일 캘린더 표시 상태
   const [endDate, setEndDate] = useState(selectedDate); // 종료일 상태
-  const [startTime, setStartTime] = useState("00:00 AM"); // 시작 시간 상태
 
   // 일정 등록
   const handleRegister = () => {
     if (scheduleText.trim()) {
-      onAddEvent(scheduleText, startTime); // 일정과 시간을 함께 추가
+      onAddEvent(scheduleText, { startTime, endTime }); // 시작 시간과 종료 시간을 함께 저장
     }
   };
 
@@ -324,7 +327,7 @@ const CalendarModal = ({
             </Label>
             <Label onClick={() => setShowEndCalendar(true)}>
               종료일 : {endDate.toLocaleDateString()}{" "}
-              <TimeSelect value={startTime} onChange={setStartTime} />
+              <TimeSelect value={endTime} onChange={setEndTime} />
             </Label>
 
             <Label>
