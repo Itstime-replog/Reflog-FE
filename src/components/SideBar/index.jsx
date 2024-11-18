@@ -29,10 +29,11 @@ const LogoContainer = styled(Link)`
 
 const Logo = styled.img`
   height: 70px;
+  margin-top: 20px;
 `;
 
 const MenuContainer = styled.div`
-  padding-top: 40px;
+  padding-top: 18px;
 `;
 
 const MenuItem = styled(Link)`
@@ -40,13 +41,15 @@ const MenuItem = styled(Link)`
   align-items: center;
   padding: 16px 24px;
   margin: 8px 24px;
-  color: ${props => props.$isActive ? '#4a86f7' : '#666'};
+  color: ${(props) => (props.$isActive ? "#4a86f7" : "#666")};
   text-decoration: none;
   font-size: 1rem;
   position: relative;
   transition: all 0.2s;
 
-  ${props => props.$isActive && `
+  ${(props) =>
+    props.$isActive &&
+    `
     &:before {
       content: "";
       position: absolute;
@@ -78,6 +81,7 @@ const MenuItem = styled(Link)`
 
 const IconWrapper = styled.span`
   margin-right: 16px;
+  margin-left: 10px;
   display: flex;
   align-items: center;
 `;
@@ -106,8 +110,8 @@ const Sidebar = () => {
       </LogoContainer>
       <MenuContainer>
         {menuItems.map((item) => (
-          <MenuItem 
-            key={item.path} 
+          <MenuItem
+            key={item.path}
             to={item.path}
             $isActive={location.pathname === item.path} // 현재 경로와 메뉴 경로가 일치하는지 확인
           >
