@@ -34,9 +34,9 @@ const Textarea = styled.textarea`
     css`
       border: none;
       box-shadow: none;
-      font-family: "Pretendard";
+      font-family: "Pretendard", sans-serif;
       font-size: 18px;
-      font-weight: 400;
+      font-weight: 500;
       color: #1f2024;
       text-align: center;
     `}
