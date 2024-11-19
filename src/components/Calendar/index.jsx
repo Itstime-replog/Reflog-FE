@@ -205,12 +205,23 @@ const CalendarComponent = () => {
   const [date, setDate] = useState(new Date());
   const [showModal, setShowModal] = useState(false); // 모달 표시 상태
   const [selectedDate, setSelectedDate] = useState(null); // 선택된 날짜 상태
+  const [modalPosition, setModalPosition] = useState(null); // 모달 위치 상태
   const [events, setEvents] = useState({}); // 날짜별 일정 상태
 
-  // 날짜 선택 핸들러
-  const onChange = (date) => {
+  const onChange = (date, event) => {
     setDate(date);
     setSelectedDate(date); // 선택한 날짜 설정
+
+    // 클릭한 날짜 타일의 위치 계산
+    const tileElement = event.target.closest(".react-calendar__tile");
+    if (tileElement) {
+      const rect = tileElement.getBoundingClientRect();
+      setModalPosition({
+        top: rect.top + window.scrollY, // 타일의 상단 위치
+        left: rect.right + window.scrollX + 10, // 타일의 오른쪽 옆으로 10px
+      });
+    }
+
     setShowModal(true); // 모달 표시
   };
 
@@ -244,7 +255,7 @@ const CalendarComponent = () => {
       <GlobalStyle />
       <CalendarContainer>
         <StyledCalendar
-          onChange={onChange}
+          onChange={(date, event) => onChange(date, event.nativeEvent)}
           value={date}
           locale="en-US"
           formatDay={(locale, date) => date.getDate().toString()}
@@ -270,6 +281,7 @@ const CalendarComponent = () => {
             onAddEvent={handleAddEvent} // 일정 추가 핸들러
             onRemoveEvent={handleRemoveEvent} // 일정 삭제 핸들러
             existingEvent={events[selectedDate?.toDateString()]} // 이미 있는 일정 전달
+            modalPosition={modalPosition} // 모달 위치 전달
           />
         )}
       </CalendarContainer>
