@@ -41,8 +41,8 @@ const StyledCalendar = styled(Calendar)`
   border-radius: 15px;
   overflow: hidden;
   box-shadow: 0px 0px 5px 1px rgba(139, 139, 139, 0.2);
-  width: 852px;
-  height: 752px;
+  width: 946.24px;
+  height: 869.9px;
 
   .react-calendar__navigation {
     display: flex;
