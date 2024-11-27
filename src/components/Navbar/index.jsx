@@ -1,9 +1,9 @@
 // 필요한 컴포넌트와 스타일 임포트
 import React from "react";
 import styled from "styled-components";
-import BookmarkIcon from "C:/Users/SAMSUNG/Desktop/Reflog/src/assets/images/Bookmark-unsaved.png";
-import AlarmIcon from "C:/Users/SAMSUNG/Desktop/Reflog/src/assets/images/alarm-icon.png";
-import ProfileIcon from "C:/Users/SAMSUNG/Desktop/Reflog/src/assets/images/profile-icon.png";
+import BookmarkIcon from "../../assets/images/Bookmark-unsaved.png";
+import AlarmIcon from "../../assets/images/alarm-icon.png";
+import ProfileIcon from "../../assets/images/profile-icon.png";
 
 // 상단 네비게이션 바의 메인 컨테이너
 const Nav = styled.nav`
