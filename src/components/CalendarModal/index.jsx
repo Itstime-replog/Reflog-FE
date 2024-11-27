@@ -5,23 +5,17 @@ import InnerCalendar from "../InnerCalendar/InnerCalendar";
 import TimeSelect from "../TimeSelect/TimeSelect";
 
 const ModalOverlay = styled.div`
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0, 0, 0, 0.5);
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  position: absolute;
   z-index: 1000;
+  top: ${(props) => props.top || "50%"}px;
+  left: ${(props) => props.left || "50%"}px;
 `;
 
 const ModalContent = styled.div`
   background: white;
-  padding-top: 10px;
+  padding-top: 6px;
   padding-bottom: 15px;
-  width: 340px;
+  width: 300px;
   border-radius: 10px;
   box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.2);
   position: relative;
@@ -33,7 +27,6 @@ const Header = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 5px;
   padding-left: 20px;
   padding-right: 20px;
 `;
@@ -62,7 +55,7 @@ const ScheduleInput = styled.input`
   outline: none;
   background-color: transparent;
   width: 100%;
-  margin-bottom: 20px;
+  margin-bottom: 15px;
   padding-left: 20px;
   padding-right: 20px;
   font-family: "Pretendard", sans-serif;
@@ -73,19 +66,18 @@ const ScheduleInput = styled.input`
 
 const Section = styled.div`
   background-color: rgba(229, 238, 255, 0.5);
-  padding: 16px 20px;
-  margin-bottom: 20px;
+  padding: 14px 20px 9px 20px;
+  margin-bottom: 10px;
 `;
 
 const Label = styled.div`
   display: flex;
   align-items: center;
   padding-left: 20px;
-  padding-bottom: 9px;
+  padding-bottom: 8px;
   font-family: "Pretendard";
   font-weight: bold;
   font-size: 13px;
-  line-height: 23px;
   color: #494a4f;
 `;
 
@@ -224,7 +216,7 @@ const DeleteButton = styled.button`
   border: none;
   border-radius: 7px;
   cursor: pointer;
-  margin-top: 20px;
+  margin-top: 10px;
   font-family: "Pretendard";
   font-style: normal;
   font-weight: 400;
@@ -242,7 +234,7 @@ const RegisterButton = styled.button`
   border: none;
   border-radius: 7px;
   cursor: pointer;
-  margin-top: 20px;
+  margin-top: 10px;
   font-family: "Pretendard";
   font-style: normal;
   font-weight: 400;
@@ -253,7 +245,6 @@ const RegisterButton = styled.button`
 const ButtonContainer = styled.div`
   display: flex;
   justify-content: flex-end;
-  margin-top: 20px;
   margin-right: 15px;
 `;
 
@@ -263,13 +254,14 @@ const CalendarModal = ({
   onAddEvent,
   onRemoveEvent,
   existingEvent,
+  modalPosition,
 }) => {
-  const [alarmOption, setAlarmOption] = useState("없음"); // 알림 옵션 상태 관리
-  const [scheduleText, setScheduleText] = useState(existingEvent?.text || ""); // 기존 일정의 텍스트 불러오기
+  const [scheduleText, setScheduleText] = useState(existingEvent?.text || "");
   const [startTime, setStartTime] = useState(
     existingEvent?.startTime || "00:00 AM"
-  ); // 기존 시작 시간 로드
+  );
   const [endTime, setEndTime] = useState(existingEvent?.endTime || "00:00 AM"); // 기존 종료 시간 로드
+  const [alarmOption, setAlarmOption] = useState("없음"); // 알림 옵션 상태 관리
   const [tooltipPosition, setTooltipPosition] = useState(null);
   const [showEndCalendar, setShowEndCalendar] = useState(false); // 종료일 캘린더 표시 상태
   const [endDate, setEndDate] = useState(selectedDate); // 종료일 상태
@@ -301,7 +293,7 @@ const CalendarModal = ({
 
   return (
     <>
-      <ModalOverlay>
+      <ModalOverlay top={modalPosition?.top} left={modalPosition?.left}>
         <ModalContent>
           <Header>
             <Title>일정 등록</Title>

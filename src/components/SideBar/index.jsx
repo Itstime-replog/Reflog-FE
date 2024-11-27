@@ -8,7 +8,7 @@ import PeopleIcon from "@mui/icons-material/People";
 import logo from "../../assets/images/logo.png";
 
 const SidebarContainer = styled.div`
-  width: 240px;
+  width: 246px;
   background-color: #fff;
   height: 100vh;
   position: fixed;
@@ -17,36 +17,44 @@ const SidebarContainer = styled.div`
   padding: 0;
   z-index: 1000;
   border-right: 1px solid #e5e5e5;
+  box-shadow: 0px 0px 4px rgba(139, 139, 139, 0.25);
 `;
 
 const LogoContainer = styled(Link)`
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 20px 0;
   text-decoration: none;
 `;
 
 const Logo = styled.img`
   height: 70px;
+  margin-top: 50px;
 `;
 
 const MenuContainer = styled.div`
-  padding-top: 40px;
+  padding-top: 44px;
 `;
 
 const MenuItem = styled(Link)`
   display: flex;
   align-items: center;
-  padding: 16px 24px;
-  margin: 8px 24px;
-  color: ${props => props.$isActive ? '#4a86f7' : '#666'};
+  padding: 18px 20px;
+  margin: 8px 20px;
+  color: ${(props) => (props.$isActive ? "#0059FF" : "#8F9098")};
   text-decoration: none;
-  font-size: 1rem;
   position: relative;
   transition: all 0.2s;
+  font-family: "Pretendard";
+  font-style: normal;
+  font-weight: 500;
+  font-size: 15px;
+  line-height: 18px;
+  letter-spacing: 0.2px;
 
-  ${props => props.$isActive && `
+  ${(props) =>
+    props.$isActive &&
+    `
     &:before {
       content: "";
       position: absolute;
@@ -54,14 +62,15 @@ const MenuItem = styled(Link)`
       transform: translateX(-50%);
       width: 85%;
       height: 42px;
-      background-color: #f0f7ff;
-      border-radius: 21px;
+      background-color: #F0F7FF;
+      border-radius: 8px;
       z-index: -1;
+      color: #0059FF;
     }
   `}
 
   &:hover {
-    color: #4a86f7;
+    color: #0059ff; /* 호버 시에도 활성화 색상과 동일하게 설정 */
     &:before {
       content: "";
       position: absolute;
@@ -70,7 +79,7 @@ const MenuItem = styled(Link)`
       width: 85%;
       height: 42px;
       background-color: #f0f7ff;
-      border-radius: 21px;
+      border-radius: 8px;
       z-index: -1;
     }
   }
@@ -78,6 +87,7 @@ const MenuItem = styled(Link)`
 
 const IconWrapper = styled.span`
   margin-right: 16px;
+  margin-left: 14px;
   display: flex;
   align-items: center;
 `;
@@ -106,8 +116,8 @@ const Sidebar = () => {
       </LogoContainer>
       <MenuContainer>
         {menuItems.map((item) => (
-          <MenuItem 
-            key={item.path} 
+          <MenuItem
+            key={item.path}
             to={item.path}
             $isActive={location.pathname === item.path} // 현재 경로와 메뉴 경로가 일치하는지 확인
           >
