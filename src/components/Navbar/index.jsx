@@ -1,14 +1,13 @@
-// Material UI 아이콘과 필요한 컴포넌트들을 임포트
+// 필요한 컴포넌트와 스타일 임포트
 import React from "react";
 import styled from "styled-components";
-import NotificationsIcon from "@mui/icons-material/Notifications";
-import PersonIcon from "@mui/icons-material/Person";
-import { IconButton } from "@mui/material";
+import BookmarkIcon from "C:/Users/SAMSUNG/Desktop/Reflog/src/assets/images/Bookmark-unsaved.png";
+import AlarmIcon from "C:/Users/SAMSUNG/Desktop/Reflog/src/assets/images/alarm-icon.png";
+import ProfileIcon from "C:/Users/SAMSUNG/Desktop/Reflog/src/assets/images/profile-icon.png";
 
 // 상단 네비게이션 바의 메인 컨테이너
 const Nav = styled.nav`
   background-color: #fff;
-  padding: 2.5rem 2rem;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -17,8 +16,9 @@ const Nav = styled.nav`
   top: 0;
   left: 240px;
   right: 0;
-  height: 50px;
+  height: 136px;
   z-index: 999;
+  box-shadow: 0px 0px 4px rgba(139, 139, 139, 0.25);
 `;
 
 // 환영 메시지 등 텍스트를 포함하는 컨테이너
@@ -62,19 +62,30 @@ const IconContainer = styled.div`
   margin-right: 32px;
 `;
 
-// Material UI 아이콘 버튼 커스텀 스타일링
-const StyledIconButton = styled(IconButton)`
-  color: #666;
-  padding: 12px;
+// 이미지 버튼 스타일링
+const IconButton = styled.button`
+  background: none;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
 
-  &:hover {
-    color: #4a86f7;
-    background-color: #f0f7ff;
+  &:hover img {
+    filter: brightness(0.8);
   }
+`;
 
-  .MuiSvgIcon-root {
-    font-size: 28px;
-  }
+const StyledBookmarkIcon = styled.img`
+  width: 51px;
+  height: 51px;
+`;
+const StyledAlarmIcon = styled.img`
+  width: 30px;
+  height: 30px;
+`;
+const StyledProfileIcon = styled.img`
+  width: 53px;
+  height: 53px;
 `;
 
 // Navbar 컴포넌트
@@ -88,12 +99,15 @@ const Navbar = () => {
         </SubText>
       </TextContainer>
       <IconContainer>
-        <StyledIconButton>
-          <NotificationsIcon />
-        </StyledIconButton>
-        <StyledIconButton>
-          <PersonIcon />
-        </StyledIconButton>
+        <IconButton>
+          <StyledBookmarkIcon src={BookmarkIcon} alt="Bookmark Icon" />
+        </IconButton>
+        <IconButton>
+          <StyledAlarmIcon src={AlarmIcon} alt="Alarm Icon" />
+        </IconButton>
+        <IconButton>
+          <StyledProfileIcon src={ProfileIcon} alt="Profile Icon" />
+        </IconButton>
       </IconContainer>
     </Nav>
   );
