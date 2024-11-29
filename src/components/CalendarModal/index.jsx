@@ -3,6 +3,7 @@ import styled from "styled-components";
 import infoIcon from "../../assets/images/info-icon.png";
 import InnerCalendar from "../InnerCalendar/InnerCalendar";
 import TimeSelect from "../TimeSelect/TimeSelect";
+import infoBoxImage from "../../assets/images/infoBox.png";
 
 const ModalOverlay = styled.div`
   position: absolute;
@@ -151,15 +152,16 @@ const InfoIcon = styled.img`
 `;
 
 const InfoTooltip = styled.div`
-  position: fixed;
-  top: 56%;
-  left: 41%;
+  background-image: url(${infoBoxImage});
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+  position: absolute; /* 모달창 기준으로 위치 설정 */
+  top: ${({ top }) => `${top}px`}; /* props로 top 위치 전달 */
+  left: ${({ left }) => `${left}px`}; /* props로 left 위치 전달 */
   transform: translate(-100%, -50%);
   width: 250px;
-  background: white;
-  border-radius: 10px;
-  box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.2);
-  padding: 10px 20px 20px 20px;
+  padding: 10px 16px 20px 15px;
   font-size: 13px;
   color: #494a4f;
   z-index: 1001;
@@ -348,7 +350,6 @@ const CalendarModal = ({
           </ButtonContainer>
         </ModalContent>
       </ModalOverlay>
-
       {showEndCalendar && (
         <InnerCalendar
           selectedDate={endDate}
@@ -357,9 +358,11 @@ const CalendarModal = ({
           startDate={selectedDate} // 시작일 기준으로 종료일 설정
         />
       )}
-
       {tooltipPosition && (
-        <InfoTooltip top={tooltipPosition.top} left={tooltipPosition.left}>
+        <InfoTooltip
+          top={modalPosition.top + 290} // 모달창 기준 아래로 ~px
+          left={modalPosition.left + 272} // 모달창 기준 오른쪽으로 ~px
+        >
           <AlarmModalHeader>
             <AlarmModalTitle>알림 기능</AlarmModalTitle>
             <CloseButton onClick={() => setTooltipPosition(null)}>
