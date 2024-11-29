@@ -80,7 +80,7 @@ const StyledCalendar = styled(Calendar)`
 
   .react-calendar__tile {
     width: 116.86px !important;
-    height: 130.04px !important;
+    height: 151.7px !important;
     font-size: 1rem;
     color: #333;
     border: 1px solid #e0e0e0;
