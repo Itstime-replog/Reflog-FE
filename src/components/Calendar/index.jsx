@@ -206,7 +206,7 @@ const EventContainer = styled.div`
 const EventDot = styled.div`
   width: 8px;
   height: 8px;
-  background-color: #1087ff;
+  background-color: #ffc300;
   border-radius: 50%;
 `;
 
