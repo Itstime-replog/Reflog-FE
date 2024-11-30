@@ -1,11 +1,11 @@
-// 필요한 컴포넌트와 스타일 임포트
-import React from "react";
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
-import BookmarkIcon from "../../assets/images/Bookmark-unsaved.png";
-import AlarmIcon from "../../assets/images/alarm-icon.png";
-import ProfileIcon from "../../assets/images/profile-icon.png";
+import BookmarkIcon from "../../assets/images/common/Bookmark-unsaved.png";
+import AlarmIcon from "../../assets/images/common/alarm-icon.png";
+import ProfileIcon from "../../assets/images/common/profile-icon.png";
+import { removeLoginToken } from "../../utils/auth";
 
-// 상단 네비게이션 바의 메인 컨테이너
 const Nav = styled.nav`
   background-color: #fff;
   display: flex;
@@ -21,7 +21,6 @@ const Nav = styled.nav`
   box-shadow: 0px 0px 4px rgba(139, 139, 139, 0.25);
 `;
 
-// 환영 메시지 등 텍스트를 포함하는 컨테이너
 const TextContainer = styled.div`
   display: flex;
   flex-direction: column;
@@ -30,7 +29,6 @@ const TextContainer = styled.div`
   flex: 1;
 `;
 
-// 메인 환영 메시지 스타일링
 const MainText = styled.div`
   color: #1f2024;
   font-family: "Pretendard", sans-serif;
@@ -41,7 +39,6 @@ const MainText = styled.div`
   letter-spacing: 0.2px;
 `;
 
-// 서브 안내 메시지 스타일링
 const SubText = styled.div`
   color: #a1a1a1;
   font-family: "Pretendard", sans-serif;
@@ -54,7 +51,6 @@ const SubText = styled.div`
   align-items: center;
 `;
 
-// 우측 아이콘들을 감싸는 컨테이너
 const IconContainer = styled.div`
   display: flex;
   gap: 1rem;
@@ -62,7 +58,6 @@ const IconContainer = styled.div`
   margin-right: 32px;
 `;
 
-// 이미지 버튼 스타일링
 const IconButton = styled.button`
   background: none;
   border: none;
@@ -79,17 +74,79 @@ const StyledBookmarkIcon = styled.img`
   width: 51px;
   height: 51px;
 `;
+
 const StyledAlarmIcon = styled.img`
   width: 30px;
   height: 30px;
 `;
+
 const StyledProfileIcon = styled.img`
   width: 53px;
   height: 53px;
 `;
 
-// Navbar 컴포넌트
-const Navbar = () => {
+const ProfileContainer = styled.div`
+  position: relative;
+`;
+
+const ProfileDropdown = styled.div`
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  width: 180px;
+  background: white;
+  border-radius: 20px;
+  padding: 20px;
+  display: ${props => props.$isOpen ? 'block' : 'none'};
+  box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.1);
+`;
+
+const DropdownItem = styled.div`
+  padding: 10px 0;
+  color: black;
+  font-family: "Pretendard", sans-serif;
+  font-size: 16px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  transition: all 0.2s;
+
+  &:hover {
+    opacity: 0.7;
+  }
+`;
+
+const Navbar = ({ setIsLoggedIn }) => {
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    // 먼저 토큰 제거
+    removeLoginToken();
+    // 로그인 상태 업데이트
+    setIsLoggedIn(false);
+    // replace: true로 설정하여 히스토리 스택에서 현재 페이지를 대체
+    navigate('/login', { replace: true });
+  };
+
+  const handleProfileClick = (e) => {
+    e.stopPropagation();
+    setIsDropdownOpen(!isDropdownOpen);
+  };
+
+  const handleClickOutside = (event) => {
+    if (!event.target.closest('#profile-container')) {
+      setIsDropdownOpen(false);
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener('click', handleClickOutside);
+    return () => {
+      document.removeEventListener('click', handleClickOutside);
+    };
+  }, []);
+
   return (
     <Nav>
       <TextContainer>
@@ -105,9 +162,15 @@ const Navbar = () => {
         <IconButton>
           <StyledAlarmIcon src={AlarmIcon} alt="Alarm Icon" />
         </IconButton>
-        <IconButton>
-          <StyledProfileIcon src={ProfileIcon} alt="Profile Icon" />
-        </IconButton>
+        <ProfileContainer id="profile-container">
+          <IconButton onClick={handleProfileClick}>
+            <StyledProfileIcon src={ProfileIcon} alt="Profile Icon" />
+          </IconButton>
+          <ProfileDropdown $isOpen={isDropdownOpen}>
+            <DropdownItem>마이페이지</DropdownItem>
+            <DropdownItem onClick={handleLogout}>로그아웃</DropdownItem>
+          </ProfileDropdown>
+        </ProfileContainer>
       </IconContainer>
     </Nav>
   );

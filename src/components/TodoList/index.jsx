@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import styled from "styled-components";
-import plusIcon from "../../assets/images/plus-icon.png";
-import cancelIcon from "../../assets/images/cancel-icon.png";
-import checkIcon from "../../assets/images/check-icon.png";
+import plusIcon from "../../assets/images/todolist/plus-icon.png";
+import cancelIcon from "../../assets/images/todolist/cancel-icon.png";
+import checkIcon from "../../assets/images/todolist/check-icon.png";
 
 const TitleContainer = styled.div`
   display: flex;
