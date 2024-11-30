@@ -3,6 +3,7 @@ import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css";
 import styled, { createGlobalStyle } from "styled-components";
 import CalendarModal from "../CalendarModal";
+import MiniCalendar from "../MiniCalendar";
 
 const GlobalStyle = createGlobalStyle`
   .react-calendar {
@@ -70,8 +71,11 @@ const NavButton = styled.button`
   letter-spacing: 0.206102px;
   color: #494a50;
   width: 82.13px;
-  height: 33.55px;
-  margin: 2px;
+  height: 26.61px;
+  border-radius: 2.31px;
+  margin: 2.6px 2.3px 1px 2.4px;
+  background: ${({ isActive }) =>
+    isActive ? "#EBF0F9" : "none"}; /* 활성화된 버튼 배경색 */
 `;
 
 const StyledCalendar = styled(Calendar)`
@@ -273,41 +277,69 @@ const CalendarComponent = () => {
     setShowModal(false); // 모달 닫기
   };
 
+  // "월" 버튼 핸들러
+  const handleMonthView = () => {
+    setView("month");
+  };
+
+  // "년" 버튼 핸들러
+  const handleYearView = () => {
+    setView("year");
+  };
+
+  const handleMiniCalendarClick = (month) => {
+    // 클릭된 달로 이동
+    setDate(new Date(date.getFullYear(), month, 1));
+    setView("month");
+  };
+
   return (
     <>
       <GlobalStyle />
       <CalendarContainer>
         <NavigationWrapper>
-          <StyledCalendar
-            onChange={(date, event) => onChange(date, event.nativeEvent)}
-            value={date}
-            view={view}
-            onActiveStartDateChange={({ activeStartDate, view }) =>
-              setView(view)
-            }
-            locale="en-US"
-            formatMonthYear={(locale, date) =>
-              `${date.getFullYear()}년 ${date.getMonth() + 1}월`
-            }
-            formatDay={(locale, date) => date.getDate().toString()}
-            tileContent={({ date }) => {
-              const eventDate = date.toDateString();
-              if (events[eventDate]) {
-                const { text, startTime } = events[eventDate];
-                return (
-                  <EventContainer>
-                    <EventDot />
-                    <EventTextWithTime>{text}</EventTextWithTime>
-                    <EventTime>{startTime}</EventTime> {/* 시작 시간만 표시 */}
-                  </EventContainer>
-                );
+          {view === "year" ? (
+            <MiniCalendar
+              year={date.getFullYear()}
+              onMonthClick={handleMiniCalendarClick}
+            />
+          ) : (
+            <StyledCalendar
+              onChange={(date, event) => onChange(date, event.nativeEvent)}
+              value={date}
+              view={view}
+              onActiveStartDateChange={({ activeStartDate, view }) =>
+                setView(view)
               }
-              return null;
-            }}
-          />
+              locale="en-US"
+              formatMonthYear={(locale, date) =>
+                `${date.getFullYear()}년 ${date.getMonth() + 1}월`
+              }
+              formatDay={(locale, date) => date.getDate().toString()}
+              tileContent={({ date }) => {
+                const eventDate = date.toDateString();
+                if (events[eventDate]) {
+                  const { text, startTime } = events[eventDate];
+                  return (
+                    <EventContainer>
+                      <EventDot />
+                      <EventTextWithTime>{text}</EventTextWithTime>
+                      <EventTime>{startTime}</EventTime>{" "}
+                      {/* 시작 시간만 표시 */}
+                    </EventContainer>
+                  );
+                }
+                return null;
+              }}
+            />
+          )}
           <ButtonContainer>
-            <NavButton onClick={() => setView("year")}>월</NavButton>
-            <NavButton onClick={() => setView("decade")}>년</NavButton>
+            <NavButton isActive={view === "month"} onClick={handleMonthView}>
+              월
+            </NavButton>
+            <NavButton isActive={view === "year"} onClick={handleYearView}>
+              년
+            </NavButton>
           </ButtonContainer>
         </NavigationWrapper>
         {showModal && (
