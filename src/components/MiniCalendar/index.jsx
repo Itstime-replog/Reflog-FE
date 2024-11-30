@@ -3,8 +3,8 @@ import Calendar from "react-calendar";
 import { createGlobalStyle } from "styled-components";
 import styled from "styled-components";
 import "react-calendar/dist/Calendar.css";
-import beforeIcon from "../../assets/images/before-icon.png";
-import afterIcon from "../../assets/images/after-icon.png";
+import beforeIcon from "../../assets/images/calendar/before-icon.png";
+import afterIcon from "../../assets/images/calendar/after-icon.png";
 
 const GlobalStyle = createGlobalStyle`
   .react-calendar__month-view__days__day--neighboringMonth:disabled {

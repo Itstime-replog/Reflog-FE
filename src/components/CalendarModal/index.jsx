@@ -3,7 +3,7 @@ import styled from "styled-components";
 import infoIcon from "../../assets/images/calendar/info-icon.png";
 import InnerCalendar from "../InnerCalendar/InnerCalendar";
 import TimeSelect from "../TimeSelect/TimeSelect";
-import infoBoxImage from "../../assets/images/infoBox.png";
+import infoBoxImage from "../../assets/images/calendar/infoBox.png";
 
 const ModalOverlay = styled.div`
   position: absolute;
