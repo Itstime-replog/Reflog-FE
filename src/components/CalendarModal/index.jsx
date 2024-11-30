@@ -269,6 +269,15 @@ const CalendarModal = ({
   const [endDate, setEndDate] = useState(selectedDate); // 종료일 상태
   const [endCalendarPosition, setEndCalendarPosition] = useState(null); // 종료일 캘린더 위치
 
+  // 마지막 주 판단 함수
+  const isLastWeek = (date) => {
+    const monthStart = new Date(date.getFullYear(), date.getMonth(), 1); // 해당 달의 첫째 날
+    const monthEnd = new Date(date.getFullYear(), date.getMonth() + 1, 0); // 해당 달의 마지막 날
+    const lastWeekStart = new Date(monthEnd);
+    lastWeekStart.setDate(lastWeekStart.getDate() - 6); // 마지막 주 시작 날짜 계산
+    return date >= lastWeekStart && date <= monthEnd; // 마지막 주 날짜 여부 확인
+  };
+
   // 일정 등록
   const handleRegister = () => {
     if (scheduleText.trim()) {
@@ -288,8 +297,10 @@ const CalendarModal = ({
       setShowEndCalendar(false); // 이미 표시 중이면 숨김
     } else {
       const rect = event.target.getBoundingClientRect();
+      console.log("Rect values:", rect);
+      console.log("isLastWeek(endDate):", isLastWeek(endDate));
       setEndCalendarPosition({
-        top: rect.bottom + window.scrollY + 10, // 클릭된 요소 기준 아래로 10px
+        top: rect.bottom + window.scrollY + (isLastWeek(endDate) ? -20 : 10), // 마지막 주면 위로
         left: rect.left + window.scrollX, // 클릭된 요소 기준 왼쪽
       });
       setShowEndCalendar(true); // 캘린더 표시
@@ -370,10 +381,7 @@ const CalendarModal = ({
         />
       )}
       {tooltipPosition && (
-        <InfoTooltip
-          top={modalPosition.top + 290} // 모달창 기준 아래로 ~px
-          left={modalPosition.left + 272} // 모달창 기준 오른쪽으로 ~px
-        >
+        <InfoTooltip top={tooltipPosition.top} left={tooltipPosition.left}>
           <AlarmModalHeader>
             <AlarmModalTitle>알림 기능</AlarmModalTitle>
             <CloseButton onClick={() => setTooltipPosition(null)}>
