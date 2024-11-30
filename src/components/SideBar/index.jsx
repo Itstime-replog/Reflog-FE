@@ -60,9 +60,9 @@ const MenuItem = styled(Link)`
       position: absolute;
       left: 50%;
       transform: translateX(-50%);
-      width: 85%;
-      height: 42px;
-      background-color: #F0F7FF;
+      width: 186px;
+      height: 49px;
+      background-color: #E5EEFF;
       border-radius: 8px;
       z-index: -1;
       color: #0059FF;
@@ -70,15 +70,15 @@ const MenuItem = styled(Link)`
   `}
 
   &:hover {
-    color: #0059ff; /* 호버 시에도 활성화 색상과 동일하게 설정 */
+    color: #8f9098; /* 호버 시에도 활성화 색상과 동일하게 설정 */
     &:before {
       content: "";
       position: absolute;
       left: 50%;
       transform: translateX(-50%);
-      width: 85%;
-      height: 42px;
-      background-color: #f0f7ff;
+      width: 186px;
+      height: 49px;
+      background-color: #f8f8f8;
       border-radius: 8px;
       z-index: -1;
     }

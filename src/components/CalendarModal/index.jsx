@@ -3,6 +3,7 @@ import styled from "styled-components";
 import infoIcon from "../../assets/images/calendar/info-icon.png";
 import InnerCalendar from "../InnerCalendar/InnerCalendar";
 import TimeSelect from "../TimeSelect/TimeSelect";
+import infoBoxImage from "../../assets/images/calendar/infoBox.png";
 
 const ModalOverlay = styled.div`
   position: absolute;
@@ -151,15 +152,16 @@ const InfoIcon = styled.img`
 `;
 
 const InfoTooltip = styled.div`
-  position: fixed;
-  top: 56%;
-  left: 41%;
+  background-image: url(${infoBoxImage});
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+  position: absolute; /* 모달창 기준으로 위치 설정 */
+  top: ${({ top }) => `${top}px`}; /* props로 top 위치 전달 */
+  left: ${({ left }) => `${left}px`}; /* props로 left 위치 전달 */
   transform: translate(-100%, -50%);
   width: 250px;
-  background: white;
-  border-radius: 10px;
-  box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.2);
-  padding: 10px 20px 20px 20px;
+  padding: 10px 16px 20px 15px;
   font-size: 13px;
   color: #494a4f;
   z-index: 1001;
@@ -265,6 +267,16 @@ const CalendarModal = ({
   const [tooltipPosition, setTooltipPosition] = useState(null);
   const [showEndCalendar, setShowEndCalendar] = useState(false); // 종료일 캘린더 표시 상태
   const [endDate, setEndDate] = useState(selectedDate); // 종료일 상태
+  const [endCalendarPosition, setEndCalendarPosition] = useState(null); // 종료일 캘린더 위치
+
+  // 마지막 주 판단 함수
+  const isLastWeek = (date) => {
+    const monthStart = new Date(date.getFullYear(), date.getMonth(), 1); // 해당 달의 첫째 날
+    const monthEnd = new Date(date.getFullYear(), date.getMonth() + 1, 0); // 해당 달의 마지막 날
+    const lastWeekStart = new Date(monthEnd);
+    lastWeekStart.setDate(lastWeekStart.getDate() - 6); // 마지막 주 시작 날짜 계산
+    return date >= lastWeekStart && date <= monthEnd; // 마지막 주 날짜 여부 확인
+  };
 
   // 일정 등록
   const handleRegister = () => {
@@ -277,6 +289,22 @@ const CalendarModal = ({
   const handleRemove = () => {
     onRemoveEvent(); // 일정 삭제 핸들러 호출
     onClose(); // 모달 닫기
+  };
+
+  // 종료일 클릭 시 InnerCalendar 위치 계산 및 표시/숨김
+  const handleEndDateClick = (event) => {
+    if (showEndCalendar) {
+      setShowEndCalendar(false); // 이미 표시 중이면 숨김
+    } else {
+      const rect = event.target.getBoundingClientRect();
+      console.log("Rect values:", rect);
+      console.log("isLastWeek(endDate):", isLastWeek(endDate));
+      setEndCalendarPosition({
+        top: rect.bottom + window.scrollY + (isLastWeek(endDate) ? -20 : 10), // 마지막 주면 위로
+        left: rect.left + window.scrollX, // 클릭된 요소 기준 왼쪽
+      });
+      setShowEndCalendar(true); // 캘린더 표시
+    }
   };
 
   const toggleTooltip = (event) => {
@@ -304,7 +332,6 @@ const CalendarModal = ({
             onChange={(e) => setScheduleText(e.target.value)}
             placeholder="새로운 일정을 입력해주세요."
           />
-
           <Section>
             <Label>
               종일 :
@@ -317,11 +344,10 @@ const CalendarModal = ({
               시작일 : {selectedDate.toLocaleDateString()}{" "}
               <TimeSelect value={startTime} onChange={setStartTime} />
             </Label>
-            <Label onClick={() => setShowEndCalendar(true)}>
+            <Label onClick={handleEndDateClick}>
               종료일 : {endDate.toLocaleDateString()}{" "}
               <TimeSelect value={endTime} onChange={setEndTime} />
             </Label>
-
             <Label>
               <InfoIcon src={infoIcon} alt="Info" onClick={toggleTooltip} />
               알림 기능:
@@ -337,9 +363,7 @@ const CalendarModal = ({
               </Dropdown>
             </Label>
           </Section>
-
           <Input placeholder="메모, URL" />
-
           <ButtonContainer>
             <RegisterButton onClick={handleRegister}>등록</RegisterButton>
             {existingEvent && (
@@ -348,16 +372,14 @@ const CalendarModal = ({
           </ButtonContainer>
         </ModalContent>
       </ModalOverlay>
-
-      {showEndCalendar && (
+      {showEndCalendar && endCalendarPosition && (
         <InnerCalendar
           selectedDate={endDate}
           onDateChange={(date) => setEndDate(date)}
           onClose={() => setShowEndCalendar(false)}
-          startDate={selectedDate} // 시작일 기준으로 종료일 설정
+          innerCalendarPosition={endCalendarPosition} // 동적 위치 전달
         />
       )}
-
       {tooltipPosition && (
         <InfoTooltip top={tooltipPosition.top} left={tooltipPosition.left}>
           <AlarmModalHeader>
