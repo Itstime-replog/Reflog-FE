@@ -267,6 +267,7 @@ const CalendarModal = ({
   const [tooltipPosition, setTooltipPosition] = useState(null);
   const [showEndCalendar, setShowEndCalendar] = useState(false); // 종료일 캘린더 표시 상태
   const [endDate, setEndDate] = useState(selectedDate); // 종료일 상태
+  const [endCalendarPosition, setEndCalendarPosition] = useState(null); // 종료일 캘린더 위치
 
   // 일정 등록
   const handleRegister = () => {
@@ -279,6 +280,20 @@ const CalendarModal = ({
   const handleRemove = () => {
     onRemoveEvent(); // 일정 삭제 핸들러 호출
     onClose(); // 모달 닫기
+  };
+
+  // 종료일 클릭 시 InnerCalendar 위치 계산 및 표시/숨김
+  const handleEndDateClick = (event) => {
+    if (showEndCalendar) {
+      setShowEndCalendar(false); // 이미 표시 중이면 숨김
+    } else {
+      const rect = event.target.getBoundingClientRect();
+      setEndCalendarPosition({
+        top: rect.bottom + window.scrollY + 10, // 클릭된 요소 기준 아래로 10px
+        left: rect.left + window.scrollX, // 클릭된 요소 기준 왼쪽
+      });
+      setShowEndCalendar(true); // 캘린더 표시
+    }
   };
 
   const toggleTooltip = (event) => {
@@ -306,7 +321,6 @@ const CalendarModal = ({
             onChange={(e) => setScheduleText(e.target.value)}
             placeholder="새로운 일정을 입력해주세요."
           />
-
           <Section>
             <Label>
               종일 :
@@ -319,11 +333,10 @@ const CalendarModal = ({
               시작일 : {selectedDate.toLocaleDateString()}{" "}
               <TimeSelect value={startTime} onChange={setStartTime} />
             </Label>
-            <Label onClick={() => setShowEndCalendar(true)}>
+            <Label onClick={handleEndDateClick}>
               종료일 : {endDate.toLocaleDateString()}{" "}
               <TimeSelect value={endTime} onChange={setEndTime} />
             </Label>
-
             <Label>
               <InfoIcon src={infoIcon} alt="Info" onClick={toggleTooltip} />
               알림 기능:
@@ -339,9 +352,7 @@ const CalendarModal = ({
               </Dropdown>
             </Label>
           </Section>
-
           <Input placeholder="메모, URL" />
-
           <ButtonContainer>
             <RegisterButton onClick={handleRegister}>등록</RegisterButton>
             {existingEvent && (
@@ -350,12 +361,12 @@ const CalendarModal = ({
           </ButtonContainer>
         </ModalContent>
       </ModalOverlay>
-      {showEndCalendar && (
+      {showEndCalendar && endCalendarPosition && (
         <InnerCalendar
           selectedDate={endDate}
           onDateChange={(date) => setEndDate(date)}
           onClose={() => setShowEndCalendar(false)}
-          startDate={selectedDate} // 시작일 기준으로 종료일 설정
+          innerCalendarPosition={endCalendarPosition} // 동적 위치 전달
         />
       )}
       {tooltipPosition && (
