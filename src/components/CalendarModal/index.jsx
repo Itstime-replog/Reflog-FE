@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import styled from "styled-components";
-import infoIcon from "../../assets/images/info-icon.png";
+import infoIcon from "../../assets/images/calendar/info-icon.png";
 import InnerCalendar from "../InnerCalendar/InnerCalendar";
 import TimeSelect from "../TimeSelect/TimeSelect";
 

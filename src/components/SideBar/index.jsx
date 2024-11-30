@@ -5,7 +5,7 @@ import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 import HistoryEduIcon from "@mui/icons-material/HistoryEdu";
 import AssessmentIcon from "@mui/icons-material/Assessment";
 import PeopleIcon from "@mui/icons-material/People";
-import logo from "../../assets/images/logo.png";
+import logo from "../../assets/images/common/logo.png";
 
 const SidebarContainer = styled.div`
   width: 246px;
