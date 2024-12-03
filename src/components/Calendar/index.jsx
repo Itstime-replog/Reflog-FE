@@ -243,9 +243,24 @@ const CalendarComponent = () => {
     const tileElement = event.target.closest(".react-calendar__tile");
     if (tileElement) {
       const rect = tileElement.getBoundingClientRect();
+
+      // 마지막 주 판단 로직
+      const activeStartDate = new Date(date.getFullYear(), date.getMonth(), 1); // 현재 달의 시작일
+      const totalDays = new Date(
+        date.getFullYear(),
+        date.getMonth() + 1,
+        0
+      ).getDate(); // 현재 달의 총 일수
+      const weekNumber = Math.ceil(
+        (date.getDate() + activeStartDate.getDay()) / 7
+      ); // 클릭된 날짜의 주차
+      const totalWeeks = Math.ceil((totalDays + activeStartDate.getDay()) / 7); // 달의 총 주차
+
+      const isLastWeek = weekNumber === totalWeeks; // 마지막 주인지 확인
+
       setModalPosition({
-        top: rect.top + window.scrollY - 20, // 타일의 상단 위치
-        left: rect.right + window.scrollX + 1, // 타일의 오른쪽 옆으로 10px
+        top: rect.top + window.scrollY - (isLastWeek ? 170 : 20), // 마지막 주는 Y축 -100, 나머지는 -20
+        left: rect.right + window.scrollX + 1, // 타일의 오른쪽 옆으로 1px
       });
     }
 
