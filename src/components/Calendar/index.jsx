@@ -259,7 +259,7 @@ const CalendarComponent = () => {
       const isLastWeek = weekNumber === totalWeeks; // 마지막 주인지 확인
 
       setModalPosition({
-        top: rect.top + window.scrollY - (isLastWeek ? 170 : 20), // 마지막 주는 Y축 -100, 나머지는 -20
+        top: rect.top + window.scrollY - (isLastWeek ? 170 : 20), // 마지막 주는 Y축 -170, 나머지는 -20
         left: rect.right + window.scrollX + 1, // 타일의 오른쪽 옆으로 1px
       });
     }
