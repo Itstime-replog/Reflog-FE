@@ -7,14 +7,14 @@ import Footer from "../components/Footer";
 
 const LayoutContainer = styled.div`
   min-height: 100vh;
-  background-color: #F5F5F5;
+  background-color: #f5f5f5;
   display: flex;
   flex-direction: column;
 `;
 
 const MainContent = styled.main`
   margin-left: 240px;
-  padding: 85px 24px 24px;
+  padding: 85px 0 24px 0;
   flex: 1;
   min-height: calc(100vh - 100px);
 `;
