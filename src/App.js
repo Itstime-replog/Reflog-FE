@@ -1,11 +1,12 @@
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
-import { useState, useEffect } from 'react';
-import { checkLoginStatus } from './utils/auth';
-import RootLayout from './layout/RootLayout';
-import Home from './pages/Home';
-import Studyplan from './pages/Studyplan';
-import Retrospect from './pages/Retrospect';
-import Login from './pages/Auth/Login';
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { checkLoginStatus } from "./utils/auth";
+import RootLayout from "./layout/RootLayout";
+import Home from "./pages/Home";
+import Studyplan from "./pages/Studyplan";
+import Retrospect from "./pages/Retrospect";
+import Login from "./pages/Auth/Login";
+import Community from "./pages/Community";
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -18,32 +19,37 @@ function App() {
       setIsLoggedIn(checkLoginStatus());
     };
 
-    window.addEventListener('storage', handleStorageChange);
-    return () => window.removeEventListener('storage', handleStorageChange);
+    window.addEventListener("storage", handleStorageChange);
+    return () => window.removeEventListener("storage", handleStorageChange);
   }, []);
 
   return (
     <BrowserRouter>
       <Routes>
-        <Route 
-          path="/login" 
+        <Route
+          path="/login"
           element={
-            isLoggedIn ? 
-            <Navigate to="/" replace /> : 
-            <Login setIsLoggedIn={setIsLoggedIn} />
-          } 
+            isLoggedIn ? (
+              <Navigate to="/" replace />
+            ) : (
+              <Login setIsLoggedIn={setIsLoggedIn} />
+            )
+          }
         />
-        
+
         <Route
           element={
-            isLoggedIn ? 
-            <RootLayout setIsLoggedIn={setIsLoggedIn} /> : 
-            <Navigate to="/login" replace />
+            isLoggedIn ? (
+              <RootLayout setIsLoggedIn={setIsLoggedIn} />
+            ) : (
+              <Navigate to="/login" replace />
+            )
           }
         >
           <Route path="/" element={<Home />} />
           <Route path="/studyplan" element={<Studyplan />} />
           <Route path="/retrospect" element={<Retrospect />} />
+          <Route path="/community" element={<Community />} />
         </Route>
 
         <Route path="*" element={<Navigate to="/login" />} />
