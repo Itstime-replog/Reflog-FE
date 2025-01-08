@@ -107,16 +107,37 @@ const PostTitle = styled.h2`
   color: #000000;
 `;
 
+const PostContentWrapper = styled.div`
+  position: relative;
+  height: 180px;
+  overflow: hidden;
+`;
+
 const PostContent = styled.p`
   margin-top: 0;
   padding: 0 56.16px 0 56.16px;
-  height: 180px;
   font-family: "Pretendard";
   font-style: normal;
   font-weight: 400;
   font-size: 18.721px;
   line-height: 33px;
   color: #000000;
+  max-height: calc(33px * 4); /* 최대 4줄까지만 표시하도록 높이 제한 */
+  overflow: hidden;
+  text-overflow: clip;
+  white-space: normal;
+  word-break: break-word;
+`;
+
+const ReadMore = styled.span`
+  position: absolute;
+  bottom: 20px;
+  left: 56.16px;
+  background: none;
+  color: #a4a4a4;
+  cursor: pointer;
+  font-weight: 600;
+  white-space: nowrap;
 `;
 
 const PostFooter = styled.div`
@@ -154,15 +175,12 @@ const PostDate = styled.div`
 const PostList = () => {
   const [selectedPost, setSelectedPost] = useState(null);
 
-  const openModal = () => {
+  const openModal = (e) => {
+    e.stopPropagation(); // 이벤트 버블링 방지 (더보기가 사라지는 문제 해결)
     setSelectedPost({
       title: "회고 방법 고민 들어주세요ㅠ",
-      content: "이번에 처음 기획부터",
+      content: "이번에 처음 기획부터 디자인",
     });
-  };
-
-  const closeModal = () => {
-    setSelectedPost(null);
   };
 
   return (
@@ -189,11 +207,21 @@ const PostList = () => {
 
           {/* 게시글 제목 & 내용 */}
           <PostTitle>회고 방법 고민 들어주세요ㅠ</PostTitle>
-          <PostContent>
-            이번에 처음 기획부터 디자인, 개발 팀 프로젝트를 시작했는데 스프린트
-            회고가 필요한 상황입니다. 비슷한 상황에서 어떤 회고 방법론을 활용해
-            회고를 진행하시나요?! 효율적인 회고 방법 추천해주세요!
-          </PostContent>
+          <PostContentWrapper>
+            <PostContent>
+              회고 방법론을 찾아보면 여러가지 방법론이 있습니다. KPT, 4L, 5F 등
+              다양한 방법들이 존재합니다. 방법론들의 핵심 메세지는 비슷합니다.
+              방법론이 중요한 것이 아니고, 자신이 했던 일에 대해 생각하고 그
+              후에 무엇을 할지를 고민하는게 핵심입니다. 대표적인 방법론을
+              말씀드리되, 제가 자주 활용하는 KPT 회고에 대해 알려드리겠습니다!
+              회고 방법론을 찾아보면 여러가지 방법론이 있습니다. KPT, 4L, 5F 등
+              다양한 방법들이 존재합니다. 방법론들의 핵심 메세지는 비슷합니다.
+              방법론이 중요한 것이 아니고, 자신이 했던 일에 대해 생각하고 그
+              후에 무엇을 할지를 고민하는게 핵심입니다. 대표적인 방법론을
+              말씀드리되, 제가 자주 활용하는 KPT 회고에 대해 알려드리겠습니다!
+            </PostContent>
+            <ReadMore onClick={openModal}>...더보기</ReadMore>
+          </PostContentWrapper>
 
           {/* 하단 좋아요 & 댓글 & 날짜 */}
           <PostFooter>
@@ -205,7 +233,9 @@ const PostList = () => {
           </PostFooter>
         </PostCard>
       </PostGrid>
-      {selectedPost && <PostModal post={selectedPost} onClose={closeModal} />}
+      {selectedPost && (
+        <PostModal post={selectedPost} onClose={() => setSelectedPost(null)} />
+      )}
     </PostsContainer>
   );
 };
