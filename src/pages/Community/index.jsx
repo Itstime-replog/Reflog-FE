@@ -1,9 +1,11 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import PopularPosts from "../../components/PopularPosts";
 import PostList from "../../components/PostList";
 import searchIcon from "../../assets/images/community/search-icon.png";
 import CommunityDropdowns from "../../components/CommunityDropdown";
+import CommunityWriteNew from "../../components/CommunityWriteNew";
 
 const CommunityContainer = styled.div`
   width: 100%;
@@ -147,6 +149,8 @@ const Community = () => {
     }
   };
 
+  const navigate = useNavigate(); // 페이지 이동을 위한 useNavigate
+
   return (
     <CommunityContainer>
       <TopContainer>
@@ -161,7 +165,9 @@ const Community = () => {
               />
               <SearchButton onClick={handleSearch} />
             </SearchWrapper>
-            <WriteButton>글쓰기</WriteButton>
+            <WriteButton onClick={() => navigate("/community/write")}>
+              글쓰기
+            </WriteButton>
           </SearchAndWriteContainer>
           <PopularPostsContainer>
             <PopularPostsTitle>실시간 인기글</PopularPostsTitle>
