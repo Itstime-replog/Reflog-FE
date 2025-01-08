@@ -38,7 +38,7 @@ const BackIcon = styled.img`
 `;
 
 const WriteBox = styled.div`
-  position: relative; /* Footer가 하단에 고정될 수 있도록 설정 */
+  position: relative;
   padding: 20px;
   background: #ffffff;
   border-radius: 16.37px;
@@ -47,7 +47,8 @@ const WriteBox = styled.div`
   flex-direction: column;
   align-items: center;
   width: 1232px;
-  height: 820.7px;
+  min-height: 900px; /* 최소 높이를 늘림 */
+  height: auto; /* 높이를 동적으로 증가 */
 `;
 
 const Header = styled.div`
@@ -156,37 +157,51 @@ const TitleInfo = styled.div`
 
 const ContentTextarea = styled.textarea`
   width: 93%;
-  height: 300px;
+  min-height: 300px;
+  height: auto;
   border: none;
   outline: none;
   resize: none;
-  padding: 10px;
+  padding: 18px;
   font-family: "Pretendard";
   font-style: normal;
   font-weight: 400;
   font-size: 20px;
-  line-height: 70px;
+  line-height: 38px;
   color: #000000;
+  overflow: hidden;
 
   &::placeholder {
     color: #a1a1a1;
   }
 `;
 
-const FileList = styled.ul`
+const ImagePreview = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: flex-start;
+  align-items: center;
   width: 100%;
-  padding-left: 20px;
-  list-style: none;
-  margin: 10px 0 0 128px;
-  position: absolute;
-  bottom: 110px;
+  margin: 10px 0 10px 100px;
+`;
+
+const PreviewImage = styled.img`
+  max-height: 300px;
+  width: auto;
+  object-fit: cover;
+`;
+
+const FileList = styled.div`
+  width: 100%;
+  padding: 20px;
 `;
 
 const FileItem = styled.li`
   display: flex;
   align-items: center;
   padding: 10px;
-  margin: 5px 0;
+  margin: 10px 0 5px 50px;
   font-size: 14px;
   color: #333;
   width: 368px;
@@ -252,7 +267,7 @@ const Footer = styled.div`
   bottom: 20px;
   left: 0;
   width: 95%;
-  padding: 20px;
+  padding: 40px 20px 20px 20px;
   background: white;
 `;
 
@@ -311,6 +326,7 @@ const CommunityWriteNew = () => {
   const navigate = useNavigate();
   const [isImageModalOpen, setIsImageModalOpen] = useState(false);
   const [isFileModalOpen, setIsFileModalOpen] = useState(false);
+  const [images, setImages] = useState([]);
   const [files, setFiles] = useState([]); // 파일 목록 상태
 
   // 파일 추가 핸들러
@@ -321,6 +337,13 @@ const CommunityWriteNew = () => {
   // 파일 삭제 핸들러
   const handleRemoveFile = (index) => {
     setFiles(files.filter((_, i) => i !== index));
+  };
+
+  const handleImageSelect = (selectedImages) => {
+    setImages([
+      ...images,
+      ...selectedImages.map((file) => URL.createObjectURL(file)),
+    ]);
   };
 
   return (
@@ -353,7 +376,12 @@ const CommunityWriteNew = () => {
           <TitleInfo>80자 이내</TitleInfo>
         </TitleBox>
         <ContentTextarea placeholder="자유롭게 글을 작성해보세요!" />
-
+        {/* 첨부된 이미지 */}
+        <ImagePreview>
+          {images.map((image, index) => (
+            <PreviewImage key={index} src={image} alt="미리보기" />
+          ))}
+        </ImagePreview>
         {/* 첨부된 파일 리스트 */}
         <FileList>
           {files.map((file, index) => (
@@ -392,6 +420,14 @@ const CommunityWriteNew = () => {
           </ButtonContainer>
         </Footer>
       </WriteBox>
+      {/* 이미지 업로드 모달 */}
+      {isImageModalOpen && (
+        <AttachImageModal
+          onClose={() => setIsImageModalOpen(false)}
+          onImageSelect={handleImageSelect}
+        />
+      )}
+
       {/* 파일 업로드 모달 */}
       {isFileModalOpen && (
         <AttachFileModal
