@@ -7,6 +7,7 @@ import Studyplan from "./pages/Studyplan";
 import Retrospect from "./pages/Retrospect";
 import Login from "./pages/Auth/Login";
 import Community from "./pages/Community";
+import CommunityWriteNew from "./components/CommunityWriteNew";
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -50,6 +51,7 @@ function App() {
           <Route path="/studyplan" element={<Studyplan />} />
           <Route path="/retrospect" element={<Retrospect />} />
           <Route path="/community" element={<Community />} />
+          <Route path="/community/write" element={<CommunityWriteNew />} />
         </Route>
 
         <Route path="*" element={<Navigate to="/login" />} />
