@@ -1,7 +1,8 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import profileIcon from "../../assets/images/community/profile-icon.png";
 import bookmarkBeforeIcon from "../../assets/images/community/bookmark-before.png";
+import bookmarkAfterIcon from "../../assets/images/community/bookmark-after.png";
 import moreIcon from "../../assets/images/community/more-icon.png";
 import heartBeforeIcon from "../../assets/images/community/heart-before.png";
 import commentIcon from "../../assets/images/community/comment-icon.png";
@@ -145,6 +146,12 @@ const PostDate = styled.div`
 `;
 
 const PopularPosts = () => {
+  const [isBookmarked, setIsBookmarked] = useState(false);
+
+  const toggleBookmark = () => {
+    setIsBookmarked((prev) => !prev);
+  };
+
   return (
     <PopularPostsContainer>
       <PostGrid>
@@ -156,7 +163,14 @@ const PopularPosts = () => {
               <Nickname>리풀이</Nickname>
             </ProfileSection>
             <IconSection>
-              <BookmarkIcon src={bookmarkBeforeIcon} alt="Bookmark" />
+              <BookmarkIcon
+                src={isBookmarked ? bookmarkAfterIcon : bookmarkBeforeIcon}
+                alt="Bookmark"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  toggleBookmark();
+                }}
+              />{" "}
               <MoreIcon src={moreIcon} alt="More" />
             </IconSection>
           </PostHeader>
