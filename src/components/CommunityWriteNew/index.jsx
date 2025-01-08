@@ -47,8 +47,10 @@ const WriteBox = styled.div`
   flex-direction: column;
   align-items: center;
   width: 1232px;
-  min-height: 900px; /* 최소 높이를 늘림 */
-  height: auto; /* 높이를 동적으로 증가 */
+  min-height: 820.7px;
+  height: auto;
+  overflow: visible;
+  justify-content: space-between;
 `;
 
 const Header = styled.div`
@@ -169,11 +171,18 @@ const ContentTextarea = styled.textarea`
   font-size: 20px;
   line-height: 38px;
   color: #000000;
-  overflow: hidden;
 
   &::placeholder {
     color: #a1a1a1;
   }
+`;
+
+const AttachmentContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  padding-left: 20px;
+  margin-bottom: 80px;
 `;
 
 const ImagePreview = styled.div`
@@ -183,18 +192,46 @@ const ImagePreview = styled.div`
   justify-content: flex-start;
   align-items: center;
   width: 100%;
-  margin: 10px 0 10px 100px;
+  margin: 10px 0 10px 50px;
+`;
+
+const ImageContainer = styled.div`
+  position: relative;
+  display: inline-block;
 `;
 
 const PreviewImage = styled.img`
   max-height: 300px;
   width: auto;
   object-fit: cover;
+
+  &:hover {
+    filter: brightness(60%);
+  }
+`;
+
+const RemoveImageButton = styled.button`
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  font-size: 24x;
+  cursor: pointer;
+  display: none;
+  background: none;
+  border: none;
+  color: #b8b8b8;
+  font-size: 16px;
+  cursor: pointer;
+  margin-bottom: 20px;
+
+  ${ImageContainer}:hover & {
+    display: block;
+  }
 `;
 
 const FileList = styled.div`
   width: 100%;
-  padding: 20px;
+  padding-bottom: 20px;
 `;
 
 const FileItem = styled.li`
@@ -346,6 +383,10 @@ const CommunityWriteNew = () => {
     ]);
   };
 
+  const handleRemoveImage = (index) => {
+    setImages(images.filter((_, i) => i !== index));
+  };
+
   return (
     <WriteContainer>
       <BackContainer>
@@ -376,31 +417,39 @@ const CommunityWriteNew = () => {
           <TitleInfo>80자 이내</TitleInfo>
         </TitleBox>
         <ContentTextarea placeholder="자유롭게 글을 작성해보세요!" />
-        {/* 첨부된 이미지 */}
-        <ImagePreview>
-          {images.map((image, index) => (
-            <PreviewImage key={index} src={image} alt="미리보기" />
-          ))}
-        </ImagePreview>
-        {/* 첨부된 파일 리스트 */}
-        <FileList>
-          {files.map((file, index) => (
-            <FileItem key={index}>
-              <FileInfo>
-                <FileIcon src={fileIcon} alt="파일 아이콘" />
-                <FileInnerInfo>
-                  <FileName>{file.name}</FileName>
-                  <FileSize>
-                    {(file.size / (1024 * 1024)).toFixed(1)}MB
-                  </FileSize>
-                </FileInnerInfo>
-              </FileInfo>
-              <RemoveButton onClick={() => handleRemoveFile(index)}>
-                ✖
-              </RemoveButton>
-            </FileItem>
-          ))}
-        </FileList>
+        <AttachmentContainer>
+          {/* 이미지 미리보기 */}
+          <ImagePreview>
+            {images.map((image, index) => (
+              <ImageContainer key={index}>
+                <PreviewImage src={image} alt="미리보기" />
+                <RemoveImageButton onClick={() => handleRemoveImage(index)}>
+                  ✖
+                </RemoveImageButton>
+              </ImageContainer>
+            ))}
+          </ImagePreview>
+
+          {/* 첨부된 파일 리스트 */}
+          <FileList>
+            {files.map((file, index) => (
+              <FileItem key={index}>
+                <FileInfo>
+                  <FileIcon src={fileIcon} alt="파일 아이콘" />
+                  <FileInnerInfo>
+                    <FileName>{file.name}</FileName>
+                    <FileSize>
+                      {(file.size / (1024 * 1024)).toFixed(1)}MB
+                    </FileSize>
+                  </FileInnerInfo>
+                </FileInfo>
+                <RemoveButton onClick={() => handleRemoveFile(index)}>
+                  ✖
+                </RemoveButton>
+              </FileItem>
+            ))}
+          </FileList>
+        </AttachmentContainer>
         <Footer>
           <LeftIcons>
             <Icon
