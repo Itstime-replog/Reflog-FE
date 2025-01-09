@@ -10,6 +10,7 @@ import attachImageIcon from "../../assets/images/community/image-icon.png";
 import attachFileIcon from "../../assets/images/community/attach-icon.png";
 import typeDropdownIcon from "../../assets/images/community/typeDropdown-icon.png";
 import fileIcon from "../../assets/images/community/file-icon.png";
+import ExitWarningModal from "../../components/ExitWarningModal";
 
 const WriteContainer = styled.div`
   margin-top: 79px;
@@ -364,7 +365,8 @@ const CommunityWriteNew = () => {
   const [isImageModalOpen, setIsImageModalOpen] = useState(false);
   const [isFileModalOpen, setIsFileModalOpen] = useState(false);
   const [images, setImages] = useState([]);
-  const [files, setFiles] = useState([]); // 파일 목록 상태
+  const [files, setFiles] = useState([]);
+  const [isExitModalOpen, setIsExitModalOpen] = useState(false);
 
   // 파일 추가 핸들러
   const handleFileSelect = (selectedFiles) => {
@@ -464,11 +466,19 @@ const CommunityWriteNew = () => {
             />
           </LeftIcons>
           <ButtonContainer>
-            <CancelButton onClick={() => navigate("/")}>취소</CancelButton>
+            <CancelButton onClick={() => setIsExitModalOpen(true)}>
+              취소
+            </CancelButton>
             <SubmitButton>등록</SubmitButton>
           </ButtonContainer>
         </Footer>
       </WriteBox>
+      {isExitModalOpen && (
+        <ExitWarningModal
+          onClose={() => setIsExitModalOpen(false)}
+          onConfirm={() => navigate("/community")}
+        />
+      )}
       {/* 이미지 업로드 모달 */}
       {isImageModalOpen && (
         <AttachImageModal
@@ -476,7 +486,6 @@ const CommunityWriteNew = () => {
           onImageSelect={handleImageSelect}
         />
       )}
-
       {/* 파일 업로드 모달 */}
       {isFileModalOpen && (
         <AttachFileModal
