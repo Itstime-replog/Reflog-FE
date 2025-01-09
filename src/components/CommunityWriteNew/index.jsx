@@ -11,6 +11,7 @@ import attachFileIcon from "../../assets/images/community/attach-icon.png";
 import typeDropdownIcon from "../../assets/images/community/typeDropdown-icon.png";
 import fileIcon from "../../assets/images/community/file-icon.png";
 import ExitWarningModal from "../../components/ExitWarningModal";
+import UploadComplete from "../../components/UploadComplete";
 
 const WriteContainer = styled.div`
   margin-top: 79px;
@@ -126,7 +127,6 @@ const TitleBox = styled.div`
 const TitleInput = styled.input`
   width: 85%;
   border: none;
-  margin-top: 20px;
   outline: none;
   padding: 0 0 10px 20px;
   font-family: "Pretendard";
@@ -389,109 +389,136 @@ const CommunityWriteNew = () => {
     setImages(images.filter((_, i) => i !== index));
   };
 
+  const [isUploadComplete, setIsUploadComplete] = useState(false);
+
+  const handleSubmit = () => {
+    // 업로드 완료 화면 표시
+    setIsUploadComplete(true);
+
+    // 게시글을 localStorage에 저장 (PostList에서 가져올 수 있도록)
+    const newPost = {
+      title: "새로운 게시글 제목",
+      content: "이곳에 작성한 게시글 내용이 들어갑니다.",
+      date: "방금 전",
+    };
+    localStorage.setItem("newPost", JSON.stringify(newPost));
+  };
+
   return (
     <WriteContainer>
-      <BackContainer>
-        <BackButton onClick={() => navigate("/community")}>
-          <BackIcon src={backIcon} alt="뒤로가기" />
-        </BackButton>
-      </BackContainer>
-      <WriteBox>
-        <Header>
-          <HeaderInfo>
-            *글 유형과 학습 유형은 최대 2개까지 복수 선택 가능합니다.
-          </HeaderInfo>
-          <CategoryContainer>
-            <CategoryButton>
-              <PostTypeIcon src={postTypeIcon} alt="글 유형" />
-              글 유형
-              <TypeDropdownIcon src={typeDropdownIcon} alt="유형 드롭다운" />
-            </CategoryButton>
-            <CategoryButton>
-              <StudyTypeIcon src={studyTypeIcon} alt="학습 유형" />
-              학습 유형
-              <TypeDropdownIcon src={typeDropdownIcon} alt="유형 드롭다운" />
-            </CategoryButton>
-          </CategoryContainer>
-        </Header>
-        <TitleBox>
-          <TitleInput placeholder="제목" maxLength={80} />
-          <TitleInfo>80자 이내</TitleInfo>
-        </TitleBox>
-        <ContentTextarea placeholder="자유롭게 글을 작성해보세요!" />
-        <AttachmentContainer>
-          {/* 이미지 미리보기 */}
-          <ImagePreview>
-            {images.map((image, index) => (
-              <ImageContainer key={index}>
-                <PreviewImage src={image} alt="미리보기" />
-                <RemoveImageButton onClick={() => handleRemoveImage(index)}>
-                  ✖
-                </RemoveImageButton>
-              </ImageContainer>
-            ))}
-          </ImagePreview>
+      {isUploadComplete ? (
+        <UploadComplete onGoBack={() => navigate("/community")} />
+      ) : (
+        <>
+          <BackContainer>
+            <BackButton onClick={() => navigate("/community")}>
+              <BackIcon src={backIcon} alt="뒤로가기" />
+            </BackButton>
+          </BackContainer>
+          <WriteBox>
+            <Header>
+              <HeaderInfo>
+                *글 유형과 학습 유형은 최대 2개까지 복수 선택 가능합니다.
+              </HeaderInfo>
+              <CategoryContainer>
+                <CategoryButton>
+                  <PostTypeIcon src={postTypeIcon} alt="글 유형" />
+                  글 유형
+                  <TypeDropdownIcon
+                    src={typeDropdownIcon}
+                    alt="유형 드롭다운"
+                  />
+                </CategoryButton>
+                <CategoryButton>
+                  <StudyTypeIcon src={studyTypeIcon} alt="학습 유형" />
+                  학습 유형
+                  <TypeDropdownIcon
+                    src={typeDropdownIcon}
+                    alt="유형 드롭다운"
+                  />
+                </CategoryButton>
+              </CategoryContainer>
+            </Header>
+            <TitleBox>
+              <TitleInput placeholder="제목" maxLength={80} />
+              <TitleInfo>80자 이내</TitleInfo>
+            </TitleBox>
+            <ContentTextarea placeholder="자유롭게 글을 작성해보세요!" />
+            <AttachmentContainer>
+              {/* 이미지 미리보기 */}
+              <ImagePreview>
+                {images.map((image, index) => (
+                  <ImageContainer key={index}>
+                    <PreviewImage src={image} alt="미리보기" />
+                    <RemoveImageButton onClick={() => handleRemoveImage(index)}>
+                      ✖
+                    </RemoveImageButton>
+                  </ImageContainer>
+                ))}
+              </ImagePreview>
 
-          {/* 첨부된 파일 리스트 */}
-          <FileList>
-            {files.map((file, index) => (
-              <FileItem key={index}>
-                <FileInfo>
-                  <FileIcon src={fileIcon} alt="파일 아이콘" />
-                  <FileInnerInfo>
-                    <FileName>{file.name}</FileName>
-                    <FileSize>
-                      {(file.size / (1024 * 1024)).toFixed(1)}MB
-                    </FileSize>
-                  </FileInnerInfo>
-                </FileInfo>
-                <RemoveButton onClick={() => handleRemoveFile(index)}>
-                  ✖
-                </RemoveButton>
-              </FileItem>
-            ))}
-          </FileList>
-        </AttachmentContainer>
-        <Footer>
-          <LeftIcons>
-            <Icon
-              src={attachImageIcon}
-              alt="이미지 업로드"
-              onClick={() => setIsImageModalOpen(true)}
+              {/* 첨부된 파일 리스트 */}
+              <FileList>
+                {files.map((file, index) => (
+                  <FileItem key={index}>
+                    <FileInfo>
+                      <FileIcon src={fileIcon} alt="파일 아이콘" />
+                      <FileInnerInfo>
+                        <FileName>{file.name}</FileName>
+                        <FileSize>
+                          {(file.size / (1024 * 1024)).toFixed(1)}MB
+                        </FileSize>
+                      </FileInnerInfo>
+                    </FileInfo>
+                    <RemoveButton onClick={() => handleRemoveFile(index)}>
+                      ✖
+                    </RemoveButton>
+                  </FileItem>
+                ))}
+              </FileList>
+            </AttachmentContainer>
+            <Footer>
+              <LeftIcons>
+                <Icon
+                  src={attachImageIcon}
+                  alt="이미지 업로드"
+                  onClick={() => setIsImageModalOpen(true)}
+                />
+                <Icon
+                  src={attachFileIcon}
+                  alt="파일 첨부"
+                  onClick={() => setIsFileModalOpen(true)}
+                />
+              </LeftIcons>
+              <ButtonContainer>
+                <CancelButton onClick={() => setIsExitModalOpen(true)}>
+                  취소
+                </CancelButton>
+                <SubmitButton onClick={handleSubmit}>등록</SubmitButton>
+              </ButtonContainer>
+            </Footer>
+          </WriteBox>
+          {isExitModalOpen && (
+            <ExitWarningModal
+              onClose={() => setIsExitModalOpen(false)}
+              onConfirm={() => navigate("/community")}
             />
-            <Icon
-              src={attachFileIcon}
-              alt="파일 첨부"
-              onClick={() => setIsFileModalOpen(true)}
+          )}
+          {/* 이미지 업로드 모달 */}
+          {isImageModalOpen && (
+            <AttachImageModal
+              onClose={() => setIsImageModalOpen(false)}
+              onImageSelect={handleImageSelect}
             />
-          </LeftIcons>
-          <ButtonContainer>
-            <CancelButton onClick={() => setIsExitModalOpen(true)}>
-              취소
-            </CancelButton>
-            <SubmitButton>등록</SubmitButton>
-          </ButtonContainer>
-        </Footer>
-      </WriteBox>
-      {isExitModalOpen && (
-        <ExitWarningModal
-          onClose={() => setIsExitModalOpen(false)}
-          onConfirm={() => navigate("/community")}
-        />
-      )}
-      {/* 이미지 업로드 모달 */}
-      {isImageModalOpen && (
-        <AttachImageModal
-          onClose={() => setIsImageModalOpen(false)}
-          onImageSelect={handleImageSelect}
-        />
-      )}
-      {/* 파일 업로드 모달 */}
-      {isFileModalOpen && (
-        <AttachFileModal
-          onClose={() => setIsFileModalOpen(false)}
-          onFileSelect={handleFileSelect} // 파일 선택 함수 전달
-        />
+          )}
+          {/* 파일 업로드 모달 */}
+          {isFileModalOpen && (
+            <AttachFileModal
+              onClose={() => setIsFileModalOpen(false)}
+              onFileSelect={handleFileSelect} // 파일 선택 함수 전달
+            />
+          )}
+        </>
       )}
     </WriteContainer>
   );

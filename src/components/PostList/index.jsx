@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import PostModal from "../../components/PostModal";
 import profileIcon from "../../assets/images/community/profile-icon.png";
@@ -174,6 +174,7 @@ const PostDate = styled.div`
 
 const PostList = () => {
   const [selectedPost, setSelectedPost] = useState(null);
+  const [posts, setPosts] = useState([]); // 게시물 목록 상태 추가
 
   const openModal = (e) => {
     e.stopPropagation(); // 이벤트 버블링 방지 (더보기가 사라지는 문제 해결)
@@ -182,6 +183,14 @@ const PostList = () => {
       content: "이번에 처음 기획부터 디자인",
     });
   };
+
+  useEffect(() => {
+    const newPost = JSON.parse(localStorage.getItem("newPost"));
+    if (newPost) {
+      setPosts((prevPosts) => [newPost, ...prevPosts]);
+      localStorage.removeItem("newPost");
+    }
+  }, []);
 
   return (
     <PostsContainer>
