@@ -6,6 +6,8 @@ import bookmarkBeforeIcon from "../../assets/images/community/bookmark-before.pn
 import moreIcon from "../../assets/images/community/more-icon.png";
 import heartBeforeIcon from "../../assets/images/community/heart-before.png";
 import commentIcon from "../../assets/images/community/comment-icon.png";
+import postTypeIcon from "../../assets/images/community/postType-icon.png";
+import studyTypeIcon from "../../assets/images/community/studyType-icon.png";
 
 const PostsContainer = styled.div`
   margin-top: 47px;
@@ -79,7 +81,7 @@ const MoreIcon = styled.img`
 
 const CategoryTags = styled.div`
   display: flex;
-  gap: 15.42px;
+  gap: 13px;
   padding-left: 56.16px;
 `;
 
@@ -87,7 +89,7 @@ const Tag = styled.div`
   background: #ffffff;
   border-radius: 3.07px;
   border: 0.55px solid #a1a1a1;
-  padding: 5px 20px;
+  padding: 5px 15px;
   font-family: "Pretendard";
   font-style: normal;
   font-weight: 500;
@@ -97,6 +99,14 @@ const Tag = styled.div`
   align-items: center;
   letter-spacing: 0.17205px;
   color: #a1a1a1;
+  gap: 6px;
+
+  img {
+    opacity: 0.6; /* 아이콘도 연하게 */
+    filter: brightness(80%); /* 밝기 조절 */
+    width: 15.5px;
+    height: auto;
+  }
 `;
 
 const PostTitle = styled.h2`
@@ -213,15 +223,31 @@ const PostList = ({ posts }) => {
 
             {/* 카테고리 태그 */}
             <CategoryTags>
-              <Tag>회고 고민</Tag>
-              <Tag>팀 프로젝트</Tag>
+              {post.postType.map((type) => (
+                <Tag key={type}>
+                  <img src={postTypeIcon} alt="" width="16" height="16" />
+                  {type}
+                </Tag>
+              ))}
+              {post.studyType.map((type) => (
+                <Tag key={type}>
+                  <img src={studyTypeIcon} alt="" width="16" height="16" />
+                  {type}
+                </Tag>
+              ))}
             </CategoryTags>
 
             {/* 게시글 제목 & 내용 */}
             <PostTitle>{post.title}</PostTitle>
             <PostContentWrapper>
-              <PostContent>{post.content}</PostContent>
-              <ReadMore onClick={openModal}>...더보기</ReadMore>
+              <PostContent>
+                {post.content.length > 100
+                  ? post.content.substring(0, 100) + "..."
+                  : post.content}
+              </PostContent>
+              {post.content.length > 100 && (
+                <ReadMore onClick={openModal}>...더보기</ReadMore>
+              )}
             </PostContentWrapper>
 
             {/* 하단 좋아요 & 댓글 & 날짜 */}

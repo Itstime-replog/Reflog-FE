@@ -9,7 +9,7 @@ import attachFileIcon from "../../assets/images/community/attach-icon.png";
 import fileIcon from "../../assets/images/community/file-icon.png";
 import ExitWarningModal from "../../components/ExitWarningModal";
 import UploadComplete from "../../components/UploadComplete";
-import CommunityDropdowns from "../../components/CommunityDropdown";
+import CommunityWriteDropdowns from "../../components/CommunityWriteDropdown";
 
 const WriteContainer = styled.div`
   margin-top: 79px;
@@ -332,6 +332,8 @@ const CommunityWriteNew = ({ onPostSubmit }) => {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [isUploadComplete, setIsUploadComplete] = useState(false);
+  const [selectedPostType, setSelectedPostType] = useState([]);
+  const [selectedStudyType, setSelectedStudyType] = useState([]);
 
   // 파일 추가 핸들러
   const handleFileSelect = (selectedFiles) => {
@@ -354,6 +356,14 @@ const CommunityWriteNew = ({ onPostSubmit }) => {
     setImages(images.filter((_, i) => i !== index));
   };
 
+  const handlePostTypeChange = (types) => {
+    setSelectedPostType(types);
+  };
+
+  const handleStudyTypeChange = (types) => {
+    setSelectedStudyType(types);
+  };
+
   const handleSubmit = () => {
     if (!title.trim() || !content.trim()) {
       alert("제목과 내용을 입력해주세요!");
@@ -362,9 +372,11 @@ const CommunityWriteNew = ({ onPostSubmit }) => {
 
     const newPost = {
       id: Date.now(),
-      title, // 입력한 제목
-      content, // 입력한 내용
-      date: new Date().toLocaleDateString(), // 날짜 추가
+      title,
+      content,
+      date: new Date().toLocaleDateString(),
+      postType: selectedPostType || [],
+      studyType: selectedStudyType || [],
     };
 
     if (onPostSubmit) {
@@ -391,7 +403,11 @@ const CommunityWriteNew = ({ onPostSubmit }) => {
                 *글 유형과 학습 유형은 최대 2개까지 복수 선택 가능합니다.
               </HeaderInfo>
               <CategoryContainer>
-                <CommunityDropdowns />
+                {/* 선택된 태그 정보를 CommunityWriteDropdowns로 전달 */}
+                <CommunityWriteDropdowns
+                  onPostTypeChange={handlePostTypeChange}
+                  onStudyTypeChange={handleStudyTypeChange}
+                />
               </CategoryContainer>
             </Header>
             <TitleBox>
