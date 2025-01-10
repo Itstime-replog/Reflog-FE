@@ -2,9 +2,9 @@ import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import postTypeIcon from "../../assets/images/community/postType-icon.png";
 import studyTypeIcon from "../../assets/images/community/studyType-icon.png";
+import typeDropdownIcon from "../../assets/images/community/typeDropdown-icon.png";
 
 const FilterContainer = styled.div`
-  margin-top: 37px;
   display: flex;
   align-items: center;
   justify-content: flex-end;
@@ -47,7 +47,6 @@ const StudyTypeFilterButton = styled.div`
   background: #ffffff;
   box-shadow: 0px 0px 3px 0.907166px rgba(139, 139, 139, 0.15);
   border-radius: 5.80645px;
-  margin-right: 70.52px;
   font-family: "Pretendard";
   font-style: normal;
   font-weight: 600;
@@ -182,6 +181,12 @@ const CommunityDropdowns = () => {
           />
           글 유형
           {selectedPostType.length > 0 && ` ${selectedPostType.length}`}
+          <img
+            src={typeDropdownIcon}
+            alt="드롭다운"
+            width="30.84"
+            height="30.84"
+          />
         </PostTypeFilterButton>
         {isOpen.postType && (
           <PostTypeDropdownMenu
@@ -214,6 +219,12 @@ const CommunityDropdowns = () => {
           />
           학습 유형
           {selectedStudyType.length > 0 && ` ${selectedStudyType.length}`}
+          <img
+            src={typeDropdownIcon}
+            alt="드롭다운"
+            width="30.84"
+            height="30.84"
+          />
         </StudyTypeFilterButton>
         {isOpen.studyType && (
           <StudyTypeDropdownMenu

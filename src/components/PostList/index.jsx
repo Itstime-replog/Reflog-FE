@@ -18,6 +18,8 @@ const PostsContainer = styled.div`
 const PostGrid = styled.div`
   display: flex;
   gap: 39.14px;
+  flex-direction: column;
+  align-items: center;
 `;
 
 const PostCard = styled.div`
@@ -172,12 +174,12 @@ const PostDate = styled.div`
   color: rgba(0, 0, 0, 0.6);
 `;
 
-const PostList = () => {
+const PostList = ({ posts }) => {
   const [selectedPost, setSelectedPost] = useState(null);
-  const [posts, setPosts] = useState([]); // 게시물 목록 상태 추가
+  const [localPosts, setLocalPosts] = useState([]);
 
   const openModal = (e) => {
-    e.stopPropagation(); // 이벤트 버블링 방지 (더보기가 사라지는 문제 해결)
+    e.stopPropagation();
     setSelectedPost({
       title: "회고 방법 고민 들어주세요ㅠ",
       content: "이번에 처음 기획부터 디자인",
@@ -187,7 +189,7 @@ const PostList = () => {
   useEffect(() => {
     const newPost = JSON.parse(localStorage.getItem("newPost"));
     if (newPost) {
-      setPosts((prevPosts) => [newPost, ...prevPosts]);
+      setLocalPosts((prevPosts) => [newPost, ...prevPosts]);
       localStorage.removeItem("newPost");
     }
   }, []);
@@ -195,52 +197,43 @@ const PostList = () => {
   return (
     <PostsContainer>
       <PostGrid>
-        <PostCard onClick={openModal}>
-          {/* 상단 프로필 & 북마크 & 더보기 */}
-          <PostHeader>
-            <ProfileSection>
-              <ProfileImage src={profileIcon} alt="Profile" />
-              <Nickname>리풀이</Nickname>
-            </ProfileSection>
-            <IconSection>
-              <BookmarkIcon src={bookmarkBeforeIcon} alt="Bookmark" />
-              <MoreIcon src={moreIcon} alt="More" />
-            </IconSection>
-          </PostHeader>
+        {posts.map((post) => (
+          <PostCard onClick={openModal} key={post.id}>
+            {/* 상단 프로필 & 북마크 & 더보기 */}
+            <PostHeader>
+              <ProfileSection>
+                <ProfileImage src={profileIcon} alt="Profile" />
+                <Nickname>리풀이</Nickname>
+              </ProfileSection>
+              <IconSection>
+                <BookmarkIcon src={bookmarkBeforeIcon} alt="Bookmark" />
+                <MoreIcon src={moreIcon} alt="More" />
+              </IconSection>
+            </PostHeader>
 
-          {/* 카테고리 태그 */}
-          <CategoryTags>
-            <Tag>회고 고민</Tag>
-            <Tag>팀 프로젝트</Tag>
-          </CategoryTags>
+            {/* 카테고리 태그 */}
+            <CategoryTags>
+              <Tag>회고 고민</Tag>
+              <Tag>팀 프로젝트</Tag>
+            </CategoryTags>
 
-          {/* 게시글 제목 & 내용 */}
-          <PostTitle>회고 방법 고민 들어주세요ㅠ</PostTitle>
-          <PostContentWrapper>
-            <PostContent>
-              회고 방법론을 찾아보면 여러가지 방법론이 있습니다. KPT, 4L, 5F 등
-              다양한 방법들이 존재합니다. 방법론들의 핵심 메세지는 비슷합니다.
-              방법론이 중요한 것이 아니고, 자신이 했던 일에 대해 생각하고 그
-              후에 무엇을 할지를 고민하는게 핵심입니다. 대표적인 방법론을
-              말씀드리되, 제가 자주 활용하는 KPT 회고에 대해 알려드리겠습니다!
-              회고 방법론을 찾아보면 여러가지 방법론이 있습니다. KPT, 4L, 5F 등
-              다양한 방법들이 존재합니다. 방법론들의 핵심 메세지는 비슷합니다.
-              방법론이 중요한 것이 아니고, 자신이 했던 일에 대해 생각하고 그
-              후에 무엇을 할지를 고민하는게 핵심입니다. 대표적인 방법론을
-              말씀드리되, 제가 자주 활용하는 KPT 회고에 대해 알려드리겠습니다!
-            </PostContent>
-            <ReadMore onClick={openModal}>...더보기</ReadMore>
-          </PostContentWrapper>
+            {/* 게시글 제목 & 내용 */}
+            <PostTitle>{post.title}</PostTitle>
+            <PostContentWrapper>
+              <PostContent>{post.content}</PostContent>
+              <ReadMore onClick={openModal}>...더보기</ReadMore>
+            </PostContentWrapper>
 
-          {/* 하단 좋아요 & 댓글 & 날짜 */}
-          <PostFooter>
-            <InteractionIcons>
-              <Icon src={heartBeforeIcon} alt="Like" />
-              <Icon src={commentIcon} alt="Comment" />
-            </InteractionIcons>
-            <PostDate>10월 9일</PostDate>
-          </PostFooter>
-        </PostCard>
+            {/* 하단 좋아요 & 댓글 & 날짜 */}
+            <PostFooter>
+              <InteractionIcons>
+                <Icon src={heartBeforeIcon} alt="Like" />
+                <Icon src={commentIcon} alt="Comment" />
+              </InteractionIcons>
+              <PostDate>{post.date}</PostDate>
+            </PostFooter>
+          </PostCard>
+        ))}
       </PostGrid>
       {selectedPost && (
         <PostModal post={selectedPost} onClose={() => setSelectedPost(null)} />

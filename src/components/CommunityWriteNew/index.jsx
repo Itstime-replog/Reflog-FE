@@ -1,17 +1,15 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import AttachImageModal from "../../components/AttachImageModal";
 import AttachFileModal from "../../components/AttachFileModal";
 import backIcon from "../../assets/images/community/back-icon.png";
-import postTypeIcon from "../../assets/images/community/postType-icon.png";
-import studyTypeIcon from "../../assets/images/community/studyType-icon.png";
 import attachImageIcon from "../../assets/images/community/image-icon.png";
 import attachFileIcon from "../../assets/images/community/attach-icon.png";
-import typeDropdownIcon from "../../assets/images/community/typeDropdown-icon.png";
 import fileIcon from "../../assets/images/community/file-icon.png";
 import ExitWarningModal from "../../components/ExitWarningModal";
 import UploadComplete from "../../components/UploadComplete";
+import CommunityDropdowns from "../../components/CommunityDropdown";
 
 const WriteContainer = styled.div`
   margin-top: 79px;
@@ -77,45 +75,7 @@ const HeaderInfo = styled.div`
 const CategoryContainer = styled.div`
   display: flex;
   gap: 10px;
-`;
-
-const CategoryButton = styled.button`
-  background: #ffffff;
-  border: 0.2px solid rgb(227, 227, 227);
-  padding: 10px 8px 10px 14px;
-  cursor: pointer;
-  font-family: "Pretendard";
-  font-style: normal;
-  font-weight: 600;
-  font-size: 16.329px;
-  line-height: 19px;
-  letter-spacing: 0.181433px;
-  color: #494a4f;
-  display: flex;
-  align-items: center;
-  height: 36px;
-  box-shadow: 0px 0px 3px 0.907166px rgba(139, 139, 139, 0.15);
-  border-radius: 5.80645px;
-`;
-
-const TypeDropdownIcon = styled.img`
-  width: 30.84px;
-  height: 30.84px;
-  cursor: pointer;
-`;
-
-const PostTypeIcon = styled.img`
-  width: 15.43px;
-  height: 15.43px;
-  cursor: pointer;
-  margin-right: 5px;
-`;
-
-const StudyTypeIcon = styled.img`
-  width: 15.43px;
-  height: 15.43px;
-  cursor: pointer;
-  margin-right: 5px;
+  margin-right: 0;
 `;
 
 const TitleBox = styled.div`
@@ -360,13 +320,18 @@ const SubmitButton = styled.button`
   }
 `;
 
-const CommunityWriteNew = () => {
+const CommunityWriteNew = ({ onPostSubmit }) => {
+  const location = useLocation();
   const navigate = useNavigate();
+  const addPost = location.state?.addPost;
   const [isImageModalOpen, setIsImageModalOpen] = useState(false);
   const [isFileModalOpen, setIsFileModalOpen] = useState(false);
   const [images, setImages] = useState([]);
   const [files, setFiles] = useState([]);
   const [isExitModalOpen, setIsExitModalOpen] = useState(false);
+  const [title, setTitle] = useState("");
+  const [content, setContent] = useState("");
+  const [isUploadComplete, setIsUploadComplete] = useState(false);
 
   // 파일 추가 핸들러
   const handleFileSelect = (selectedFiles) => {
@@ -389,19 +354,24 @@ const CommunityWriteNew = () => {
     setImages(images.filter((_, i) => i !== index));
   };
 
-  const [isUploadComplete, setIsUploadComplete] = useState(false);
-
   const handleSubmit = () => {
-    // 업로드 완료 화면 표시
-    setIsUploadComplete(true);
+    if (!title.trim() || !content.trim()) {
+      alert("제목과 내용을 입력해주세요!");
+      return;
+    }
 
-    // 게시글을 localStorage에 저장 (PostList에서 가져올 수 있도록)
     const newPost = {
-      title: "새로운 게시글 제목",
-      content: "이곳에 작성한 게시글 내용이 들어갑니다.",
-      date: "방금 전",
+      id: Date.now(),
+      title, // 입력한 제목
+      content, // 입력한 내용
+      date: new Date().toLocaleDateString(), // 날짜 추가
     };
-    localStorage.setItem("newPost", JSON.stringify(newPost));
+
+    if (onPostSubmit) {
+      onPostSubmit(newPost);
+    }
+
+    setIsUploadComplete(true);
   };
 
   return (
@@ -421,29 +391,23 @@ const CommunityWriteNew = () => {
                 *글 유형과 학습 유형은 최대 2개까지 복수 선택 가능합니다.
               </HeaderInfo>
               <CategoryContainer>
-                <CategoryButton>
-                  <PostTypeIcon src={postTypeIcon} alt="글 유형" />
-                  글 유형
-                  <TypeDropdownIcon
-                    src={typeDropdownIcon}
-                    alt="유형 드롭다운"
-                  />
-                </CategoryButton>
-                <CategoryButton>
-                  <StudyTypeIcon src={studyTypeIcon} alt="학습 유형" />
-                  학습 유형
-                  <TypeDropdownIcon
-                    src={typeDropdownIcon}
-                    alt="유형 드롭다운"
-                  />
-                </CategoryButton>
+                <CommunityDropdowns />
               </CategoryContainer>
             </Header>
             <TitleBox>
-              <TitleInput placeholder="제목" maxLength={80} />
+              <TitleInput
+                placeholder="제목"
+                maxLength={80}
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+              />
               <TitleInfo>80자 이내</TitleInfo>
             </TitleBox>
-            <ContentTextarea placeholder="자유롭게 글을 작성해보세요!" />
+            <ContentTextarea
+              placeholder="자유롭게 글을 작성해보세요!"
+              value={content}
+              onChange={(e) => setContent(e.target.value)}
+            />
             <AttachmentContainer>
               {/* 이미지 미리보기 */}
               <ImagePreview>

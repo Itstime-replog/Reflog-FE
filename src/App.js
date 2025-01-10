@@ -24,6 +24,11 @@ function App() {
     return () => window.removeEventListener("storage", handleStorageChange);
   }, []);
 
+  const [posts, setPosts] = useState([]);
+  const addPost = (newPost) => {
+    setPosts((prevPosts) => [newPost, ...prevPosts]);
+  };
+
   return (
     <BrowserRouter>
       <Routes>
@@ -50,10 +55,15 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/studyplan" element={<Studyplan />} />
           <Route path="/retrospect" element={<Retrospect />} />
-          <Route path="/community" element={<Community />} />
-          <Route path="/community/write" element={<CommunityWriteNew />} />
+          <Route
+            path="/community"
+            element={<Community posts={posts} addPost={addPost} />}
+          />
+          <Route
+            path="/community/write"
+            element={<CommunityWriteNew onPostSubmit={addPost} />}
+          />
         </Route>
-
         <Route path="*" element={<Navigate to="/login" />} />
       </Routes>
     </BrowserRouter>

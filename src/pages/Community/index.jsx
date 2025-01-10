@@ -5,7 +5,6 @@ import PopularPosts from "../../components/PopularPosts";
 import PostList from "../../components/PostList";
 import searchIcon from "../../assets/images/community/search-icon.png";
 import CommunityDropdowns from "../../components/CommunityDropdown";
-import CommunityWriteNew from "../../components/CommunityWriteNew";
 
 const CommunityContainer = styled.div`
   width: 100%;
@@ -127,17 +126,22 @@ const PopularPostsBoxContainer = styled.div`
 
 const TopSecondBox = styled.div`
   width: 100%;
-  height: 100vh;
   background-color: white;
+  min-height: 100vh;
+  height: auto;
+  padding-bottom: 100px;
 `;
 
 const FilterContainer = styled.div`
   display: flex;
   align-items: center;
   justify-content: flex-end;
+  padding-top: 37px;
+  margin-right: 70.52px;
 `;
 
-const Community = () => {
+const Community = ({ posts, addPost }) => {
+  const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState("");
 
   const handleSearch = () => {
@@ -148,8 +152,6 @@ const Community = () => {
       alert("검색어를 입력해주세요.");
     }
   };
-
-  const navigate = useNavigate(); // 페이지 이동을 위한 useNavigate
 
   return (
     <CommunityContainer>
@@ -181,7 +183,7 @@ const Community = () => {
         <FilterContainer>
           <CommunityDropdowns />
         </FilterContainer>
-        <PostList />
+        <PostList posts={posts} />
       </TopSecondBox>
     </CommunityContainer>
   );
