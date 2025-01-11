@@ -351,16 +351,10 @@ const CalendarModal = ({
             <Label>
               <InfoIcon src={infoIcon} alt="Info" onClick={toggleTooltip} />
               알림 기능:
-              <Dropdown
-                value={alarmOption}
-                onChange={(e) => setAlarmOption(e.target.value)}
-              >
-                <option value="없음">없음</option>
-                <option value="10분 후">10분 후</option>
-                <option value="30분 후">30분 후</option>
-                <option value="1시간 후">1시간 후</option>
-                <option value="2시간 후">2시간 후</option>
-              </Dropdown>
+              <ToggleSwitch>
+                <input type="checkbox" />
+                <span></span>
+              </ToggleSwitch>
             </Label>
           </Section>
           <Input placeholder="메모, URL" />
