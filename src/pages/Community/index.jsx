@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import PopularPosts from "../../components/PopularPosts";
@@ -140,14 +140,78 @@ const FilterContainer = styled.div`
   margin-right: 70.52px;
 `;
 
-const Community = ({ posts, addPost }) => {
+const Community = ({ posts: initialPosts }) => {
   const navigate = useNavigate();
+
+  // 검색어
   const [searchQuery, setSearchQuery] = useState("");
 
+  /**
+   * ❶ 원본 게시물 + 로컬스토리지에서 가져온 새 게시물
+   *    전부를 합쳐 관리할 state
+   */
+  const [allPosts, setAllPosts] = useState(initialPosts || []);
+
+  /**
+   * ❷ 필터링된 게시물
+   */
+  const [filteredPosts, setFilteredPosts] = useState(allPosts);
+
+  // -------------------------------------------
+  // (A) 컴포넌트가 처음 마운트될 때, localStorage에서 newPost 불러옴
+  // -------------------------------------------
+  useEffect(() => {
+    const stored = localStorage.getItem("newPost");
+    if (stored) {
+      const newPost = JSON.parse(stored);
+      // allPosts 맨 앞에 추가
+      setAllPosts((prev) => [newPost, ...prev]);
+      // localStorage에선 제거
+      localStorage.removeItem("newPost");
+    }
+  }, []);
+
+  // -------------------------------------------
+  // (B) allPosts가 바뀔 때마다 filteredPosts도 갱신(초기화)
+  // -------------------------------------------
+  useEffect(() => {
+    setFilteredPosts(allPosts);
+  }, [allPosts]);
+
+  // -------------------------------------------
+  // (C) 글유형/학습유형 필터링 로직
+  // -------------------------------------------
+  const handleFilterChange = (selectedPostType, selectedStudyType) => {
+    console.log("[handleFilterChange] allPosts before filtering:", allPosts);
+    console.log("selectedPostType:", selectedPostType);
+    console.log("selectedStudyType:", selectedStudyType);
+    let filtered = [...allPosts];
+
+    // 글 유형 필터
+    if (selectedPostType.length > 0) {
+      // post.postType가 ["회고일지", ...] 식의 배열이라 가정
+      filtered = filtered.filter((post) =>
+        post.postType.some((type) => selectedPostType.includes(type))
+      );
+    }
+
+    // 학습 유형 필터
+    if (selectedStudyType.length > 0) {
+      filtered = filtered.filter((post) =>
+        post.studyType.some((type) => selectedStudyType.includes(type))
+      );
+    }
+
+    setFilteredPosts(filtered);
+  };
+
+  // -------------------------------------------
+  // (D) 검색 버튼 로직(예시)
+  // -------------------------------------------
   const handleSearch = () => {
     if (searchQuery) {
       alert(`'${searchQuery}' 검색 실행`);
-      // 여기에 검색 처리 로직 추가
+      // 추가 검색 로직이 있다면 여기서 filteredPosts를 다시 필터링 해도 됨
     } else {
       alert("검색어를 입력해주세요.");
     }
@@ -181,9 +245,9 @@ const Community = ({ posts, addPost }) => {
       </TopContainer>
       <TopSecondBox>
         <FilterContainer>
-          <CommunityDropdowns />
+          <CommunityDropdowns onFilterChange={handleFilterChange} />
         </FilterContainer>
-        <PostList posts={posts} />
+        <PostList posts={filteredPosts} />
       </TopSecondBox>
     </CommunityContainer>
   );

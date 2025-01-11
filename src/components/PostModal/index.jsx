@@ -31,10 +31,18 @@ const ModalContainer = styled.div`
   border: 0.613924px solid #d6d6d6;
   border-radius: 12.28px;
   display: flex;
-  flex-direction: column; /* 내부 요소를 세로 배치 */
+  flex-direction: column;
   position: relative;
   overflow-y: auto;
-  padding-bottom: 50px;
+  padding-bottom: 40px;
+
+  /* 스크롤바 숨기기 */
+  -ms-overflow-style: none; /* IE, Edge */
+  scrollbar-width: none; /* Firefox */
+
+  &::-webkit-scrollbar {
+    display: none; /* Chrome, Safari */
+  }
 `;
 
 const PostHeader = styled.div`
@@ -87,9 +95,10 @@ const MoreIcon = styled.img`
 `;
 
 const DropdownMenu = styled.div`
-  position: absolute;
-  top: 55px;
-  right: -200%;
+  position: fixed;
+  top: 255px;
+  right: 402px;
+  transform: translateX(-50%);
   background: #ffffff;
   box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.15);
   border-radius: 8px;
@@ -97,7 +106,7 @@ const DropdownMenu = styled.div`
   width: 164px;
   height: 90px;
   display: ${(props) => (props.isOpen ? "block" : "none")};
-  z-index: 1000;
+  z-index: 10000;
 `;
 
 const MenuItem = styled.div`
@@ -114,6 +123,7 @@ const MenuItem = styled.div`
   cursor: pointer;
   color: ${(props) => (props.danger ? "#ff4d4f" : "#000")};
   font-weight: ${(props) => (props.danger ? "bold" : "normal")};
+  z-index: 10001;
 
   &:hover {
     background: #e5eeff;
@@ -167,8 +177,10 @@ const PostTitle = styled.h2`
 `;
 
 const PostContentWrapper = styled.div`
-  position: relative;
   height: 300px;
+  overflow: hidden;
+  flex-shrink: 0;
+  margin-bottom: 20px;
 `;
 
 const PostContent = styled.p`
@@ -215,31 +227,69 @@ const PostDate = styled.div`
 `;
 
 const CommentSection = styled.div`
-  flex-grow: 1; /* 모달 내에서 나머지 공간을 차지 */
-  overflow-y: auto; /* 댓글이 많으면 스크롤 가능하도록 */
-  padding: 15px; /* 여백 추가 */
+  flex-grow: 1;
+  padding: 15px;
+  overflow: visible;
+  margin-bottom: 40px;
 `;
 
 const CommentInputContainer = styled.div`
-  margin-left: 20px;
+  position: fixed;
+  bottom: 166.6px;
+  border-radius: 0 0 26.2px 26.2px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 1005px;
   display: flex;
   align-items: center;
   gap: 10px;
-  border-radius: 8px;
-  position: absolute; /* 모달 하단에 고정 */
-  bottom: 0;
-  left: 0;
-  width: 95%;
   background-color: white;
+  padding: 10px 20px;
+  z-index: 15;
+`;
+
+const ReplyToMessage = styled.div`
+  width: 754px;
+  background: #f7faff;
+  padding: 10px;
+  border: 1.19px solid #d6d6d6;
+  border-bottom: none;
+  border-radius: 5px 5px 0 0;
+  font-family: "Pretendard";
+  font-style: normal;
+  font-weight: 400;
+  font-size: 17.8346px;
+  line-height: 21px;
+  display: flex;
+  align-items: center;
+  letter-spacing: 0.237795px;
+  color: #b8b8b8;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: -0.1px;
+  position: absolute;
+  bottom: 79.5px;
+  left: 113px;
+`;
+
+const CancelReplyButton = styled.button`
+  background: none;
+  border: none;
+  cursor: pointer;
+  opacity: 0.4;
+  font-size: 15px;
+
+  &:hover {
+    color: #555;
+  }
 `;
 
 const CommentInput = styled.input`
-  flex: 1;
+  flex: 10;
   height: 40px;
   padding: 5px 15px;
   border-radius: 7.13px;
   border: 1.18898px solid #d6d6d6;
-  border-radius: 7.13386px;
   color: black;
   font-family: "Pretendard";
   font-style: normal;
@@ -285,7 +335,7 @@ const CommentBottom = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  width: 100%; /* 댓글과 버튼을 양쪽 정렬 */
+  width: 100%;
 `;
 
 const CommentProfileImage = styled.img`
@@ -309,7 +359,7 @@ const CommentText = styled.p`
 const CommentItem = styled.li`
   display: flex;
   align-items: center;
-  justify-content: space-between; /* 오른쪽 아이콘을 오른쪽 정렬 */
+  justify-content: space-between;
   gap: 10px;
 `;
 
@@ -345,20 +395,33 @@ const LikeIcon = styled.img`
   margin-right: 38px;
 `;
 
-const PostModal = ({ onClose }) => {
+const PostModal = ({ post, onClose }) => {
   const [isBookmarked, setIsBookmarked] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
+  const dropdownRef = useRef(null);
+  const [comment, setComment] = useState("");
+  const [comments, setComments] = useState([]);
+  const [likedComments, setLikedComments] = useState({});
+  const [isLiked, setIsLiked] = useState(false);
+  const [replyTo, setReplyTo] = useState(null); // 답글 대상 상태
+
+  const handleReplyClick = (comment) => {
+    setReplyTo(comment); // 답글 대상 설정
+  };
+
+  const togglePostLike = () => {
+    setIsLiked((prev) => !prev); // 상태 반전
+  };
 
   const toggleBookmark = () => {
     setIsBookmarked((prev) => !prev);
   };
-  const [isOpen, setIsOpen] = useState(false);
-  const dropdownRef = useRef(null);
 
   const toggleDropdown = (e) => {
     e.stopPropagation(); // 클릭 이벤트 버블링 방지
     setIsOpen((prev) => !prev);
   };
-  // 모달 외부 클릭 시 닫힘
+
   useEffect(() => {
     const handleClickOutside = (e) => {
       if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
@@ -372,20 +435,49 @@ const PostModal = ({ onClose }) => {
     };
   }, []);
 
-  const [comment, setComment] = useState("");
-  const [comments, setComments] = useState([]);
-
   const handleCommentChange = (e) => {
     setComment(e.target.value);
   };
 
   const handleCommentSubmit = () => {
-    if (comment.trim() === "") return; // 빈 댓글 방지
+    if (comment.trim() === "") return;
+
     const newComment = {
+      id: Date.now(),
       text: comment,
-      date: new Date(), // 현재 날짜 저장
+      date: new Date(),
+      author: "리풀이",
+      replies: [],
     };
-    setComments([...comments, newComment]); // 새로운 댓글 추가
+
+    if (replyTo) {
+      // 대댓글 또는 부모 댓글에 답글 추가
+      const updatedComments = comments.map((cmt) => {
+        if (cmt.id === replyTo.id) {
+          // 부모 댓글에 답글
+          return { ...cmt, replies: [...cmt.replies, newComment] };
+        }
+        if (cmt.replies.some((reply) => reply.id === replyTo.id)) {
+          // 대댓글에 답글
+          return {
+            ...cmt,
+            replies: cmt.replies.map((reply) =>
+              reply.id === replyTo.id
+                ? { ...reply, replies: [...reply.replies, newComment] }
+                : reply
+            ),
+          };
+        }
+        return cmt;
+      });
+
+      setComments(updatedComments);
+      setReplyTo(null); // 답글 대상 초기화
+    } else {
+      // 일반 댓글 추가
+      setComments([...comments, newComment]);
+    }
+
     setComment(""); // 입력 필드 초기화
   };
 
@@ -394,14 +486,86 @@ const PostModal = ({ onClose }) => {
     return `${d.getMonth() + 1}월 ${d.getDate()}일`; // 월/일 형식 변환
   };
 
-  const [likedComments, setLikedComments] = useState({});
-
   const toggleLike = (index) => {
     setLikedComments((prev) => ({
       ...prev,
       [index]: !prev[index],
     }));
   };
+
+  const renderComments = (comments, depth = 0) => {
+    return comments.map((cmt) => (
+      <div key={cmt.id}>
+        {/* 부모 댓글 */}
+        <CommentItem style={{ marginLeft: depth * 20 + "px" }}>
+          <CommentLeft>
+            <ProfileImage src={profileIcon} alt="Profile" />
+            <div>
+              <CommentTop>
+                <Nickname>{cmt.author}</Nickname>
+                <CommentDate>{formatDate(cmt.date)}</CommentDate>
+              </CommentTop>
+              <CommentBottom>
+                <CommentText>{cmt.text}</CommentText>
+                <ReplyButton onClick={() => setReplyTo(cmt)}>
+                  답글달기
+                </ReplyButton>
+              </CommentBottom>
+            </div>
+          </CommentLeft>
+          <CommentRight>
+            <LikeIcon
+              src={likedComments[cmt.id] ? heartAfterIcon : heartBeforeIcon}
+              alt="Like"
+              onClick={() => toggleLike(cmt.id)}
+            />
+          </CommentRight>
+        </CommentItem>
+
+        {/* 대댓글 렌더링 */}
+        {cmt.replies.length > 0 &&
+          cmt.replies.map((reply) => (
+            <div key={reply.id}>
+              {/* 대댓글 */}
+              <CommentItem style={{ marginLeft: (depth + 1) * 20 + "px" }}>
+                <CommentLeft>
+                  <ProfileImage src={profileIcon} alt="Profile" />
+                  <div>
+                    <CommentTop>
+                      <Nickname>{reply.author}</Nickname>
+                      <CommentDate>{formatDate(reply.date)}</CommentDate>
+                    </CommentTop>
+                    <CommentBottom>
+                      <CommentText>{reply.text}</CommentText>
+                      <ReplyButton onClick={() => setReplyTo(reply)}>
+                        답글달기
+                      </ReplyButton>
+                    </CommentBottom>
+                  </div>
+                </CommentLeft>
+                <CommentRight>
+                  <LikeIcon
+                    src={
+                      likedComments[reply.id] ? heartAfterIcon : heartBeforeIcon
+                    }
+                    alt="Like"
+                    onClick={() => toggleLike(reply.id)}
+                  />
+                </CommentRight>
+              </CommentItem>
+
+              {/* 대댓글의 답글 (대댓글과 동일한 depth 유지) */}
+              {reply.replies.length > 0 &&
+                renderComments(reply.replies, depth + 1)}
+            </div>
+          ))}
+      </div>
+    ));
+  };
+
+  if (!post) {
+    return null; // 혹은 로딩 상태 표시
+  }
 
   return (
     <ModalOverlay onClick={onClose}>
@@ -418,18 +582,18 @@ const PostModal = ({ onClose }) => {
               alt="Bookmark"
               onClick={(e) => {
                 e.stopPropagation();
-                toggleBookmark();
+                togglePostLike();
               }}
             />
             <MoreIconWrapper ref={dropdownRef}>
-              <MoreIcon src={moreIcon} alt="More" onClick={toggleDropdown} />
+              <MoreIcon
+                src={moreIcon}
+                alt="More"
+                onClick={() => setIsOpen(!isOpen)}
+              />
               <DropdownMenu isOpen={isOpen}>
-                <MenuItem>
-                  수정하기 <ModifyIcon src={modifyIcon} alt="Modify" />
-                </MenuItem>
-                <MenuItem danger>
-                  삭제하기 <DeleteIcon src={deleteIcon} alt="Delete" />
-                </MenuItem>
+                <MenuItem>수정하기</MenuItem>
+                <MenuItem danger>삭제하기</MenuItem>
               </DropdownMenu>
             </MoreIconWrapper>
           </IconSection>
@@ -437,79 +601,50 @@ const PostModal = ({ onClose }) => {
 
         {/* 카테고리 태그 */}
         <CategoryTags>
-          <Tag>회고 고민</Tag>
-          <Tag>팀 프로젝트</Tag>
+          {post.tags &&
+            post.tags.map((tag, index) => <Tag key={index}>{tag}</Tag>)}
         </CategoryTags>
 
-        {/* 게시글 제목 & 내용 */}
-        <PostTitle>회고 방법 고민 들어주세요ㅠ</PostTitle>
+        {/* 게시글 제목 및 내용 */}
+        <PostTitle>{post.title}</PostTitle>
         <PostContentWrapper>
-          <PostContent>
-            회고 방법론을 찾아보면 여러가지 방법론이 있습니다. KPT, 4L, 5F 등
-            다양한 방법들이 존재합니다. 방법론들의 핵심 메세지는 비슷합니다.
-            방법론이 중요한 것이 아니고, 자신이 했던 일에 대해 생각하고 그 후에
-            무엇을 할지를 고민하는게 핵심입니다. 대표적인 방법론을 말씀드리되,
-            제가 자주 활용하는 KPT 회고에 대해 알려드리겠습니다! 회고 방법론을
-            찾아보면 여러가지 방법론이 있습니다. KPT, 4L, 5F 등 다양한 방법들이
-            존재합니다. 방법론들의 핵심 메세지는 비슷합니다. 방법론이 중요한
-            것이 아니고, 자신이 했던 일에 대해 생각하고 그 후에 무엇을 할지를
-            고민하는게 핵심입니다. 대표적인 방법론을 말씀드리되, 제가 자주
-            활용하는 KPT 회고에 대해 알려드리겠습니다!
-          </PostContent>
+          <PostContent>{post.content}</PostContent>
         </PostContentWrapper>
 
-        {/* 하단 좋아요 & 댓글 & 날짜 */}
+        {/* 좋아요, 댓글, 날짜 */}
         <PostFooter>
           <InteractionIcons>
-            <Icon src={heartBeforeIcon} alt="Like" />
+            <Icon
+              src={isLiked ? heartAfterIcon : heartBeforeIcon}
+              alt="Like"
+              onClick={togglePostLike}
+            />
             <Icon src={commentIcon} alt="Comment" />
           </InteractionIcons>
-          <PostDate>10월 9일</PostDate>
+          <PostDate>{post.date}</PostDate>
         </PostFooter>
+
+        {/* 댓글 섹션 */}
         <CommentSection>
-          {/* 댓글 입력창 */}
           <CommentInputContainer>
+            {replyTo && (
+              <ReplyToMessage>
+                {replyTo.author}님께 답글 남기는 중
+                <CancelReplyButton onClick={() => setReplyTo(null)}>
+                  X
+                </CancelReplyButton>
+              </ReplyToMessage>
+            )}
             <CommentProfileImage src={profileIcon} alt="Profile" />
             <CommentInput
               type="text"
               placeholder="댓글을 남겨주세요."
               value={comment}
-              onChange={handleCommentChange}
+              onChange={(e) => setComment(e.target.value)}
             />
             <SubmitButton onClick={handleCommentSubmit}>등록</SubmitButton>
           </CommentInputContainer>
-          {/* 댓글 리스트 */}
-          <CommentList>
-            {comments.map((cmt, index) => (
-              <CommentItem key={index}>
-                <CommentLeft>
-                  <ProfileImage src={profileIcon} alt="Profile" />
-                  <div>
-                    {/* 이름 + 날짜 (첫 번째 줄) */}
-                    <CommentTop>
-                      <Nickname>이름</Nickname>
-                      <CommentDate>{formatDate(cmt.date)}</CommentDate>
-                    </CommentTop>
-
-                    {/* 댓글 + 답글달기 (두 번째 줄) */}
-                    <CommentBottom>
-                      <CommentText>{cmt.text}</CommentText>
-                      <ReplyButton>답글달기</ReplyButton>
-                    </CommentBottom>
-                  </div>
-                </CommentLeft>
-                <CommentRight>
-                  <LikeIcon
-                    src={
-                      likedComments[index] ? heartAfterIcon : heartBeforeIcon
-                    }
-                    alt="Like"
-                    onClick={() => toggleLike(index)}
-                  />
-                </CommentRight>
-              </CommentItem>
-            ))}
-          </CommentList>
+          <CommentList>{renderComments(comments)}</CommentList>
         </CommentSection>
       </ModalContainer>
     </ModalOverlay>
