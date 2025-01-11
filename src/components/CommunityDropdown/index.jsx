@@ -117,11 +117,10 @@ const DropdownItem = styled.li`
   `}
 `;
 
-const CommunityDropdowns = () => {
+const CommunityDropdowns = ({ onFilterChange }) => {
   const [isOpen, setIsOpen] = useState({ postType: false, studyType: false });
   const [selectedPostType, setSelectedPostType] = useState([]);
   const [selectedStudyType, setSelectedStudyType] = useState([]);
-
   const toggleDropdown = (type) => {
     setIsOpen((prev) => ({
       postType: false,
@@ -130,25 +129,41 @@ const CommunityDropdowns = () => {
     }));
   };
 
+  // 글 유형 선택 시
   const handlePostTypeSelect = (item) => {
+    console.log("handlePostTypeSelect clicked with:", item);
+
     setSelectedPostType((prev) => {
+      let newSelected;
       if (prev.includes(item)) {
-        return prev.filter((type) => type !== item); // 선택 해제
+        newSelected = prev.filter((type) => type !== item); // 이미 선택된 아이템이면 제거
       } else if (prev.length < 2) {
-        return [...prev, item]; // 최대 2개까지 추가
+        newSelected = [...prev, item]; // 최대 2개까지 추가
+      } else {
+        newSelected = prev; // 2개 초과 선택 불가
       }
-      return prev; // 2개 초과 선택 불가
+
+      // 1) 여기서 부모 콜백 호출
+      onFilterChange(newSelected, selectedStudyType);
+      return newSelected;
     });
   };
 
+  // 학습 유형 선택 시
   const handleStudyTypeSelect = (item) => {
     setSelectedStudyType((prev) => {
+      let newSelected;
       if (prev.includes(item)) {
-        return prev.filter((type) => type !== item); // 선택 해제
+        newSelected = prev.filter((type) => type !== item);
       } else if (prev.length < 2) {
-        return [...prev, item]; // 최대 2개까지 추가
+        newSelected = [...prev, item];
+      } else {
+        newSelected = prev;
       }
-      return prev; // 2개 초과 선택 불가
+
+      // 2) 여기서 부모 콜백 호출
+      onFilterChange(selectedPostType, newSelected);
+      return newSelected;
     });
   };
 

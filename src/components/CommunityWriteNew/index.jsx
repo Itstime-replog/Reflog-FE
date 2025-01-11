@@ -39,18 +39,17 @@ const BackIcon = styled.img`
 
 const WriteBox = styled.div`
   position: relative;
-  padding: 20px;
+  padding: 40px;
   background: #ffffff;
   border-radius: 16.37px;
   box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: flex-start;
   width: 1232px;
-  min-height: 820.7px;
   height: auto;
   overflow: visible;
-  justify-content: space-between;
+  gap: 20px;
 `;
 
 const Header = styled.div`
@@ -80,15 +79,16 @@ const CategoryContainer = styled.div`
 
 const TitleBox = styled.div`
   display: flex;
+  width: 100%;
   border-bottom: 1px solid #ddd;
-  width: 96%;
+  padding-bottom: 10px;
 `;
 
 const TitleInput = styled.input`
   width: 85%;
   border: none;
   outline: none;
-  padding: 0 0 10px 20px;
+  padding: 20px;
   font-family: "Pretendard";
   font-style: normal;
   font-weight: 600;
@@ -114,8 +114,7 @@ const TitleInfo = styled.div`
   align-items: center;
   justify-content: flex-end;
   color: #a1a1a1;
-  margin-bottom: -20px;
-  padding-right: 20px;
+  padding-right: 22px;
 `;
 
 const ContentTextarea = styled.textarea`
@@ -125,13 +124,14 @@ const ContentTextarea = styled.textarea`
   border: none;
   outline: none;
   resize: none;
-  padding: 18px;
+  padding: 10px;
   font-family: "Pretendard";
   font-style: normal;
   font-weight: 400;
   font-size: 20px;
   line-height: 38px;
   color: #000000;
+  word-break: break-word;
 
   &::placeholder {
     color: #a1a1a1;
@@ -153,7 +153,7 @@ const ImagePreview = styled.div`
   justify-content: flex-start;
   align-items: center;
   width: 100%;
-  margin: 10px 0 10px 50px;
+  margin: 10px 0 10px 10px;
 `;
 
 const ImageContainer = styled.div`
@@ -162,9 +162,9 @@ const ImageContainer = styled.div`
 `;
 
 const PreviewImage = styled.img`
-  max-height: 300px;
-  width: auto;
-  object-fit: cover;
+  width: 80%;
+  width: height: auto;
+  object-fit: contain;
 
   &:hover {
     filter: brightness(60%);
@@ -199,7 +199,7 @@ const FileItem = styled.li`
   display: flex;
   align-items: center;
   padding: 10px;
-  margin: 10px 0 5px 50px;
+  margin: 10px 0 10px 10px;
   font-size: 14px;
   color: #333;
   width: 368px;
@@ -374,9 +374,14 @@ const CommunityWriteNew = ({ onPostSubmit }) => {
       id: Date.now(),
       title,
       content,
-      date: new Date().toLocaleDateString(),
+      date: new Date().toLocaleDateString("ko-KR", {
+        month: "long",
+        day: "numeric",
+      }),
       postType: selectedPostType || [],
       studyType: selectedStudyType || [],
+      images: images || [],
+      files: files || [],
     };
 
     if (onPostSubmit) {
