@@ -45,27 +45,47 @@ const TodaysResolution = () => {
   const [text, setText] = useState(""); // 사용자 입력 데이터
   const [error, setError] = useState(null); // 에러 상태
   const textareaRef = useRef(null);
-
-  const memberId = 1; // 예제 사용자 ID
-  const date = "2024-12-01"; // 예제 날짜
-
+  /*
   const fetchData = async () => {
     try {
+      const memberId = localStorage.getItem("memberId");
+      const date = new Date().toISOString().split("T")[0]; // 현재 날짜
+
+      if (!memberId) {
+        throw new Error("로그인이 필요합니다. Member ID를 찾을 수 없습니다.");
+      }
+
       const data = await fetchDailyGoal(memberId, date);
+      console.log("오늘의 목표 데이터:", data);
+
       if (data.isSuccess) {
         setText(data.result?.goal || ""); // 결과에서 goal 데이터 설정
-        adjustHeight();
       } else {
         setError(data.message || "데이터를 가져올 수 없습니다.");
       }
-    } catch (err) {
-      if (err.response?.status === 404) {
-        setError("해당 회원 또는 학습목표를 찾을 수 없습니다.");
-      } else if (err.response?.status === 500) {
-        setError("서버 에러가 발생했습니다.");
-      } else {
-        setError(err.message || "알 수 없는 에러가 발생했습니다.");
+    } catch (error) {
+      console.error("데이터 가져오기 에러:", error.message);
+    }
+  };*/
+  const fetchData = async () => {
+    try {
+      const hardcodedMemberId = "59819297-9f21-4a42-aeae-3f4f8f8cf1e1"; // 하드코딩된 멤버 ID
+      const date = new Date().toISOString().split("T")[0]; // 현재 날짜
+
+      if (!hardcodedMemberId) {
+        throw new Error("로그인이 필요합니다. Member ID를 찾을 수 없습니다.");
       }
+
+      const data = await fetchDailyGoal(hardcodedMemberId, date); // 하드코딩된 memberId 사용
+      console.log("오늘의 목표 데이터:", data);
+
+      if (data.isSuccess) {
+        setText(data.result?.goal || ""); // 결과에서 goal 데이터 설정
+      } else {
+        setError(data.message || "데이터를 가져올 수 없습니다.");
+      }
+    } catch (error) {
+      console.error("데이터 가져오기 에러:", error.message);
     }
   };
 
