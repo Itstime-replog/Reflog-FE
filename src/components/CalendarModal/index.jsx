@@ -1,11 +1,9 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import infoIcon from "../../assets/images/calendar/info-icon.png";
 import InnerCalendar from "../InnerCalendar/InnerCalendar";
 import TimeSelect from "../TimeSelect/TimeSelect";
 import infoBoxImage from "../../assets/images/calendar/infoBox.png";
-import { createSchedule } from "../../apis/calendarModalApi";
-import { deleteSchedule } from "../../apis/calendarApi";
 
 const ModalOverlay = styled.div`
   position: absolute;
@@ -84,53 +82,7 @@ const Label = styled.div`
   color: #494a4f;
 `;
 
-const ToggleSwitchAllday = styled.label`
-  position: relative;
-  display: inline-block;
-  width: 34px;
-  height: 20px;
-  margin-left: 10px;
-
-  input {
-    opacity: 0;
-    width: 0;
-    height: 0;
-  }
-
-  span {
-    position: absolute;
-    cursor: pointer;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    background-color: #ccc;
-    border-radius: 20px;
-    transition: 0.4s;
-  }
-
-  span:before {
-    position: absolute;
-    content: "";
-    height: 14px;
-    width: 14px;
-    left: 3px;
-    bottom: 3px;
-    background-color: white;
-    border-radius: 50%;
-    transition: 0.4s;
-  }
-
-  input:checked + span {
-    background-color: #4a86f7;
-  }
-
-  input:checked + span:before {
-    transform: translateX(14px);
-  }
-`;
-
-const ToggleSwitchAlarm = styled.label`
+const ToggleSwitch = styled.label`
   position: relative;
   display: inline-block;
   width: 34px;
@@ -308,19 +260,14 @@ const CalendarModal = ({
 }) => {
   const [scheduleText, setScheduleText] = useState(existingEvent?.text || "");
   const [startTime, setStartTime] = useState(
-    existingEvent?.startTime || "00:00 오전"
+    existingEvent?.startTime || "00:00 AM"
   );
-  const [endTime, setEndTime] = useState(
-    existingEvent?.endTime || "00:00 오전"
-  ); // 기존 종료 시간 로드
+  const [endTime, setEndTime] = useState(existingEvent?.endTime || "00:00 AM"); // 기존 종료 시간 로드
   const [alarmOption, setAlarmOption] = useState("없음"); // 알림 옵션 상태 관리
   const [tooltipPosition, setTooltipPosition] = useState(null);
   const [showEndCalendar, setShowEndCalendar] = useState(false); // 종료일 캘린더 표시 상태
   const [endDate, setEndDate] = useState(selectedDate); // 종료일 상태
   const [endCalendarPosition, setEndCalendarPosition] = useState(null); // 종료일 캘린더 위치
-  const [content, setContent] = useState(existingEvent?.content || ""); // 메모 상태
-  const [allday, setAllday] = useState(existingEvent?.allday || false);
-  const [isOn, setIsOn] = useState(existingEvent?.isOn || false);
 
   // 마지막 주 판단 함수
   const isLastWeek = (date) => {
@@ -331,97 +278,17 @@ const CalendarModal = ({
     return date >= lastWeekStart && date <= monthEnd; // 마지막 주 날짜 여부 확인
   };
 
-  const convertTo24Hour = (time) => {
-    const match = time.match(/^(\d{1,2}):(\d{2}) (오전|오후)$/);
-    if (!match) {
-      throw new Error(`Invalid time format: ${time}`);
-    }
-
-    const [_, hours, minutes, period] = match; // "hours"와 "minutes"를 분리
-    const hours24 =
-      period === "오후" && hours !== "12" // 오후이고 12시가 아니면
-        ? parseInt(hours, 10) + 12
-        : period === "오전" && hours === "12" // 오전 12시는 00시로 변환
-          ? 0
-          : parseInt(hours, 10);
-
-    return `${hours24.toString().padStart(2, "0")}:${minutes}`;
-  };
-  useEffect(() => {
-    console.log("existingEvent in CalendarModal:", existingEvent);
-  }, [existingEvent]);
-
-  useEffect(() => {
-    if (existingEvent) {
-      setScheduleText(existingEvent.text || "");
-      setStartTime(existingEvent.startTime || "00:00 오전");
-      setEndTime(existingEvent.endTime || "00:00 오전");
-      setContent(existingEvent.content || "");
-      setAllday(existingEvent.allday || false);
-      setIsOn(existingEvent.isOn || false);
-      setEndDate(selectedDate); // 선택된 종료일 업데이트
-    }
-  }, [existingEvent, selectedDate]);
-
   // 일정 등록
-  const handleRegister = async () => {
+  const handleRegister = () => {
     if (scheduleText.trim()) {
-      try {
-        const startTime24 = convertTo24Hour(startTime);
-        const endTime24 = convertTo24Hour(endTime);
-
-        const startDateTime = new Date(
-          `${selectedDate.toISOString().split("T")[0]}T${startTime24}`
-        ).toISOString();
-
-        const endDateTime = new Date(
-          `${endDate.toISOString().split("T")[0]}T${endTime24}`
-        ).toISOString();
-
-        const scheduleData = {
-          memberId: "59819297-9f21-4a42-aeae-3f4f8f8cf1e1",
-          title: scheduleText,
-          content,
-          allday,
-          isOn,
-          startDateTime,
-          endDateTime,
-        };
-
-        const result = await createSchedule(
-          localStorage.getItem("accessToken"),
-          scheduleData
-        );
-        if (result.isSuccess) {
-          onAddEvent(scheduleText, { startTime, endTime });
-          onClose();
-        } else {
-          console.error("일정 등록 실패:", result.message);
-        }
-      } catch (error) {
-        console.error("일정 등록 중 에러 발생:", error.message);
-      }
+      onAddEvent(scheduleText, { startTime, endTime }); // 시작 시간과 종료 시간을 함께 저장
     }
   };
 
   // 일정 삭제
-  const handleDeleteEvent = async () => {
-    if (!existingEvent?.id) {
-      console.error("삭제할 일정의 ID가 존재하지 않습니다.");
-      return;
-    }
-
-    if (window.confirm("이 일정을 삭제하시겠습니까?")) {
-      const isDeleted = await deleteSchedule(existingEvent.id); // 삭제 API 호출
-
-      if (isDeleted) {
-        onRemoveEvent(); // 로컬 상태에서 일정 삭제
-        console.log("일정 삭제 완료");
-        onClose(); // 모달 닫기
-      } else {
-        console.error("일정 삭제에 실패했습니다.");
-      }
-    }
+  const handleRemove = () => {
+    onRemoveEvent(); // 일정 삭제 핸들러 호출
+    onClose(); // 모달 닫기
   };
 
   // 종료일 클릭 시 InnerCalendar 위치 계산 및 표시/숨김
@@ -468,45 +335,33 @@ const CalendarModal = ({
           <Section>
             <Label>
               종일 :
-              <ToggleSwitchAllday>
-                <input
-                  type="checkbox"
-                  checked={allday} // 상태 값으로 연결
-                  onChange={(e) => setAllday(e.target.checked)}
-                />
+              <ToggleSwitch>
+                <input type="checkbox" />
                 <span></span>
-              </ToggleSwitchAllday>
+              </ToggleSwitch>
             </Label>
             <Label>
-              시작일 : {selectedDate.toLocaleDateString()}
+              시작일 : {selectedDate.toLocaleDateString()}{" "}
               <TimeSelect value={startTime} onChange={setStartTime} />
             </Label>
             <Label onClick={handleEndDateClick}>
-              종료일 : {endDate.toLocaleDateString()}
+              종료일 : {endDate.toLocaleDateString()}{" "}
               <TimeSelect value={endTime} onChange={setEndTime} />
             </Label>
             <Label>
               <InfoIcon src={infoIcon} alt="Info" onClick={toggleTooltip} />
               알림 기능:
-              <ToggleSwitchAlarm>
-                <input
-                  type="checkbox"
-                  checked={isOn} // 상태 값으로 연결
-                  onChange={(e) => setIsOn(e.target.checked)}
-                />
+              <ToggleSwitch>
+                <input type="checkbox" />
                 <span></span>
-              </ToggleSwitchAlarm>
+              </ToggleSwitch>
             </Label>
           </Section>
-          <Input
-            placeholder="메모, URL"
-            value={content}
-            onChange={(e) => setContent(e.target.value)}
-          />
+          <Input placeholder="메모, URL" />
           <ButtonContainer>
             <RegisterButton onClick={handleRegister}>등록</RegisterButton>
             {existingEvent && (
-              <DeleteButton onClick={handleDeleteEvent}>삭제</DeleteButton>
+              <DeleteButton onClick={handleRemove}>삭제</DeleteButton>
             )}
           </ButtonContainer>
         </ModalContent>

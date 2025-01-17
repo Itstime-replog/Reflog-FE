@@ -30,11 +30,10 @@ const AmPmDisplay = styled.span`
   color: #494a4f;
 `;
 
-const TimeSelect = ({ value = "00:00 오전", onChange }) => {
+const TimeSelect = ({ value = "00:00 AM", onChange }) => {
   const [time, setTime] = useState(value.split(" ")[0]); // "00:00"
-  const [period, setPeriod] = useState(value.split(" ")[1] || "오전"); // 기본: "오전"
+  const [period, setPeriod] = useState(value.split(" ")[1]); // "AM" or "PM"
 
-  // 시간 변경 핸들러
   const handleTimeChange = (e) => {
     const newTime = e.target.value;
 
@@ -42,26 +41,20 @@ const TimeSelect = ({ value = "00:00 오전", onChange }) => {
     const [hours, minutes] = newTime.split(":");
 
     if (
-      /^\d{1,2}:\d{2}$/.test(newTime) && // 형식 검증
-      Number(hours) >= 0 &&
-      Number(hours) <= 12 && // 0~12 시간 제한
-      Number(minutes) >= 0 &&
-      Number(minutes) <= 59 // 0~59 분 제한
+      /^\d{0,2}:\d{0,2}$/.test(newTime) && // 형식 검증
+      (hours === undefined || (Number(hours) >= 0 && Number(hours) <= 24)) && // 0~24 시간 제한
+      (minutes === undefined || (Number(minutes) >= 0 && Number(minutes) <= 59)) // 0~59 분 제한
     ) {
       setTime(newTime);
 
+      // 시간에 따라 AM/PM 자동 지정
+      const numericHours = Number(hours);
+      const newPeriod = numericHours >= 12 && numericHours <= 24 ? "PM" : "AM";
+      setPeriod(newPeriod);
+
       // 상위 컴포넌트로 값 전달
-      onChange(`${newTime} ${period}`);
+      onChange(`${newTime} ${newPeriod}`);
     }
-  };
-
-  // 오전/오후 변경 핸들러
-  const togglePeriod = () => {
-    const newPeriod = period === "오전" ? "오후" : "오전";
-    setPeriod(newPeriod);
-
-    // 상위 컴포넌트로 값 전달
-    onChange(`${time} ${newPeriod}`);
   };
 
   return (
@@ -72,7 +65,7 @@ const TimeSelect = ({ value = "00:00 오전", onChange }) => {
         onChange={handleTimeChange}
         placeholder="00:00"
       />
-      <AmPmDisplay onClick={togglePeriod}>{period}</AmPmDisplay>
+      <AmPmDisplay>{period}</AmPmDisplay>
     </TimeInputWrapper>
   );
 };
