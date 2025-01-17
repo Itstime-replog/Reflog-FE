@@ -237,13 +237,33 @@ const EventTime = styled.div`
 
 const CalendarComponent = () => {
   const [date, setDate] = useState(new Date());
-  const [view, setView] = useState("month"); // 현재 뷰 상태 추가
-  const [showModal, setShowModal] = useState(false); // 모달 표시 상태
-  const [selectedDate, setSelectedDate] = useState(null); // 선택된 날짜 상태
-  const [modalPosition, setModalPosition] = useState(null); // 모달 위치 상태
-  const [events, setEvents] = useState({}); // 날짜별 일정 상태
-  const [clickCount, setClickCount] = useState(0); // 날짜 클릭 횟수 추적
-  const [editingEvent, setEditingEvent] = useState(null); // 수정 중인 일정 상태
+  const [view, setView] = useState("month");
+  const [showModal, setShowModal] = useState(false);
+  const [selectedDate, setSelectedDate] = useState(null);
+  const [modalPosition, setModalPosition] = useState(null);
+  const [events, setEvents] = useState({});
+  const [clickCount, setClickCount] = useState(0);
+  const [editingEvent, setEditingEvent] = useState(null);
+
+  const calculateModalPosition = (tileElement, date) => {
+    const rect = tileElement.getBoundingClientRect();
+    const activeStartDate = new Date(date.getFullYear(), date.getMonth(), 1);
+    const totalDays = new Date(
+      date.getFullYear(),
+      date.getMonth() + 1,
+      0
+    ).getDate();
+    const weekNumber = Math.ceil(
+      (date.getDate() + activeStartDate.getDay()) / 7
+    );
+    const totalWeeks = Math.ceil((totalDays + activeStartDate.getDay()) / 7);
+    const isLastWeek = weekNumber === totalWeeks;
+
+    return {
+      top: rect.top + window.scrollY - (isLastWeek ? 170 : 20),
+      left: rect.right + window.scrollX + 1,
+    };
+  };
 
   const onChange = (date, event) => {
     setClickCount((prev) => prev + 1);
@@ -253,50 +273,49 @@ const CalendarComponent = () => {
 
       const tileElement = event.target.closest(".react-calendar__tile");
       if (tileElement) {
-        const rect = tileElement.getBoundingClientRect();
-
-        const activeStartDate = new Date(
-          date.getFullYear(),
-          date.getMonth(),
-          1
-        );
-        const totalDays = new Date(
-          date.getFullYear(),
-          date.getMonth() + 1,
-          0
-        ).getDate();
-        const weekNumber = Math.ceil(
-          (date.getDate() + activeStartDate.getDay()) / 7
-        );
-        const totalWeeks = Math.ceil(
-          (totalDays + activeStartDate.getDay()) / 7
-        );
-        const isLastWeek = weekNumber === totalWeeks;
-
-        setModalPosition({
-          top: rect.top + window.scrollY - (isLastWeek ? 170 : 20),
-          left: rect.right + window.scrollX + 1,
-        });
+        setModalPosition(calculateModalPosition(tileElement, date));
       }
 
-      setShowModal(true);
-      setEditingEvent(null); // 새로운 일정 추가로 초기화
+      setTimeout(() => {
+        setShowModal(true);
+        setEditingEvent(null);
+      }, 0);
     }
 
     setTimeout(() => setClickCount(0), 300);
   };
 
-  // 일정 추가 핸들러
+  const handleEventClick = (date, index, event) => {
+    setSelectedDate(date);
+    setEditingEvent(index);
+
+    if (event) {
+      const tileElement = event.target.closest(".react-calendar__tile");
+      if (tileElement) {
+        setModalPosition(calculateModalPosition(tileElement, date));
+      }
+    }
+
+    setShowModal(true);
+  };
+
   const handleAddEvent = (text, times) => {
     const formattedDate = selectedDate.toDateString();
     setEvents((prev) => {
       const currentEvents = prev[formattedDate] || [];
-      if (currentEvents.length >= 3) {
-        alert("최대 3개의 일정만 등록할 수 있습니다.");
-        return prev;
-      }
 
       if (editingEvent !== null) {
+        if (text.trim() === "") {
+          // 제목이 비어있을 경우 삭제
+          const updatedEvents = currentEvents.filter(
+            (_, index) => index !== editingEvent
+          );
+          return {
+            ...prev,
+            [formattedDate]: updatedEvents.length ? updatedEvents : undefined,
+          };
+        }
+
         // 일정 수정
         const updatedEvents = [...currentEvents];
         updatedEvents[editingEvent] = {
@@ -308,6 +327,11 @@ const CalendarComponent = () => {
           ...prev,
           [formattedDate]: updatedEvents,
         };
+      }
+
+      if (currentEvents.length >= 3) {
+        alert("최대 3개의 일정만 등록할 수 있습니다.");
+        return prev;
       }
 
       // 새 일정 추가
@@ -326,45 +350,21 @@ const CalendarComponent = () => {
     setShowModal(false);
   };
 
-  // 일정 삭제 핸들러
-  const handleRemoveEvent = (indexToRemove) => {
-    const formattedDate = selectedDate.toDateString();
-    setEvents((prev) => {
-      const updatedEvents = { ...prev };
-      if (updatedEvents[formattedDate]) {
-        updatedEvents[formattedDate] = updatedEvents[formattedDate].filter(
-          (_, index) => index !== indexToRemove
+  const handleModalClose = () => {
+    if (editingEvent !== null) {
+      const formattedDate = selectedDate.toDateString();
+      setEvents((prev) => {
+        const currentEvents = prev[formattedDate] || [];
+        const updatedEvents = currentEvents.filter(
+          (_, index) => index !== editingEvent
         );
-        if (updatedEvents[formattedDate].length === 0) {
-          delete updatedEvents[formattedDate];
-        }
-      }
-      return updatedEvents;
-    });
+        return {
+          ...prev,
+          [formattedDate]: updatedEvents.length ? updatedEvents : undefined,
+        };
+      });
+    }
     setShowModal(false);
-  };
-
-  const handleEventClick = (date, index) => {
-    setSelectedDate(date);
-    setEditingEvent(index);
-    setModalPosition(null); // 모달 위치 초기화
-    setShowModal(true);
-  };
-
-  // "월" 버튼 핸들러
-  const handleMonthView = () => {
-    setView("month");
-  };
-
-  // "년" 버튼 핸들러
-  const handleYearView = () => {
-    setView("year");
-  };
-
-  const handleMiniCalendarClick = (month) => {
-    // 클릭된 달로 이동
-    setDate(new Date(date.getFullYear(), month, 1));
-    setView("month");
   };
 
   return (
@@ -399,7 +399,9 @@ const CalendarComponent = () => {
                       {events[eventDate].map((event, index) => (
                         <EventBox
                           key={index}
-                          onClick={() => handleEventClick(date, index)}
+                          onDoubleClick={(e) =>
+                            handleEventClick(date, index, e)
+                          }
                         >
                           <EventDot />
                           <EventTextWithTime>{event.text}</EventTextWithTime>
@@ -430,10 +432,9 @@ const CalendarComponent = () => {
         </NavigationWrapper>
         {showModal && (
           <CalendarModal
-            onClose={() => setShowModal(false)}
+            onClose={handleModalClose}
             selectedDate={selectedDate}
             onAddEvent={handleAddEvent}
-            onRemoveEvent={handleRemoveEvent}
             existingEvent={
               editingEvent !== null
                 ? events[selectedDate?.toDateString()][editingEvent]
