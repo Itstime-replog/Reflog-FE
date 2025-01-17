@@ -309,7 +309,7 @@ const PostList = ({ posts }) => {
               <PostHeader>
                 <ProfileSection>
                   <ProfileImage src={profileIcon} alt="Profile" />
-                  <Nickname>리풀이</Nickname>
+                  <Nickname>{post.writer}</Nickname>
                 </ProfileSection>
                 <IconSection>
                   <BookmarkIcon src={bookmarkBeforeIcon} alt="Bookmark" />

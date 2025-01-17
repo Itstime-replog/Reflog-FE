@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
+import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import profileIcon from "../../assets/images/community/profile-icon.png";
 import bookmarkBeforeIcon from "../../assets/images/community/bookmark-before.png";
@@ -9,6 +10,7 @@ import heartAfterIcon from "../../assets/images/community/heart-after.png";
 import commentIcon from "../../assets/images/community/comment-icon.png";
 import modifyIcon from "../../assets/images/community/modify-icon.png";
 import deleteIcon from "../../assets/images/community/delete-icon.png";
+import { deleteCommunityPost } from "../../apis/postModalApi"; // API 함수 임포트
 
 const ModalOverlay = styled.div`
   position: fixed;
@@ -395,7 +397,16 @@ const LikeIcon = styled.img`
   margin-right: 38px;
 `;
 
-const PostModal = ({ post, onClose }) => {
+const PostModal = ({ post, onClose, accessToken, onDelete }) => {
+  const navigate = useNavigate();
+  useEffect(() => {
+    console.log("Post 데이터:", post); // post 객체 전체 출력
+    console.log("작성자 ID (post.writerId):", post?.writerId);
+    console.log(
+      "현재 로그인된 사용자 ID (localStorage):",
+      localStorage.getItem("memberId")
+    );
+  }, [post]);
   const [isBookmarked, setIsBookmarked] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef(null);
@@ -404,6 +415,43 @@ const PostModal = ({ post, onClose }) => {
   const [likedComments, setLikedComments] = useState({});
   const [isLiked, setIsLiked] = useState(false);
   const [replyTo, setReplyTo] = useState(null); // 답글 대상 상태
+  const isOwnedByCurrentUser =
+    String(post.writerId) === localStorage.getItem("memberId");
+
+  // 게시물 삭제 핸들러
+  const handleDelete = async () => {
+    if (!window.confirm("정말로 게시물을 삭제하시겠습니까?")) return;
+
+    if (!isOwnedByCurrentUser) {
+      alert("본인이 작성한 게시물만 삭제할 수 있습니다.");
+      return;
+    }
+
+    try {
+      console.log("deleteCommunityPost 함수 호출됨");
+      console.log("삭제하려는 게시물 ID:", post.id);
+      console.log("사용자 AccessToken:", accessToken);
+
+      const response = await deleteCommunityPost(post.id, accessToken); // 삭제 API 호출
+      console.log("삭제 API 응답:", response);
+
+      alert("게시물이 성공적으로 삭제되었습니다.");
+      onDelete(post.id); // 부모 컴포넌트에 삭제된 게시물 ID 전달
+      onClose(); // 모달 닫기
+    } catch (error) {
+      console.error("게시물 삭제 중 오류 발생:", error);
+      alert("게시물 삭제 중 문제가 발생했습니다.");
+    }
+  };
+
+  const handleEditClick = (currentPost) => {
+    // CommunityWriteNew 페이지로 이동 + 게시물 데이터 전달
+    navigate("/community/write", {
+      state: {
+        editingPost: currentPost, // 기존 게시물 정보
+      },
+    });
+  };
 
   const handleReplyClick = (comment) => {
     setReplyTo(comment); // 답글 대상 설정
@@ -574,7 +622,7 @@ const PostModal = ({ post, onClose }) => {
         <PostHeader>
           <ProfileSection>
             <ProfileImage src={profileIcon} alt="Profile" />
-            <Nickname>리풀이</Nickname>
+            <Nickname>{post.writer}</Nickname>
           </ProfileSection>
           <IconSection>
             <BookmarkIcon
@@ -585,17 +633,23 @@ const PostModal = ({ post, onClose }) => {
                 togglePostLike();
               }}
             />
-            <MoreIconWrapper ref={dropdownRef}>
-              <MoreIcon
-                src={moreIcon}
-                alt="More"
-                onClick={() => setIsOpen(!isOpen)}
-              />
-              <DropdownMenu isOpen={isOpen}>
-                <MenuItem>수정하기</MenuItem>
-                <MenuItem danger>삭제하기</MenuItem>
-              </DropdownMenu>
-            </MoreIconWrapper>
+            {isOwnedByCurrentUser && (
+              <MoreIconWrapper ref={dropdownRef}>
+                <MoreIcon
+                  src={moreIcon}
+                  alt="More"
+                  onClick={() => setIsOpen(!isOpen)}
+                />
+                <DropdownMenu isOpen={isOpen}>
+                  <MenuItem onClick={() => handleEditClick(post)}>
+                    수정하기
+                  </MenuItem>
+                  <MenuItem danger onClick={handleDelete}>
+                    삭제하기
+                  </MenuItem>
+                </DropdownMenu>
+              </MoreIconWrapper>
+            )}
           </IconSection>
         </PostHeader>
 
