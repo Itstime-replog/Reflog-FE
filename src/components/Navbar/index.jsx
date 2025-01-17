@@ -93,26 +93,35 @@ const ProfileDropdown = styled.div`
   position: absolute;
   top: calc(100% + 8px);
   right: 0;
-  width: 180px;
+  width: 174px;
+  height: 98px;
   background: white;
   border-radius: 20px;
   padding: 20px;
-  display: ${props => props.$isOpen ? 'block' : 'none'};
+  display: ${(props) => (props.$isOpen ? "block" : "none")};
   box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.1);
 `;
 
 const DropdownItem = styled.div`
-  padding: 10px 0;
-  color: black;
-  font-family: "Pretendard", sans-serif;
-  font-size: 16px;
+  padding: 12px 17px;
   cursor: pointer;
   display: flex;
   align-items: center;
   transition: all 0.2s;
+  font-family: "Pretendard";
+  font-style: normal;
+  font-weight: 600;
+  font-size: 15px;
+  line-height: 20px;
+  color: #000000;
+  margin-top: 5px;
+  width: 140px;
 
   &:hover {
     opacity: 0.7;
+    background-color: #e5eeff;
+    color: #0059ff;
+    border-radius: 3px;
   }
 `;
 
@@ -126,7 +135,7 @@ const Navbar = ({ setIsLoggedIn }) => {
     // 로그인 상태 업데이트
     setIsLoggedIn(false);
     // replace: true로 설정하여 히스토리 스택에서 현재 페이지를 대체
-    navigate('/login', { replace: true });
+    navigate("/login", { replace: true });
   };
 
   const handleProfileClick = (e) => {
@@ -135,15 +144,15 @@ const Navbar = ({ setIsLoggedIn }) => {
   };
 
   const handleClickOutside = (event) => {
-    if (!event.target.closest('#profile-container')) {
+    if (!event.target.closest("#profile-container")) {
       setIsDropdownOpen(false);
     }
   };
 
   useEffect(() => {
-    document.addEventListener('click', handleClickOutside);
+    document.addEventListener("click", handleClickOutside);
     return () => {
-      document.removeEventListener('click', handleClickOutside);
+      document.removeEventListener("click", handleClickOutside);
     };
   }, []);
 

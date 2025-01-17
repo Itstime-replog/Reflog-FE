@@ -264,6 +264,8 @@ const CalendarModal = ({
   );
   const [endTime, setEndTime] = useState(existingEvent?.endTime || "00:00 AM"); // 기존 종료 시간 로드
   const [alarmOption, setAlarmOption] = useState("없음"); // 알림 옵션 상태 관리
+  const [memo, setMemo] = useState(existingEvent?.memo || ""); // 메모
+  const [allDay, setAllDay] = useState(existingEvent?.allDay || false); // 종일
   const [tooltipPosition, setTooltipPosition] = useState(null);
   const [showEndCalendar, setShowEndCalendar] = useState(false); // 종료일 캘린더 표시 상태
   const [endDate, setEndDate] = useState(selectedDate); // 종료일 상태
@@ -281,7 +283,11 @@ const CalendarModal = ({
   // 일정 등록
   const handleRegister = () => {
     if (scheduleText.trim()) {
-      onAddEvent(scheduleText, { startTime, endTime }); // 시작 시간과 종료 시간을 함께 저장
+      onAddEvent(
+        scheduleText,
+        { startTime, endTime },
+        { alarm: alarmOption, memo, allDay, endDate }
+      );
     }
   };
 
@@ -336,7 +342,11 @@ const CalendarModal = ({
             <Label>
               종일 :
               <ToggleSwitch>
-                <input type="checkbox" />
+                <input
+                  type="checkbox"
+                  checked={allDay}
+                  onChange={(e) => setAllDay(e.target.checked)}
+                />
                 <span></span>
               </ToggleSwitch>
             </Label>
@@ -351,19 +361,21 @@ const CalendarModal = ({
             <Label>
               <InfoIcon src={infoIcon} alt="Info" onClick={toggleTooltip} />
               알림 기능:
-              <Dropdown
-                value={alarmOption}
-                onChange={(e) => setAlarmOption(e.target.value)}
-              >
-                <option value="없음">없음</option>
-                <option value="10분 후">10분 후</option>
-                <option value="30분 후">30분 후</option>
-                <option value="1시간 후">1시간 후</option>
-                <option value="2시간 후">2시간 후</option>
-              </Dropdown>
+              <ToggleSwitch>
+                <input
+                  type="checkbox"
+                  checked={alarmOption}
+                  onChange={(e) => setAlarmOption(e.target.checked)}
+                />
+                <span></span>
+              </ToggleSwitch>
             </Label>
           </Section>
-          <Input placeholder="메모, URL" />
+          <Input
+            placeholder="메모, URL"
+            value={memo}
+            onChange={(e) => setMemo(e.target.value)}
+          />
           <ButtonContainer>
             <RegisterButton onClick={handleRegister}>등록</RegisterButton>
             {existingEvent && (
