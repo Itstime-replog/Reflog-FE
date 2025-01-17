@@ -371,7 +371,8 @@ const PostList = ({ posts: initialPosts }) => {
 
   const openModal = (e, post) => {
     e.stopPropagation();
-    setSelectedPost(post); // post 객체를 상태로 설정
+    setSelectedPost(post); // post 객체 전달
+    console.log("선택된 게시물:", post); // 전달된 데이터 확인
   };
 
   const toggleLike = (postId) => {

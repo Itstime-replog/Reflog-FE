@@ -11,6 +11,7 @@ import commentIcon from "../../assets/images/community/comment-icon.png";
 import modifyIcon from "../../assets/images/community/modify-icon.png";
 import deleteIcon from "../../assets/images/community/delete-icon.png";
 import { deleteCommunityPost } from "../../apis/postModalApi"; // API 함수 임포트
+import fileIcon from "../../assets/images/community/file-icon.png";
 
 const ModalOverlay = styled.div`
   position: fixed;
@@ -180,7 +181,7 @@ const PostTitle = styled.h2`
 `;
 
 const PostContentWrapper = styled.div`
-  height: 300px;
+  min-height: 100px;
   overflow: hidden;
   flex-shrink: 0;
   margin-bottom: 20px;
@@ -195,6 +196,79 @@ const PostContent = styled.p`
   font-size: 18.721px;
   line-height: 33px;
   color: #000000;
+`;
+
+const ImageContainer = styled.div`
+  width: 90%;
+  height: auto; /* 텍스트 높이에 따라 유동 조정 */
+  margin: 0 auto;
+  object-fit: cover;
+  display: block;
+`;
+
+const Image = styled.img`
+  width: 100%;
+  height: auto;
+`;
+
+const FileList = styled.div`
+  width: 100%;
+  padding-bottom: 20px;
+  margin-left: 60px;
+`;
+
+const FileItem = styled.li`
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  margin: 10px 0 10px 10px;
+  font-size: 14px;
+  color: #333;
+  width: 368px;
+  background: #f7faff;
+  border: 0.915423px solid #ccdeff;
+  border-radius: 4.57711px;
+`;
+
+const FileInfo = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-grow: 1;
+`;
+
+const FileInnerInfo = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+`;
+
+const FileIcon = styled.img`
+  width: 25px;
+  height: 25px;
+  margin-right: 8px;
+`;
+
+const FileName = styled.span`
+  font-family: "Pretendard";
+  font-style: normal;
+  font-weight: 500;
+  font-size: 13px;
+  line-height: 18px;
+  color: #000000;
+  max-width: 200px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+`;
+
+const FileSize = styled.span`
+  font-family: "Pretendard";
+  font-style: normal;
+  font-weight: 400;
+  font-size: 10.9851px;
+  line-height: 18px;
+  color: #8f9097;
 `;
 
 const PostFooter = styled.div`
@@ -644,6 +718,31 @@ const PostModal = ({ post, onClose, accessToken, onDelete }) => {
         <PostContentWrapper>
           <PostContent>{post.content}</PostContent>
         </PostContentWrapper>
+
+        {/* 첨부된 이미지 렌더링 */}
+        {post.images && post.images.length > 0 && (
+          <ImageContainer>
+            {post.images.map((image, index) => (
+              <Image key={index} src={image} alt={`첨부 이미지 ${index + 1}`} />
+            ))}
+          </ImageContainer>
+        )}
+
+        {/* 첨부된 파일 렌더링 */}
+        {post.files && post.files.length > 0 && (
+          <FileList>
+            {post.files.map((file, index) => (
+              <FileItem key={index}>
+                <FileIcon src={fileIcon} alt="파일 아이콘" />
+                <FileName>
+                  <a href={file.url} target="_blank" rel="noopener noreferrer">
+                    {file.name}
+                  </a>
+                </FileName>
+              </FileItem>
+            ))}
+          </FileList>
+        )}
 
         {/* 좋아요, 댓글, 날짜 */}
         <PostFooter>
