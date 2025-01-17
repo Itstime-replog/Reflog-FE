@@ -29,6 +29,31 @@ function App() {
     setPosts((prevPosts) => [newPost, ...prevPosts]);
   };
 
+  useEffect(() => {
+    // 이미 로컬 스토리지에 저장된 토큰이 있는지 확인
+    const storedToken = localStorage.getItem("accessToken");
+    if (storedToken) {
+      console.log("이미 저장된 Access Token:", storedToken);
+      return;
+    }
+
+    // URL에서 쿼리 파라미터 추출
+    const urlParams = new URLSearchParams(window.location.search);
+    const accessToken = urlParams.get("access_token");
+
+    if (accessToken) {
+      console.log("Access Token 추출 완료:", accessToken);
+      // 로컬 스토리지에 저장
+      localStorage.setItem("accessToken", accessToken);
+
+      // URL에서 쿼리 파라미터 제거
+      const newUrl = window.location.origin + window.location.pathname;
+      window.history.replaceState(null, "", newUrl);
+    } else {
+      console.warn("Access Token이 URL에 포함되어 있지 않습니다.");
+    }
+  }, []); // 빈 배열로 설정하여 컴포넌트 마운트 시 한 번만 실행
+
   return (
     <BrowserRouter>
       <Routes>
