@@ -1,98 +1,179 @@
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import {
+  BrowserRouter,
+  Routes,
+  Route,
+  Navigate,
+  useLocation,
+} from "react-router-dom";
 import { useState, useEffect } from "react";
-import { checkLoginStatus } from "./utils/auth";
+import * as auth from "./utils/auth";
 import RootLayout from "./layout/RootLayout";
 import Home from "./pages/Home";
 import Studyplan from "./pages/Studyplan";
 import Retrospect from "./pages/Retrospect";
+import Analysis from "./pages/Analysis";
 import Login from "./pages/Auth/Login";
+import OAuthCallback from "./pages/Auth/OAuthCallback";
+import MyPage from "./pages/MyPage";
+import ProfileEdit from "./pages/MyPage/components/ProfileEdit";
+import Onboarding from "./pages/Onboarding";
 import Community from "./pages/Community";
 import CommunityWriteNew from "./components/CommunityWriteNew";
 
+const LoginRoute = ({ isLoggedIn, setIsLoggedIn }) => {
+  const location = useLocation();
+
+  if (location.search.includes("access_token")) {
+    return <OAuthCallback setIsLoggedIn={setIsLoggedIn} />;
+  }
+
+  if (isLoggedIn) {
+    return <Navigate to="/home" replace />;
+  }
+
+  return <Login setIsLoggedIn={setIsLoggedIn} />;
+};
+
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-
-  useEffect(() => {
-    // 컴포넌트 마운트 시 로그인 상태 확인
-    setIsLoggedIn(checkLoginStatus());
-
-    const handleStorageChange = () => {
-      setIsLoggedIn(checkLoginStatus());
-    };
-
-    window.addEventListener("storage", handleStorageChange);
-    return () => window.removeEventListener("storage", handleStorageChange);
-  }, []);
-
+  const location = useLocation();
   const [posts, setPosts] = useState([]);
+
   const addPost = (newPost) => {
     setPosts((prevPosts) => [newPost, ...prevPosts]);
   };
 
   useEffect(() => {
-    // 이미 로컬 스토리지에 저장된 토큰이 있는지 확인
-    const storedToken = localStorage.getItem("accessToken");
-    if (storedToken) {
-      console.log("이미 저장된 Access Token:", storedToken);
-      return;
+    const KAKAO_KEY = process.env.REACT_APP_KAKAO_API_KEY;
+    if (window.Kakao && !window.Kakao.isInitialized() && KAKAO_KEY) {
+      window.Kakao.init(KAKAO_KEY);
     }
 
-    // URL에서 쿼리 파라미터 추출
-    const urlParams = new URLSearchParams(window.location.search);
-    const accessToken = urlParams.get("access_token");
-
-    if (accessToken) {
-      console.log("Access Token 추출 완료:", accessToken);
-      // 로컬 스토리지에 저장
-      localStorage.setItem("accessToken", accessToken);
-
-      // URL에서 쿼리 파라미터 제거
-      const newUrl = window.location.origin + window.location.pathname;
-      window.history.replaceState(null, "", newUrl);
+    if (location.pathname === "/onboarding") {
+      auth.logout();
+      setIsLoggedIn(false);
     } else {
-      console.warn("Access Token이 URL에 포함되어 있지 않습니다.");
+      const loginStatus = auth.checkLoginStatus();
+      setIsLoggedIn(loginStatus);
     }
-  }, []); // 빈 배열로 설정하여 컴포넌트 마운트 시 한 번만 실행
+
+    const handleStorageChange = () => {
+      setIsLoggedIn(auth.checkLoginStatus());
+    };
+
+    window.addEventListener("storage", handleStorageChange);
+    return () => window.removeEventListener("storage", handleStorageChange);
+  }, [location.pathname]);
+
+  const handleLogout = () => {
+    auth.logout();
+    setIsLoggedIn(false);
+    return <Navigate to="/onboarding" replace />;
+  };
+
+  if (
+    !isLoggedIn &&
+    !location.pathname.includes("/login") &&
+    !location.pathname.includes("/oauth/callback") &&
+    location.pathname !== "/onboarding"
+  ) {
+    return <Navigate to="/onboarding" replace />;
+  }
 
   return (
-    <BrowserRouter>
-      <Routes>
+    <Routes>
+      <Route path="/" element={<Navigate to="/onboarding" replace />} />
+
+      <Route
+        path="/login/*"
+        element={
+          <LoginRoute isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} />
+        }
+      />
+      <Route
+        path="/oauth/callback/*"
+        element={<OAuthCallback setIsLoggedIn={setIsLoggedIn} />}
+      />
+
+      <Route
+        element={
+          <RootLayout setIsLoggedIn={setIsLoggedIn} onLogout={handleLogout} />
+        }
+      >
+        <Route path="/onboarding" element={<Onboarding />} />
         <Route
-          path="/login"
+          path="/home"
+          element={
+            isLoggedIn ? <Home /> : <Navigate to="/onboarding" replace />
+          }
+        />
+        <Route
+          path="/studyplan"
+          element={
+            isLoggedIn ? <Studyplan /> : <Navigate to="/onboarding" replace />
+          }
+        />
+        <Route
+          path="/retrospect"
+          element={
+            isLoggedIn ? <Retrospect /> : <Navigate to="/onboarding" replace />
+          }
+        />
+        <Route
+          path="/analysis"
+          element={
+            isLoggedIn ? <Analysis /> : <Navigate to="/onboarding" replace />
+          }
+        />
+        <Route
+          path="/community"
           element={
             isLoggedIn ? (
-              <Navigate to="/" replace />
+              <Community posts={posts} addPost={addPost} />
             ) : (
-              <Login setIsLoggedIn={setIsLoggedIn} />
+              <Navigate to="/onboarding" replace />
             )
           }
         />
-
         <Route
+          path="/community/write"
           element={
             isLoggedIn ? (
-              <RootLayout setIsLoggedIn={setIsLoggedIn} />
+              <CommunityWriteNew onPostSubmit={addPost} />
             ) : (
-              <Navigate to="/login" replace />
+              <Navigate to="/onboarding" replace />
             )
           }
-        >
-          <Route path="/" element={<Home />} />
-          <Route path="/studyplan" element={<Studyplan />} />
-          <Route path="/retrospect" element={<Retrospect />} />
-          <Route
-            path="/community"
-            element={<Community posts={posts} addPost={addPost} />}
-          />
-          <Route
-            path="/community/write"
-            element={<CommunityWriteNew onPostSubmit={addPost} />}
-          />
-        </Route>
-        <Route path="*" element={<Navigate to="/login" />} />
-      </Routes>
-    </BrowserRouter>
+        />
+        <Route
+          path="/mypage"
+          element={
+            isLoggedIn ? (
+              <MyPage setIsLoggedIn={setIsLoggedIn} onLogout={handleLogout} />
+            ) : (
+              <Navigate to="/onboarding" replace />
+            )
+          }
+        />
+        <Route
+          path="/mypage/edit"
+          element={
+            isLoggedIn ? <ProfileEdit /> : <Navigate to="/onboarding" replace />
+          }
+        />
+      </Route>
+
+      <Route path="*" element={<Navigate to="/onboarding" replace />} />
+    </Routes>
   );
 }
 
-export default App;
+const AppWrapper = () => {
+  return (
+    <BrowserRouter>
+      <App />
+    </BrowserRouter>
+  );
+};
+
+export default AppWrapper;

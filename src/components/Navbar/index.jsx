@@ -1,10 +1,17 @@
 import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import styled from "styled-components";
 import BookmarkIcon from "../../assets/images/common/Bookmark-unsaved.png";
 import AlarmIcon from "../../assets/images/common/alarm-icon.png";
 import ProfileIcon from "../../assets/images/common/profile-icon.png";
-import { removeLoginToken } from "../../utils/auth";
+import BookmarkPanel from "../Bookmark";
+import NotificationPanel from "../Notification";
+import {
+  removeLoginToken,
+  getAccessToken,
+  getUserName,
+} from "../../utils/auth";
+import { logoutAPI } from "../../apis/authapi";
 
 const Nav = styled.nav`
   background-color: #fff;
@@ -22,7 +29,7 @@ const Nav = styled.nav`
 `;
 
 const TextContainer = styled.div`
-  display: flex;
+  display: ${(props) => (props.$isHidden ? "none" : "flex")};
   flex-direction: column;
   gap: 11px;
   margin-left: 32px;
@@ -56,6 +63,11 @@ const IconContainer = styled.div`
   gap: 1rem;
   align-items: center;
   margin-right: 32px;
+  position: relative;
+`;
+
+const EmptySpace = styled.div`
+  flex: 1;
 `;
 
 const IconButton = styled.button`
@@ -64,9 +76,10 @@ const IconButton = styled.button`
   cursor: pointer;
   display: flex;
   align-items: center;
+  padding: 0;
 
-  &:hover img {
-    filter: brightness(0.8);
+  &:hover {
+    opacity: 0.8;
   }
 `;
 
@@ -100,6 +113,7 @@ const ProfileDropdown = styled.div`
   padding: 20px;
   display: ${(props) => (props.$isOpen ? "block" : "none")};
   box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
 `;
 
 const DropdownItem = styled.div`
@@ -125,58 +139,124 @@ const DropdownItem = styled.div`
   }
 `;
 
-const Navbar = ({ setIsLoggedIn }) => {
+const Navbar = ({ setIsLoggedIn, disabled }) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [isBookmarkOpen, setIsBookmarkOpen] = useState(false);
+  const [isNotificationOpen, setIsNotificationOpen] = useState(false);
+  const [userName, setUserName] = useState("사용자");
   const navigate = useNavigate();
-
-  const handleLogout = () => {
-    // 먼저 토큰 제거
-    removeLoginToken();
-    // 로그인 상태 업데이트
-    setIsLoggedIn(false);
-    // replace: true로 설정하여 히스토리 스택에서 현재 페이지를 대체
-    navigate("/login", { replace: true });
-  };
-
-  const handleProfileClick = (e) => {
-    e.stopPropagation();
-    setIsDropdownOpen(!isDropdownOpen);
-  };
-
-  const handleClickOutside = (event) => {
-    if (!event.target.closest("#profile-container")) {
-      setIsDropdownOpen(false);
-    }
-  };
+  const location = useLocation();
+  const isOnboarding = location.pathname === "/onboarding";
 
   useEffect(() => {
+    const savedName = getUserName();
+    if (savedName) {
+      setUserName(savedName);
+    }
+  }, []);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (
+        !event.target.closest("#profile-container") &&
+        !event.target.closest("#bookmark-container") &&
+        !event.target.closest("#notification-container")
+      ) {
+        setIsDropdownOpen(false);
+        setIsBookmarkOpen(false);
+        setIsNotificationOpen(false);
+      }
+    };
+
     document.addEventListener("click", handleClickOutside);
     return () => {
       document.removeEventListener("click", handleClickOutside);
     };
   }, []);
 
+  const handleLogout = disabled
+    ? undefined
+    : async () => {
+        try {
+          const token = getAccessToken();
+          if (token) {
+            await logoutAPI(token);
+            removeLoginToken();
+            setIsLoggedIn(false);
+            navigate("/onboarding", { replace: true });
+          } else {
+            throw new Error("No token available for logout");
+          }
+        } catch (error) {
+          console.error("Logout failed:", error);
+          removeLoginToken();
+          setIsLoggedIn(false);
+          navigate("/onboarding", { replace: true });
+        }
+      };
+
+  const handleProfileClick = disabled
+    ? undefined
+    : (e) => {
+        e.stopPropagation();
+        setIsDropdownOpen(!isDropdownOpen);
+        setIsBookmarkOpen(false);
+        setIsNotificationOpen(false);
+      };
+
+  const handleBookmarkClick = disabled
+    ? undefined
+    : (e) => {
+        e.stopPropagation();
+        setIsBookmarkOpen(!isBookmarkOpen);
+        setIsDropdownOpen(false);
+        setIsNotificationOpen(false);
+      };
+
+  const handleNotificationClick = disabled
+    ? undefined
+    : (e) => {
+        e.stopPropagation();
+        setIsNotificationOpen(!isNotificationOpen);
+        setIsDropdownOpen(false);
+        setIsBookmarkOpen(false);
+      };
+
+  const handleMyPageClick = disabled
+    ? undefined
+    : () => {
+        navigate("/mypage");
+        setIsDropdownOpen(false);
+      };
+
   return (
-    <Nav>
-      <TextContainer>
-        <MainText>사용자님 오늘도 파이팅하세요!</MainText>
+    <Nav style={{ pointerEvents: disabled ? "none" : "auto" }}>
+      <TextContainer $isHidden={isOnboarding}>
+        <MainText>{userName}님 오늘도 파이팅하세요!</MainText>
         <SubText>
           날짜를 클릭해 일정을 등록하고 투두리스트를 작성해보세요.
         </SubText>
       </TextContainer>
+      {isOnboarding && <EmptySpace />}
       <IconContainer>
-        <IconButton>
-          <StyledBookmarkIcon src={BookmarkIcon} alt="Bookmark Icon" />
-        </IconButton>
-        <IconButton>
-          <StyledAlarmIcon src={AlarmIcon} alt="Alarm Icon" />
-        </IconButton>
+        <div id="bookmark-container">
+          <IconButton onClick={handleBookmarkClick}>
+            <StyledBookmarkIcon src={BookmarkIcon} alt="Bookmark Icon" />
+          </IconButton>
+          {isBookmarkOpen && <BookmarkPanel />}
+        </div>
+        <div id="notification-container">
+          <IconButton onClick={handleNotificationClick}>
+            <StyledAlarmIcon src={AlarmIcon} alt="Alarm Icon" />
+          </IconButton>
+          {isNotificationOpen && <NotificationPanel />}
+        </div>
         <ProfileContainer id="profile-container">
           <IconButton onClick={handleProfileClick}>
             <StyledProfileIcon src={ProfileIcon} alt="Profile Icon" />
           </IconButton>
           <ProfileDropdown $isOpen={isDropdownOpen}>
-            <DropdownItem>마이페이지</DropdownItem>
+            <DropdownItem onClick={handleMyPageClick}>마이페이지</DropdownItem>
             <DropdownItem onClick={handleLogout}>로그아웃</DropdownItem>
           </ProfileDropdown>
         </ProfileContainer>

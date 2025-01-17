@@ -1,6 +1,6 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import styled from "styled-components";
-import { useNavigate, Link } from "react-router-dom";
 import useAuth from "../../hooks/useAuth";
 import logo2 from "../../assets/images/common/logo2.png";
 import kakaoIcon from "../../assets/images/common/kakao.png";
@@ -110,21 +110,22 @@ const SocialButton = styled.button`
   height: 48px;
   border-radius: 8px;
   border: none;
-  cursor: pointer;
+  cursor: ${(props) => (props.disabled ? "not-allowed" : "pointer")};
   display: flex;
   align-items: center;
   padding: 0 20px;
   margin-bottom: 12px;
   background: ${(props) => props.$bgColor};
   position: relative;
+  opacity: ${(props) => (props.disabled ? 0.7 : 1)};
+  transition: opacity 0.2s ease;
 
   &:last-child {
     margin-bottom: 0;
   }
 
-  &:disabled {
-    opacity: 0.7;
-    cursor: not-allowed;
+  &:hover {
+    opacity: ${(props) => (props.disabled ? 0.7 : 0.9)};
   }
 `;
 
@@ -139,7 +140,7 @@ const ButtonText = styled.span`
   font-family: "Pretendard";
   font-weight: 500;
   font-size: 16px;
-  color: #ffffff;
+  color: ${(props) => props.$color || "#FFFFFF"};
   flex: 1;
   text-align: center;
 `;
@@ -186,68 +187,18 @@ const ErrorMessage = styled.div`
 `;
 
 const Login = ({ setIsLoggedIn }) => {
-  const navigate = useNavigate();
-  const { isLoading, error, handleKakaoLogin, handleNaverLogin } = useAuth();
-  /*
-  const onKakaoLogin = async () => {
-    if (isLoading) return;
-    const success = await handleKakaoLogin();
-    if (success) {
-      const { memberId, accessToken } = success; // 성공 데이터에서 추출
-      localStorage.setItem("memberId", memberId);
-      localStorage.setItem("accessToken", accessToken);
-      console.log(localStorage.getItem("memberId"));
-      console.log(localStorage.getItem("accessToken"));
-      setIsLoggedIn(true);
-      navigate("/");
-    }
-  };
+  const { isLoading, error, handleKakaoLogin, handleNaverLogin } =
+    useAuth(setIsLoggedIn);
 
-  const onNaverLogin = async () => {
-    if (isLoading) return;
-
-    const success = await handleNaverLogin();
-    if (success) {
-      const { memberId, accessToken } = success; // 성공 데이터에서 추출
-      localStorage.setItem("memberId", memberId);
-      localStorage.setItem("accessToken", accessToken);
-      console.log(localStorage.getItem("memberId"));
-      console.log(localStorage.getItem("accessToken"));
-      setIsLoggedIn(true);
-      navigate("/");
-    }
-  };
-  */
-  // 하드코딩된 memberId
-  const hardcodedMemberId = "59819297-9f21-4a42-aeae-3f4f8f8cf1e1";
-
-  const onKakaoLogin = async () => {
-    if (isLoading) return;
-
-    const success = await handleKakaoLogin();
-    if (success) {
-      const { accessToken } = success; // accessToken만 사용
-      localStorage.setItem("memberId", hardcodedMemberId); // 하드코딩된 memberId 저장
-      localStorage.setItem("accessToken", accessToken); // accessToken 저장
-      console.log("저장된 Member ID:", localStorage.getItem("memberId"));
-      console.log("저장된 Access Token:", localStorage.getItem("accessToken"));
-      setIsLoggedIn(true);
-      navigate("/");
-    }
-  };
-
-  const onNaverLogin = async () => {
-    if (isLoading) return;
-
-    const success = await handleNaverLogin();
-    if (success) {
-      const { accessToken } = success; // accessToken만 사용
-      localStorage.setItem("memberId", hardcodedMemberId); // 하드코딩된 memberId 저장
-      localStorage.setItem("accessToken", accessToken); // accessToken 저장
-      console.log("저장된 Member ID:", localStorage.getItem("memberId"));
-      console.log("저장된 Access Token:", localStorage.getItem("accessToken"));
-      setIsLoggedIn(true);
-      navigate("/");
+  const handleSocialLoginClick = async (provider) => {
+    try {
+      if (provider === "kakao") {
+        await handleKakaoLogin();
+      } else if (provider === "naver") {
+        await handleNaverLogin();
+      }
+    } catch (err) {
+      console.error(`${provider} 로그인 중 오류 발생:`, err);
     }
   };
 
@@ -284,15 +235,15 @@ const Login = ({ setIsLoggedIn }) => {
 
         <SocialButton
           $bgColor="#FFE812"
-          onClick={onKakaoLogin}
+          onClick={() => handleSocialLoginClick("kakao")}
           disabled={isLoading}
         >
           <ButtonIcon src={kakaoIcon} alt="Kakao" />
-          <ButtonText>카카오로 계속하기</ButtonText>
+          <ButtonText $color="#000000">카카오로 계속하기</ButtonText>
         </SocialButton>
         <SocialButton
           $bgColor="#03C75A"
-          onClick={onNaverLogin}
+          onClick={() => handleSocialLoginClick("naver")}
           disabled={isLoading}
         >
           <ButtonIcon src={naverIcon} alt="Naver" />

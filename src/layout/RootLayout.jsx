@@ -1,5 +1,5 @@
 import React from "react";
-import { Outlet } from "react-router-dom";
+import { Outlet, useLocation } from "react-router-dom";
 import styled from "styled-components";
 import Navbar from "../components/Navbar";
 import Sidebar from "../components/SideBar";
@@ -20,10 +20,13 @@ const MainContent = styled.main`
 `;
 
 const RootLayout = ({ setIsLoggedIn }) => {
+  const location = useLocation();
+  const isOnboardingPage = location.pathname === "/onboarding";
+
   return (
     <LayoutContainer>
-      <Sidebar />
-      <Navbar setIsLoggedIn={setIsLoggedIn} />
+      <Sidebar disabled={isOnboardingPage} />
+      <Navbar setIsLoggedIn={setIsLoggedIn} disabled={isOnboardingPage} />
       <MainContent>
         <Outlet />
       </MainContent>
