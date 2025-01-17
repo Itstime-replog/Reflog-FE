@@ -70,7 +70,7 @@ const MenuItem = styled(Link)`
   `}
 
   &:hover {
-    color: #0059ff; /* 호버 시에도 활성화 색상과 동일하게 설정 */
+    color: #0059ff;
     &:before {
       content: "";
       position: absolute;
@@ -106,11 +106,11 @@ const menuItems = [
   { path: "/community", label: "커뮤니티", icon: PeopleIcon },
 ];
 
-const Sidebar = () => {
+const Sidebar = ({ disabled }) => {
   const location = useLocation();
 
   return (
-    <SidebarContainer>
+    <SidebarContainer style={{ pointerEvents: disabled ? "none" : "auto" }}>
       <LogoContainer to="/">
         <Logo src={logo} alt="Reflog" />
       </LogoContainer>
@@ -119,7 +119,7 @@ const Sidebar = () => {
           <MenuItem
             key={item.path}
             to={item.path}
-            $isActive={location.pathname === item.path} // 현재 경로와 메뉴 경로가 일치하는지 확인
+            $isActive={location.pathname === item.path}
           >
             <IconWrapper>
               <StyledIcon>

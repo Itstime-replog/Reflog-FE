@@ -1,13 +1,13 @@
-import React from 'react';
-import styled from 'styled-components';
-import { useNavigate, Link } from 'react-router-dom';
-import useAuth from '../../hooks/useAuth';
-import logo2 from '../../assets/images/common/logo2.png';
-import kakaoIcon from '../../assets/images/common/kakao.png';
-import naverIcon from '../../assets/images/common/naver.png';
-import bookmarkIcon from '../../assets/images/common/Bookmark-unsaved.png';
-import alarmIcon from '../../assets/images/common/alarm-icon.png';
-import profileIcon from '../../assets/images/common/profile-icon.png';
+import React from "react";
+import { Link } from "react-router-dom";
+import styled from "styled-components";
+import useAuth from "../../hooks/useAuth";
+import logo2 from "../../assets/images/common/logo2.png";
+import kakaoIcon from "../../assets/images/common/kakao.png";
+import naverIcon from "../../assets/images/common/naver.png";
+import bookmarkIcon from "../../assets/images/common/Bookmark-unsaved.png";
+import alarmIcon from "../../assets/images/common/alarm-icon.png";
+import profileIcon from "../../assets/images/common/profile-icon.png";
 
 const PageContainer = styled.div`
   width: 100vw;
@@ -15,13 +15,13 @@ const PageContainer = styled.div`
   overflow: hidden;
   display: flex;
   flex-direction: column;
-  background: #F5F5F5;
+  background: #f5f5f5;
 `;
 
 const Header = styled.div`
   width: 100%;
   height: 37.4%;
-  background: #0059FF;
+  background: #0059ff;
   position: relative;
 `;
 
@@ -64,7 +64,7 @@ const StyledProfileIcon = styled.img`
 const ProfileIconContainer = styled.div`
   width: 56px;
   height: 56px;
-  background: #FFFFFF;
+  background: #ffffff;
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -76,7 +76,7 @@ const LoginBox = styled.div`
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  background: #FFFFFF;
+  background: #ffffff;
   border-radius: 20px;
   padding: 40px;
   width: 400px;
@@ -88,20 +88,20 @@ const TitleSection = styled.div`
 `;
 
 const LoginTitle = styled.h1`
-  font-family: 'Pretendard';
+  font-family: "Pretendard";
   font-weight: 600;
   font-size: 36px;
   line-height: 60px;
-  color: #0059FF;
+  color: #0059ff;
   margin-bottom: 16px;
 `;
 
 const LoginSubtitle = styled.p`
-  font-family: 'Pretendard';
+  font-family: "Pretendard";
   font-weight: 500;
   font-size: 16px;
   line-height: 28px;
-  color: #4E4E4E;
+  color: #4e4e4e;
   white-space: pre-line;
 `;
 
@@ -110,21 +110,22 @@ const SocialButton = styled.button`
   height: 48px;
   border-radius: 8px;
   border: none;
-  cursor: pointer;
+  cursor: ${(props) => (props.disabled ? "not-allowed" : "pointer")};
   display: flex;
   align-items: center;
   padding: 0 20px;
   margin-bottom: 12px;
-  background: ${props => props.$bgColor};
+  background: ${(props) => props.$bgColor};
   position: relative;
-  
+  opacity: ${(props) => (props.disabled ? 0.7 : 1)};
+  transition: opacity 0.2s ease;
+
   &:last-child {
     margin-bottom: 0;
   }
 
-  &:disabled {
-    opacity: 0.7;
-    cursor: not-allowed;
+  &:hover {
+    opacity: ${(props) => (props.disabled ? 0.7 : 0.9)};
   }
 `;
 
@@ -136,10 +137,10 @@ const ButtonIcon = styled.img`
 `;
 
 const ButtonText = styled.span`
-  font-family: 'Pretendard';
+  font-family: "Pretendard";
   font-weight: 500;
   font-size: 16px;
-  color: #FFFFFF;
+  color: ${(props) => props.$color || "#FFFFFF"};
   flex: 1;
   text-align: center;
 `;
@@ -161,13 +162,17 @@ const LoadingSpinner = styled.div`
   width: 50px;
   height: 50px;
   border: 5px solid #f3f3f3;
-  border-top: 5px solid #0059FF;
+  border-top: 5px solid #0059ff;
   border-radius: 50%;
   animation: spin 1s linear infinite;
 
   @keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
   }
 `;
 
@@ -182,26 +187,18 @@ const ErrorMessage = styled.div`
 `;
 
 const Login = ({ setIsLoggedIn }) => {
-  const navigate = useNavigate();
-  const { isLoading, error, handleKakaoLogin, handleNaverLogin } = useAuth();
+  const { isLoading, error, handleKakaoLogin, handleNaverLogin } =
+    useAuth(setIsLoggedIn);
 
-  const onKakaoLogin = async () => {
-    if (isLoading) return;
-
-    const success = await handleKakaoLogin();
-    if (success) {
-      setIsLoggedIn(true);
-      navigate('/');
-    }
-  };
-
-  const onNaverLogin = async () => {
-    if (isLoading) return;
-
-    const success = await handleNaverLogin();
-    if (success) {
-      setIsLoggedIn(true);
-      navigate('/');
+  const handleSocialLoginClick = async (provider) => {
+    try {
+      if (provider === "kakao") {
+        await handleKakaoLogin();
+      } else if (provider === "naver") {
+        await handleNaverLogin();
+      }
+    } catch (err) {
+      console.error(`${provider} 로그인 중 오류 발생:`, err);
     }
   };
 
@@ -225,28 +222,28 @@ const Login = ({ setIsLoggedIn }) => {
           </ProfileIconContainer>
         </TopIconsContainer>
       </Header>
-      
+
       <LoginBox>
         <TitleSection>
           <LoginTitle>LOGIN</LoginTitle>
           <LoginSubtitle>
-            SNS로 간편하게 로그인하고{'\n'}더 많은 서비스를 즐겨보세요!
+            SNS로 간편하게 로그인하고{"\n"}더 많은 서비스를 즐겨보세요!
           </LoginSubtitle>
         </TitleSection>
 
         {error && <ErrorMessage>{error}</ErrorMessage>}
 
-        <SocialButton 
-          $bgColor="#FFE812" 
-          onClick={onKakaoLogin}
+        <SocialButton
+          $bgColor="#FFE812"
+          onClick={() => handleSocialLoginClick("kakao")}
           disabled={isLoading}
         >
           <ButtonIcon src={kakaoIcon} alt="Kakao" />
-          <ButtonText>카카오로 계속하기</ButtonText>
+          <ButtonText $color="#000000">카카오로 계속하기</ButtonText>
         </SocialButton>
-        <SocialButton 
+        <SocialButton
           $bgColor="#03C75A"
-          onClick={onNaverLogin}
+          onClick={() => handleSocialLoginClick("naver")}
           disabled={isLoading}
         >
           <ButtonIcon src={naverIcon} alt="Naver" />
