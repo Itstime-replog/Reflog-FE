@@ -299,7 +299,7 @@ const CalendarComponent = () => {
     setShowModal(true);
   };
 
-  const handleAddEvent = (text, times) => {
+  const handleAddEvent = (text, times, additionalInfo) => {
     const formattedDate = selectedDate.toDateString();
     setEvents((prev) => {
       const currentEvents = prev[formattedDate] || [];
@@ -322,6 +322,7 @@ const CalendarComponent = () => {
           text: text.trim(),
           startTime: times.startTime.trim(),
           endTime: times.endTime.trim(),
+          ...additionalInfo,
         };
         return {
           ...prev,
@@ -343,6 +344,7 @@ const CalendarComponent = () => {
             text: text.trim(),
             startTime: times.startTime.trim(),
             endTime: times.endTime.trim(),
+            ...additionalInfo,
           },
         ],
       };
@@ -434,7 +436,22 @@ const CalendarComponent = () => {
           <CalendarModal
             onClose={handleModalClose}
             selectedDate={selectedDate}
-            onAddEvent={handleAddEvent}
+            onAddEvent={(text, times) =>
+              handleAddEvent(text, times, {
+                allDay:
+                  events[selectedDate?.toDateString()]?.[editingEvent]
+                    ?.allDay || false,
+                memo:
+                  events[selectedDate?.toDateString()]?.[editingEvent]?.memo ||
+                  "",
+                alarm:
+                  events[selectedDate?.toDateString()]?.[editingEvent]?.alarm ||
+                  false,
+                endDate:
+                  events[selectedDate?.toDateString()]?.[editingEvent]
+                    ?.endDate || selectedDate,
+              })
+            }
             existingEvent={
               editingEvent !== null
                 ? events[selectedDate?.toDateString()][editingEvent]
