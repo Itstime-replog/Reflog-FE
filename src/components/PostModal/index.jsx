@@ -57,7 +57,7 @@ const PostHeader = styled.div`
 const ProfileSection = styled.div`
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 7px;
 `;
 
 const ProfileImage = styled.img`
@@ -69,9 +69,10 @@ const Nickname = styled.span`
   font-family: "Pretendard";
   font-style: normal;
   font-weight: 500;
-  font-size: 22.0247px;
+  font-size: 25px;
   line-height: 33px;
   color: #000000;
+  padding-bottom: 5px;
 `;
 
 const IconSection = styled.div`
@@ -419,28 +420,10 @@ const PostModal = ({ post, onClose, accessToken, onDelete }) => {
     String(post.writerId) === localStorage.getItem("memberId");
 
   // 게시물 삭제 핸들러
-  const handleDelete = async () => {
-    if (!window.confirm("정말로 게시물을 삭제하시겠습니까?")) return;
-
-    if (!isOwnedByCurrentUser) {
-      alert("본인이 작성한 게시물만 삭제할 수 있습니다.");
-      return;
-    }
-
-    try {
-      console.log("deleteCommunityPost 함수 호출됨");
-      console.log("삭제하려는 게시물 ID:", post.id);
-      console.log("사용자 AccessToken:", accessToken);
-
-      const response = await deleteCommunityPost(post.id, accessToken); // 삭제 API 호출
-      console.log("삭제 API 응답:", response);
-
-      alert("게시물이 성공적으로 삭제되었습니다.");
-      onDelete(post.id); // 부모 컴포넌트에 삭제된 게시물 ID 전달
+  const handleDelete = () => {
+    if (window.confirm("정말로 게시물을 삭제하시겠습니까?")) {
+      onDelete(post.id); // 부모 컴포넌트에 삭제 요청
       onClose(); // 모달 닫기
-    } catch (error) {
-      console.error("게시물 삭제 중 오류 발생:", error);
-      alert("게시물 삭제 중 문제가 발생했습니다.");
     }
   };
 
@@ -457,12 +440,14 @@ const PostModal = ({ post, onClose, accessToken, onDelete }) => {
     setReplyTo(comment); // 답글 대상 설정
   };
 
-  const togglePostLike = () => {
-    setIsLiked((prev) => !prev); // 상태 반전
+  const togglePostLike = (e) => {
+    e.stopPropagation(); // 부모 클릭 이벤트 방지
+    setIsLiked((prev) => !prev); // 좋아요 상태 반전
   };
 
-  const toggleBookmark = () => {
-    setIsBookmarked((prev) => !prev);
+  const toggleBookmark = (e) => {
+    e.stopPropagation(); // 부모 클릭 이벤트 방지
+    setIsBookmarked((prev) => !prev); // 북마크 상태 반전
   };
 
   const toggleDropdown = (e) => {
@@ -622,34 +607,29 @@ const PostModal = ({ post, onClose, accessToken, onDelete }) => {
         <PostHeader>
           <ProfileSection>
             <ProfileImage src={profileIcon} alt="Profile" />
-            <Nickname>{post.writer}</Nickname>
+            <Nickname>리플이</Nickname>
           </ProfileSection>
           <IconSection>
             <BookmarkIcon
               src={isBookmarked ? bookmarkAfterIcon : bookmarkBeforeIcon}
               alt="Bookmark"
-              onClick={(e) => {
-                e.stopPropagation();
-                togglePostLike();
-              }}
+              onClick={toggleBookmark} // 북마크 상태 토글
             />
-            {isOwnedByCurrentUser && (
-              <MoreIconWrapper ref={dropdownRef}>
-                <MoreIcon
-                  src={moreIcon}
-                  alt="More"
-                  onClick={() => setIsOpen(!isOpen)}
-                />
-                <DropdownMenu isOpen={isOpen}>
-                  <MenuItem onClick={() => handleEditClick(post)}>
-                    수정하기
-                  </MenuItem>
-                  <MenuItem danger onClick={handleDelete}>
-                    삭제하기
-                  </MenuItem>
-                </DropdownMenu>
-              </MoreIconWrapper>
-            )}
+            <MoreIconWrapper ref={dropdownRef}>
+              <MoreIcon
+                src={moreIcon}
+                alt="More"
+                onClick={() => setIsOpen(!isOpen)}
+              />
+              <DropdownMenu isOpen={isOpen}>
+                <MenuItem onClick={() => handleEditClick(post)}>
+                  수정하기
+                </MenuItem>
+                <MenuItem danger onClick={handleDelete}>
+                  삭제하기
+                </MenuItem>
+              </DropdownMenu>
+            </MoreIconWrapper>
           </IconSection>
         </PostHeader>
 
@@ -671,7 +651,7 @@ const PostModal = ({ post, onClose, accessToken, onDelete }) => {
             <Icon
               src={isLiked ? heartAfterIcon : heartBeforeIcon}
               alt="Like"
-              onClick={togglePostLike}
+              onClick={togglePostLike} // 좋아요 상태 토글
             />
             <Icon src={commentIcon} alt="Comment" />
           </InteractionIcons>

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import AttachImageModal from "../../components/AttachImageModal";
@@ -10,8 +10,6 @@ import fileIcon from "../../assets/images/community/file-icon.png";
 import ExitWarningModal from "../../components/ExitWarningModal";
 import UploadComplete from "../../components/UploadComplete";
 import CommunityWriteDropdowns from "../../components/CommunityWriteDropdown";
-import { createCommunityPost } from "../../apis/communityWriteNewApi";
-import { updateCommunityPost } from "../../apis/communityApi"; // 수정 API 호출 함수
 
 const WriteContainer = styled.div`
   margin-top: 79px;
@@ -325,9 +323,7 @@ const SubmitButton = styled.button`
 const CommunityWriteNew = ({ onPostSubmit }) => {
   const location = useLocation();
   const navigate = useNavigate();
-
-  // `editingPost`가 있으면 '수정 모드', 없으면 '새 글 작성 모드'
-  const editingPost = location.state?.editingPost;
+  const addPost = location.state?.addPost;
   const [isImageModalOpen, setIsImageModalOpen] = useState(false);
   const [isFileModalOpen, setIsFileModalOpen] = useState(false);
   const [images, setImages] = useState([]);
@@ -338,17 +334,6 @@ const CommunityWriteNew = ({ onPostSubmit }) => {
   const [isUploadComplete, setIsUploadComplete] = useState(false);
   const [selectedPostType, setSelectedPostType] = useState([]);
   const [selectedStudyType, setSelectedStudyType] = useState([]);
-
-  useEffect(() => {
-    const urlParams = new URLSearchParams(window.location.search);
-    const accessToken = urlParams.get("access_token");
-    console.log("Access Token:", accessToken);
-
-    // 필요한 경우, 토큰을 저장하거나 처리
-    if (accessToken) {
-      localStorage.setItem("accessToken", accessToken); // 로컬 스토리지에 저장
-    }
-  }, []); // 빈 배열로 설정하여 컴포넌트 마운트 시 한 번만 실행
 
   // 파일 추가 핸들러
   const handleFileSelect = (selectedFiles) => {
@@ -370,151 +355,40 @@ const CommunityWriteNew = ({ onPostSubmit }) => {
   const handleRemoveImage = (index) => {
     setImages(images.filter((_, i) => i !== index));
   };
+
   const handlePostTypeChange = (types) => {
     setSelectedPostType(types);
   };
+
   const handleStudyTypeChange = (types) => {
     setSelectedStudyType(types);
   };
 
-  // 수정 모드라면 기존 데이터 채우기
-  useEffect(() => {
-    if (editingPost) {
-      setTitle(editingPost.title || "");
-      setContent(editingPost.content || "");
-      setImages(editingPost.images || []);
-      setFiles(editingPost.files || []);
-      setSelectedPostType(editingPost.postType || []);
-      setSelectedStudyType(editingPost.studyType || []);
-    }
-  }, [editingPost]);
-  /*
-  const handleSubmit = async () => {
-    const accessToken = localStorage.getItem("accessToken");
-    const memberId = localStorage.getItem("memberId"); // 로컬 스토리지에서 멤버 ID 가져오기
-    console.log("AccessToken:", accessToken); // AccessToken 확인용
-    console.log("MemberId:", memberId); // MemberId 확인용
-
-    if (!accessToken) {
-      alert("로그인이 필요합니다!");
-      return;
-    }
-
-    if (!memberId) {
-      alert("멤버 ID를 확인할 수 없습니다. 다시 로그인해주세요.");
-      return;
-    }
-
+  const handleSubmit = () => {
     if (!title.trim() || !content.trim()) {
       alert("제목과 내용을 입력해주세요!");
       return;
     }
 
-    // 공통 데이터 구조
-    const postData = {
-      memberId: memberId, // 로컬 스토리지에서 가져온 멤버 ID 사용
+    const newPost = {
+      id: Date.now(),
       title,
       content,
-      postTypes: selectedPostType,
-      learningTypes: selectedStudyType,
-      fileUrls: files.map((file) => file.url || ""), // 파일 URL 배열
+      date: new Date().toLocaleDateString("ko-KR", {
+        month: "long",
+        day: "numeric",
+      }),
+      postType: selectedPostType || [],
+      studyType: selectedStudyType || [],
+      images: images || [],
+      files: files || [],
     };
 
-    if (editingPost) {
-      // 수정 모드
-      try {
-        console.log("수정 요청 데이터:", postData);
-
-        await updateCommunityPost(
-          editingPost.id, // 게시글 ID
-          postData, // 수정할 데이터
-          accessToken // 사용자 인증 토큰
-        );
-
-        alert("게시글이 성공적으로 수정되었습니다!");
-        navigate("/community"); // 수정 후 커뮤니티 페이지로 이동
-      } catch (error) {
-        console.error("게시글 수정 오류:", error);
-        alert("게시글 수정 중 문제가 발생했습니다. 다시 시도해주세요.");
-      }
-    } else {
-      // 새 글 작성 모드
-      try {
-        console.log("새 글 작성 요청 데이터:", postData);
-
-        await createCommunityPost(postData, accessToken); // 새 글 작성 API 호출
-
-        alert("게시글이 성공적으로 작성되었습니다!");
-        navigate("/community"); // 작성 후 커뮤니티 페이지로 이동
-      } catch (error) {
-        console.error("게시글 작성 오류:", error);
-        alert("게시글 작성 중 문제가 발생했습니다. 다시 시도해주세요.");
-      }
-    }
-  };*/
-
-  const handleSubmit = async () => {
-    const accessToken = localStorage.getItem("accessToken");
-    const hardcodedMemberId = "59819297-9f21-4a42-aeae-3f4f8f8cf1e1"; // 하드코딩된 멤버 ID
-    console.log("AccessToken:", accessToken); // AccessToken 확인용
-    console.log("Hardcoded MemberId:", hardcodedMemberId); // 하드코딩된 MemberId 확인용
-
-    if (!accessToken) {
-      alert("로그인이 필요합니다!");
-      return;
+    if (onPostSubmit) {
+      onPostSubmit(newPost);
     }
 
-    if (!hardcodedMemberId) {
-      alert("멤버 ID를 확인할 수 없습니다. 다시 로그인해주세요.");
-      return;
-    }
-
-    if (!title.trim() || !content.trim()) {
-      alert("제목과 내용을 입력해주세요!");
-      return;
-    }
-
-    // 공통 데이터 구조
-    const postData = {
-      memberId: hardcodedMemberId, // 하드코딩된 멤버 ID 사용
-      title,
-      content,
-      postTypes: selectedPostType,
-      learningTypes: selectedStudyType,
-      fileUrls: files.map((file) => file.url || ""), // 파일 URL 배열
-    };
-
-    if (editingPost) {
-      // 수정 모드
-      try {
-        console.log("수정 요청 데이터:", postData);
-
-        await updateCommunityPost(
-          editingPost.id, // 게시글 ID
-          postData, // 수정할 데이터
-          accessToken // 사용자 인증 토큰
-        );
-
-        alert("게시글이 성공적으로 수정되었습니다!");
-        navigate("/community"); // 수정 후 커뮤니티 페이지로 이동
-      } catch (error) {
-        console.error("게시글 수정 오류:", error);
-        alert("게시글 수정 중 문제가 발생했습니다. 다시 시도해주세요.");
-      }
-    } else {
-      // 새 글 작성 모드
-      try {
-        console.log("새 글 작성 요청 데이터:", postData);
-
-        await createCommunityPost(postData, accessToken); // 새 글 작성 API 호출
-
-        alert("게시글이 성공적으로 작성되었습니다!");
-        navigate("/community"); // 작성 후 커뮤니티 페이지로 이동
-      } catch (error) {
-        console.error("게시글 작성 오류:", error);
-        alert("게시글 작성 중 문제가 발생했습니다. 다시 시도해주세요.");
-      }
-    }
+    setIsUploadComplete(true);
   };
 
   return (

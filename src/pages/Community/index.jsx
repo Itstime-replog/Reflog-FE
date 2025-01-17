@@ -7,6 +7,7 @@ import searchIcon from "../../assets/images/community/search-icon.png";
 import CommunityDropdowns from "../../components/CommunityDropdown";
 import { fetchFilteredPosts } from "../../apis/communityApi"; // API 호출 함수 import
 import PostModal from "../../components/PostModal";
+import TestCommunityPosts from "../../components/TestCommunityPosts";
 
 const CommunityContainer = styled.div`
   width: 100%;
@@ -154,6 +155,7 @@ const Community = ({ posts: initialPosts }) => {
   // 선택된 게시물 (모달에 표시하기 위함)
   const [selectedPost, setSelectedPost] = useState(null);
 
+  /*
   // 서버에서 게시물 데이터 불러오기
   const loadPosts = async () => {
     try {
@@ -174,6 +176,7 @@ const Community = ({ posts: initialPosts }) => {
   useEffect(() => {
     setFilteredPosts(allPosts);
   }, [allPosts]);
+*/
 
   // 글 유형/학습 유형 필터링
   const handleFilterChange = (selectedPostType, selectedStudyType) => {
@@ -245,6 +248,7 @@ const Community = ({ posts: initialPosts }) => {
           <CommunityDropdowns onFilterChange={handleFilterChange} />
         </FilterContainer>
         <PostList posts={filteredPosts} onPostClick={setSelectedPost} />
+        <TestCommunityPosts />
       </TopSecondBox>
       {/* 게시물 클릭 시 모달 표시 */}
       {selectedPost && (

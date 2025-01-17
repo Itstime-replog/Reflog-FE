@@ -3,12 +3,7 @@ import styled from "styled-components";
 import plusIcon from "../../assets/images/todolist/plus-icon.png";
 import cancelIcon from "../../assets/images/common/cancel-icon.png";
 import checkIcon from "../../assets/images/todolist/check-icon.png";
-import {
-  fetchTodoList,
-  createTodo,
-  checkTodo,
-  deleteTodo,
-} from "../../apis/todoListApi";
+import { fetchTodoList, createTodo, deleteTodo } from "../../apis/todoListApi";
 
 const TitleContainer = styled.div`
   display: flex;
@@ -175,34 +170,6 @@ const TodoList = ({ todos, selectedDate, setTodos }) => {
     }
   };
 
-  // 투두 체크
-  const handleCheckTodo = async (todolistId) => {
-    if (!todolistId) {
-      console.error("체크하려는 todolistId가 제공되지 않았습니다.");
-      return;
-    }
-
-    try {
-      console.log("체크 요청할 todolistId:", todolistId); // 디버깅용
-      const response = await checkTodo(todolistId);
-
-      if (response?.isSuccess) {
-        console.log("투두 체크 성공:", response);
-        setTodos((prev) =>
-          prev.map((todo) =>
-            todo.todolistId === todolistId
-              ? { ...todo, status: !todo.status }
-              : todo
-          )
-        );
-      } else {
-        console.error("투두 체크 실패:", response.message);
-      }
-    } catch (error) {
-      console.error("투두 체크 에러:", error.message);
-    }
-  };
-
   // 투두 삭제
   const handleDeleteTodo = async (todolistId) => {
     try {
@@ -230,11 +197,7 @@ const TodoList = ({ todos, selectedDate, setTodos }) => {
         {todos.length > 0 &&
           todos.map((todo, index) => (
             <TodoItem key={todo.todolistId}>
-              <Checkbox
-                type="checkbox"
-                checked={todo.status} // 상태에 따라 체크 표시
-                onChange={() => handleCheckTodo(todo.todolistId)} // 체크 시 API 호출
-              />
+              <Checkbox type="checkbox" />
               <TodoInput
                 type="text"
                 value={todo.content}

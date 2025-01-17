@@ -6,6 +6,8 @@ import bookmarkAfterIcon from "../../assets/images/community/bookmark-after.png"
 import moreIcon from "../../assets/images/community/more-icon.png";
 import heartBeforeIcon from "../../assets/images/community/heart-before.png";
 import commentIcon from "../../assets/images/community/comment-icon.png";
+import postTypeIcon from "../../assets/images/community/postType-icon.png";
+import studyTypeIcon from "../../assets/images/community/studyType-icon.png";
 
 const PopularPostsContainer = styled.div`
   margin-top: 31px;
@@ -17,7 +19,7 @@ const PostGrid = styled.div`
 `;
 
 const PostCard = styled.div`
-  width: 495.44px;
+  width: 496px;
   height: auto;
   box-sizing: border-box;
   background: #ffffff;
@@ -38,7 +40,7 @@ const PostHeader = styled.div`
 const ProfileSection = styled.div`
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 3px;
 `;
 
 const ProfileImage = styled.img`
@@ -53,6 +55,7 @@ const Nickname = styled.span`
   font-size: 12.2785px;
   line-height: 18px;
   color: #000000;
+  padding-bottom: 5px;
 `;
 
 const IconSection = styled.div`
@@ -73,14 +76,14 @@ const MoreIcon = styled.img`
 
 const CategoryTags = styled.div`
   display: flex;
-  gap: 8.6px;
+  gap: 5px;
 `;
 
 const Tag = styled.div`
   background: #ffffff;
   border-radius: 3.07px;
   border: 0.55px solid #a1a1a1;
-  padding: 5px 20px;
+  padding: 5px 15px;
   font-family: "Pretendard";
   font-style: normal;
   font-weight: 500;
@@ -90,6 +93,7 @@ const Tag = styled.div`
   align-items: center;
   letter-spacing: 0.0959159px;
   color: #a1a1a1;
+  gap: 5px;
 `;
 
 const PostTitle = styled.h2`
@@ -109,7 +113,6 @@ const PostContent = styled.p`
   font-size: 12px;
   line-height: 18px;
   color: #000000;
-  padding-top: 11px;
 `;
 
 const PostFooter = styled.div`
@@ -126,13 +129,13 @@ const PostFooter = styled.div`
 const InteractionIcons = styled.div`
   margin-left: 21px;
   display: flex;
-  gap: 15px;
+  gap: 5px;
   align-items: center;
 `;
 
 const Icon = styled.img`
-  width: 20px;
-  height: 20px;
+  width: 18px;
+  height: 18px;
 `;
 
 const PostDate = styled.div`
@@ -145,59 +148,123 @@ const PostDate = styled.div`
   color: rgba(0, 0, 0, 0.6);
 `;
 
-const PopularPosts = () => {
-  const [isBookmarked, setIsBookmarked] = useState(false);
+const Count = styled.div`
+  font-family: "Pretendard";
+  font-style: normal;
+  font-weight: 400;
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+  text-transform: capitalize;
+  color: #b8b8b8;
+  padding-right: 4px;
+`;
 
-  const toggleBookmark = () => {
-    setIsBookmarked((prev) => !prev);
+const PopularPosts = () => {
+  const posts = [
+    {
+      id: 1,
+      writer: "yooni",
+      title: "학습 회고 고민",
+      content: (
+        <>
+          요즘 부트캠프로 프로젝트를 준비 중인데 기획 과정에서 배워야 할 점이
+          많더라구요...
+          <br />그 과정에서 내가 어떤 점을 모르고 아는지 파악하면서 학습 계획
+          세우고 싶은데 기획 공부하시는 <br />
+          분들 플젝 회고 어떻게 진행하시나요ㅠ <br />팁 좀 알려주세요!
+        </>
+      ),
+      postType: "회고고민",
+      likes: 4,
+      comments: 4,
+      date: "1월 15일",
+    },
+    {
+      id: 2,
+      writer: "yunju",
+      title: "프로젝트에서 자주 사용하는 회고 방법론 인사이트 공유드립니다!",
+      content: (
+        <>
+          회고 종류에 어떤 것들이 있는지 궁금한 분들!
+          <br />
+          프로젝트에서는 어떤 회고를 주로 진행하는지 궁금하신 분들 모두 아래
+          내용을 확인해보세요.
+          <br />
+          실제 현업에서 자주 사용하고 있는 회고 방법이니 참고해보세요!
+          <br />
+          <br />
+        </>
+      ),
+      postType: "인사이트",
+      likes: 11,
+      comments: 5,
+      date: "1월 14일",
+    },
+  ];
+
+  // 북마크 상태를 객체 형태로 관리
+  const [bookmarkedPosts, setBookmarkedPosts] = useState({});
+
+  const toggleBookmark = (postId) => {
+    setBookmarkedPosts((prevBookmarks) => ({
+      ...prevBookmarks,
+      [postId]: !prevBookmarks[postId], // 상태 반전
+    }));
   };
 
   return (
     <PopularPostsContainer>
       <PostGrid>
-        <PostCard>
-          {/* 상단 프로필 & 북마크 & 더보기 */}
-          <PostHeader>
-            <ProfileSection>
-              <ProfileImage src={profileIcon} alt="Profile" />
-              <Nickname>리풀이</Nickname>
-            </ProfileSection>
-            <IconSection>
-              <BookmarkIcon
-                src={isBookmarked ? bookmarkAfterIcon : bookmarkBeforeIcon}
-                alt="Bookmark"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  toggleBookmark();
-                }}
-              />{" "}
-              <MoreIcon src={moreIcon} alt="More" />
-            </IconSection>
-          </PostHeader>
+        {posts.map((post) => (
+          <PostCard key={post.id}>
+            {/* 상단 프로필 & 북마크 & 더보기 */}
+            <PostHeader>
+              <ProfileSection>
+                <ProfileImage src={profileIcon} alt="Profile" />
+                <Nickname>{post.writer}</Nickname>
+              </ProfileSection>
+              <IconSection>
+                <BookmarkIcon
+                  src={
+                    bookmarkedPosts[post.id]
+                      ? bookmarkAfterIcon
+                      : bookmarkBeforeIcon
+                  }
+                  alt="Bookmark"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    toggleBookmark(post.id); // 해당 게시물의 북마크 상태 토글
+                  }}
+                />
+                <MoreIcon src={moreIcon} alt="More" />
+              </IconSection>
+            </PostHeader>
 
-          {/* 카테고리 태그 */}
-          <CategoryTags>
-            <Tag>회고 고민</Tag>
-            <Tag>팀 프로젝트</Tag>
-          </CategoryTags>
+            {/* 카테고리 태그 */}
+            <CategoryTags>
+              <Tag>
+                <img src={postTypeIcon} alt="" width="10" height="10" />
+                {post.postType}
+              </Tag>
+            </CategoryTags>
 
-          {/* 게시글 제목 & 내용 */}
-          <PostTitle>회고 방법 고민 들어주세요ㅠ</PostTitle>
-          <PostContent>
-            이번에 처음 기획부터 디자인, 개발 팀 프로젝트를 시작했는데 스프린트
-            회고가 필요한 상황입니다. 비슷한 상황에서 어떤 회고 방법론을 활용해
-            회고를 진행하시나요?! 효율적인 회고 방법 추천해주세요!
-          </PostContent>
+            {/* 게시글 제목 & 내용 */}
+            <PostTitle>{post.title}</PostTitle>
+            <PostContent>{post.content}</PostContent>
 
-          {/* 하단 좋아요 & 댓글 & 날짜 */}
-          <PostFooter>
-            <InteractionIcons>
-              <Icon src={heartBeforeIcon} alt="Like" />
-              <Icon src={commentIcon} alt="Comment" />
-            </InteractionIcons>
-            <PostDate>10월 9일</PostDate>
-          </PostFooter>
-        </PostCard>
+            {/* 하단 좋아요 & 댓글 & 날짜 */}
+            <PostFooter>
+              <InteractionIcons>
+                <Icon src={heartBeforeIcon} alt="Like" />
+                <Count>{post.likes}</Count>
+                <Icon src={commentIcon} alt="Comment" />
+                <Count>{post.comments}</Count>
+              </InteractionIcons>
+              <PostDate>{post.date}</PostDate>
+            </PostFooter>
+          </PostCard>
+        ))}
       </PostGrid>
     </PopularPostsContainer>
   );
