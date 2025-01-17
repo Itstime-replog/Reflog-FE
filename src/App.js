@@ -11,6 +11,7 @@ import RootLayout from "./layout/RootLayout";
 import Home from "./pages/Home";
 import Studyplan from "./pages/Studyplan";
 import Retrospect from "./pages/Retrospect";
+import Analysis from "./pages/Analysis";
 import Login from "./pages/Auth/Login";
 import OAuthCallback from "./pages/Auth/OAuthCallback";
 import MyPage from "./pages/MyPage";
@@ -41,7 +42,6 @@ function App() {
       window.Kakao.init(KAKAO_KEY);
     }
 
-    // 온보딩 페이지일 때만 로그인 상태 초기화
     if (location.pathname === "/onboarding") {
       auth.logout();
       setIsLoggedIn(false);
@@ -64,7 +64,6 @@ function App() {
     return <Navigate to="/onboarding" replace />;
   };
 
-  // OAuth 콜백 URL에서는 리다이렉트하지 않음
   if (
     !isLoggedIn &&
     !location.pathname.includes("/login") &&
@@ -78,7 +77,6 @@ function App() {
     <Routes>
       <Route path="/" element={<Navigate to="/onboarding" replace />} />
 
-      {/* 로그인 및 OAuth 콜백 라우트 */}
       <Route
         path="/login/*"
         element={
@@ -90,7 +88,6 @@ function App() {
         element={<OAuthCallback setIsLoggedIn={setIsLoggedIn} />}
       />
 
-      {/* RootLayout으로 감싸진 라우트들 */}
       <Route
         element={
           <RootLayout setIsLoggedIn={setIsLoggedIn} onLogout={handleLogout} />
@@ -113,6 +110,12 @@ function App() {
           path="/retrospect"
           element={
             isLoggedIn ? <Retrospect /> : <Navigate to="/onboarding" replace />
+          }
+        />
+        <Route
+          path="/analysis"
+          element={
+            isLoggedIn ? <Analysis /> : <Navigate to="/onboarding" replace />
           }
         />
         <Route

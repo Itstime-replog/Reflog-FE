@@ -16,7 +16,7 @@ const FilterContainer = styled.div`
   background: #ffffff;
   border: 1px solid #e1e1e1;
   border-radius: 10px;
-  margin-left: -930px; // 왼쪽으로 이동
+  margin-left: -850px; // 왼쪽으로 이동
   margin-top: -50px;
   margin-bottom: 160px;
 `;
@@ -47,7 +47,7 @@ const EmptyStateContainer = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin-top: 100px;
+  margin-top: 80px;
   gap: 31px;
 `;
 

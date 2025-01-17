@@ -4,6 +4,8 @@ import styled from "styled-components";
 import BookmarkIcon from "../../assets/images/common/Bookmark-unsaved.png";
 import AlarmIcon from "../../assets/images/common/alarm-icon.png";
 import ProfileIcon from "../../assets/images/common/profile-icon.png";
+import BookmarkPanel from "../Bookmark";
+import NotificationPanel from "../Notification";
 import {
   removeLoginToken,
   getAccessToken,
@@ -61,6 +63,7 @@ const IconContainer = styled.div`
   gap: 1rem;
   align-items: center;
   margin-right: 32px;
+  position: relative;
 `;
 
 const EmptySpace = styled.div`
@@ -109,6 +112,7 @@ const ProfileDropdown = styled.div`
   padding: 20px;
   display: ${(props) => (props.$isOpen ? "block" : "none")};
   box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
 `;
 
 const DropdownItem = styled.div`
@@ -128,6 +132,8 @@ const DropdownItem = styled.div`
 
 const Navbar = ({ setIsLoggedIn, disabled }) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [isBookmarkOpen, setIsBookmarkOpen] = useState(false);
+  const [isNotificationOpen, setIsNotificationOpen] = useState(false);
   const [userName, setUserName] = useState("사용자");
   const navigate = useNavigate();
   const location = useLocation();
@@ -140,14 +146,33 @@ const Navbar = ({ setIsLoggedIn, disabled }) => {
     }
   }, []);
 
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (
+        !event.target.closest("#profile-container") &&
+        !event.target.closest("#bookmark-container") &&
+        !event.target.closest("#notification-container")
+      ) {
+        setIsDropdownOpen(false);
+        setIsBookmarkOpen(false);
+        setIsNotificationOpen(false);
+      }
+    };
+
+    document.addEventListener("click", handleClickOutside);
+    return () => {
+      document.removeEventListener("click", handleClickOutside);
+    };
+  }, []);
+
   const handleLogout = disabled
     ? undefined
     : async () => {
         try {
           const token = getAccessToken();
           if (token) {
-            await logoutAPI(token); // API 호출
-            removeLoginToken(); // 성공하면 로컬 스토리지 클리어
+            await logoutAPI(token);
+            removeLoginToken();
             setIsLoggedIn(false);
             navigate("/onboarding", { replace: true });
           } else {
@@ -155,7 +180,6 @@ const Navbar = ({ setIsLoggedIn, disabled }) => {
           }
         } catch (error) {
           console.error("Logout failed:", error);
-          // API 호출이 실패하더라도 로컬에서는 로그아웃 처리
           removeLoginToken();
           setIsLoggedIn(false);
           navigate("/onboarding", { replace: true });
@@ -167,6 +191,26 @@ const Navbar = ({ setIsLoggedIn, disabled }) => {
     : (e) => {
         e.stopPropagation();
         setIsDropdownOpen(!isDropdownOpen);
+        setIsBookmarkOpen(false);
+        setIsNotificationOpen(false);
+      };
+
+  const handleBookmarkClick = disabled
+    ? undefined
+    : (e) => {
+        e.stopPropagation();
+        setIsBookmarkOpen(!isBookmarkOpen);
+        setIsDropdownOpen(false);
+        setIsNotificationOpen(false);
+      };
+
+  const handleNotificationClick = disabled
+    ? undefined
+    : (e) => {
+        e.stopPropagation();
+        setIsNotificationOpen(!isNotificationOpen);
+        setIsDropdownOpen(false);
+        setIsBookmarkOpen(false);
       };
 
   const handleMyPageClick = disabled
@@ -175,19 +219,6 @@ const Navbar = ({ setIsLoggedIn, disabled }) => {
         navigate("/mypage");
         setIsDropdownOpen(false);
       };
-
-  const handleClickOutside = (event) => {
-    if (!event.target.closest("#profile-container")) {
-      setIsDropdownOpen(false);
-    }
-  };
-
-  useEffect(() => {
-    document.addEventListener("click", handleClickOutside);
-    return () => {
-      document.removeEventListener("click", handleClickOutside);
-    };
-  }, []);
 
   return (
     <Nav style={{ pointerEvents: disabled ? "none" : "auto" }}>
@@ -199,12 +230,18 @@ const Navbar = ({ setIsLoggedIn, disabled }) => {
       </TextContainer>
       {isOnboarding && <EmptySpace />}
       <IconContainer>
-        <IconButton>
-          <StyledBookmarkIcon src={BookmarkIcon} alt="Bookmark Icon" />
-        </IconButton>
-        <IconButton>
-          <StyledAlarmIcon src={AlarmIcon} alt="Alarm Icon" />
-        </IconButton>
+        <div id="bookmark-container">
+          <IconButton onClick={handleBookmarkClick}>
+            <StyledBookmarkIcon src={BookmarkIcon} alt="Bookmark Icon" />
+          </IconButton>
+          {isBookmarkOpen && <BookmarkPanel />}
+        </div>
+        <div id="notification-container">
+          <IconButton onClick={handleNotificationClick}>
+            <StyledAlarmIcon src={AlarmIcon} alt="Alarm Icon" />
+          </IconButton>
+          {isNotificationOpen && <NotificationPanel />}
+        </div>
         <ProfileContainer id="profile-container">
           <IconButton onClick={handleProfileClick}>
             <StyledProfileIcon src={ProfileIcon} alt="Profile Icon" />
